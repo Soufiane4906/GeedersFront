@@ -1,0 +1,150 @@
+.featured {
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(45deg, #1dbf73, #6b2d82);
+  color: white;
+
+  .container {
+    width: 1400px;
+    display: flex;
+    align-items: center;
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      h1 {
+        font-size: 50px;
+
+        span {
+          font-style: italic;
+          font-weight: 300;
+        }
+      }
+
+      .search {
+        background-color: white;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+
+        .searchInput {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          img {
+            width: 20px;
+            height: 20px;
+            margin: 10px;
+          }
+
+          input {
+            border: none;
+            outline: none;
+
+            &::placeholder {
+              color: gray;
+            }
+          }
+        }
+
+        button {
+          width: 120px;
+          height: 50px;
+          border: none;
+          background-color: #1dbf73;
+          color: white;
+          align-self: flex-end;
+          cursor: pointer;
+        }
+      }
+
+      .select {
+        width: 13rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        label {
+          color: white;
+          font-size: 18px;
+        }
+
+        select,
+        input {
+          padding: 10px;
+          border-radius: 5px;
+          border: none;
+          outline: none;
+        }
+
+        .country-image {
+          margin-top: 10px;
+
+          img {
+            width: 100px;
+            height: auto;
+          }
+        }
+      }
+
+      .additional-fields {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        label {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          input[type="checkbox"] {
+            margin-right: 10px;
+          }
+        }
+
+        input[type="number"] {
+          width: calc(100% - 10px);
+        }
+      }
+
+      .popular {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        span {
+          width: max-content;
+        }
+
+        button {
+          width: max-content;
+          color: white;
+          border: 1px solid white;
+          padding: 5px 10px;
+          border-radius: 20px;
+          background-color: transparent;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .right {
+      height: 100%;
+      width: 50%; // Adjust the width as necessary
+      background: url('https://i0.wp.com/i.pinimg.com/originals/56/b3/ab/56b3ab3c6068991447ace74aae976e87.jpg?resize=160,120') no-repeat center center/cover;
+
+      img {
+        height: 100%;
+        object-fit: contain;
+        display: none; // Hide the img element to use background image instead
+      }
+    }
+  }
+}
