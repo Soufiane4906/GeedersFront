@@ -19,10 +19,23 @@ import {
 } from "@tanstack/react-query";
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
+import Profile from "./pages/profile/profile";
+
 function App() {
   const queryClient = new QueryClient();
 
   const Layout = () => {
+    return (
+      <div className="app">
+        <QueryClientProvider client={queryClient}>
+          <Navbar />
+          <Outlet />
+          <Footer />
+        </QueryClientProvider>
+      </div>
+    );
+  };
+  const LayoutProfile = () => {
     return (
       <div className="app">
         <QueryClientProvider client={queryClient}>
@@ -46,6 +59,10 @@ function App() {
         {
           path: "/gigs",
           element: <Gigs />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
         },
         {
           path: "/myGigs",

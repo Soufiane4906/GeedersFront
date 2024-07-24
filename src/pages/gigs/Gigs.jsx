@@ -43,22 +43,28 @@ function Gigs() {
   return (
     <div className="gigs">
       <div className="container">
-        <span className="breadcrumbs">Liverr &gt Graphics & Design   </span>
-        <h1>AI Artists</h1>
+        <span className="breadcrumbs">  </span>
+        <h1>Search Results</h1>
         <p>
-          Explore the boundaries of art and technology with Liverr's AI artists
         </p>
         <div className="menu">
           <div className="left">
             <span>Budget</span>
             <input ref={minRef} type="number" placeholder="min" />
             <input ref={maxRef} type="number" placeholder="max" />
+            <span>City</span>
+            <input type="text" placeholder="City" />
+            <span>Country</span>
+            <input type="text" placeholder="Country" />
+
+
+
             <button onClick={apply}>Apply</button>
           </div>
           <div className="right">
             <span className="sortBy">Sort by</span>
             <span className="sortType">
-              {sort === "sales" ? "Best Selling" : "Newest"}
+              {sort === "sales" ? "Best Guide" : "Newest"}
             </span>
             <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
             {open && (

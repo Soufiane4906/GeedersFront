@@ -2,18 +2,21 @@
   height: 600px;
   display: flex;
   justify-content: center;
-  background: linear-gradient(45deg, #1dbf73, #6b2d82);
+  background: linear-gradient(45deg, #1dbf73, #0d6efd);
   color: white;
 
   .container {
-    width: 1400px;
+    width: 100%;
+    max-width: 1400px;
     display: flex;
     align-items: center;
 
     .left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 20px;
+      margin-right: 45px;
+
 
       h1 {
         font-size: 50px;
@@ -24,48 +27,8 @@
         }
       }
 
-      .search {
-        background-color: white;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        overflow: hidden;
-
-        .searchInput {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-
-          img {
-            width: 20px;
-            height: 20px;
-            margin: 10px;
-          }
-
-          input {
-            border: none;
-            outline: none;
-
-            &::placeholder {
-              color: gray;
-            }
-          }
-        }
-
-        button {
-          width: 120px;
-          height: 50px;
-          border: none;
-          background-color: #1dbf73;
-          color: white;
-          align-self: flex-end;
-          cursor: pointer;
-        }
-      }
-
       .select {
-        width: 13rem;
+        width: 100%;
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -77,74 +40,95 @@
 
         select,
         input {
+          width: 100%;
           padding: 10px;
           border-radius: 5px;
           border: none;
           outline: none;
         }
-
-        .country-image {
-          margin-top: 10px;
-
-          img {
-            width: 100px;
-            height: auto;
-          }
-        }
       }
 
       .additional-fields {
-        margin-top: 20px;
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: 10px;
+        align-items: center;
 
         label {
           display: flex;
           align-items: center;
           gap: 10px;
 
-          input[type="checkbox"] {
+          input[type="radio"] {
             margin-right: 10px;
           }
         }
 
         input[type="number"] {
-          width: calc(100% - 10px);
-        }
-      }
-
-      .popular {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        span {
-          width: max-content;
-        }
-
-        button {
-          width: max-content;
-          color: white;
-          border: 1px solid white;
-          padding: 5px 10px;
-          border-radius: 20px;
-          background-color: transparent;
-          font-size: 14px;
+          width: 100px;
         }
       }
     }
 
     .right {
-      height: 100%;
-      width: 50%; // Adjust the width as necessary
+      height: 104%;
+      width: 50%; /* Adjust the width as necessary */
       background: url('https://i0.wp.com/i.pinimg.com/originals/56/b3/ab/56b3ab3c6068991447ace74aae976e87.jpg?resize=160,120') no-repeat center center/cover;
 
       img {
         height: 100%;
         object-fit: contain;
-        display: none; // Hide the img element to use background image instead
+        display: none; /* Hide the img element to use background image instead */
       }
     }
   }
+}
+
+
+.css-10wo9uf-option {
+  background-color: #44338c !important;
+}
+
+.css-d7l1ni-option {
+  background-color: #1dbf73 !important;
+}
+.additional-fields p {
+
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 13px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkbox-container.active {
+  border-color: #c19dce;
+  background-color: #c19dce;
+
+}
+
+.checkbox-container input {
+  margin-right: 10px;
+}
+
+.checkbox-container:hover {
+  border-color: #007bff;
+}
+
+.checkbox-container.active:hover {
+  background-color: #0a58ca;
+
+}
+
+#root > div > div.home > div.featured > div > div.left > div:nth-child(3) > div > div > div{
+  display: inline-flex;
 }

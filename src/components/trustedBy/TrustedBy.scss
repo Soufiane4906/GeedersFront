@@ -1,20 +1,51 @@
 .trustedBy {
-  background-color: #fafafa;
-  height: 100px;
-  display: flex;
-  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 40px 0;
 
   .container {
-    max-width: 760px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: rgb(200, 200, 200);
-    font-weight: 500;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
 
-    img{
-      height: 50px;
-      object-fit: contain;
+    h2 {
+      margin-bottom: 30px;
+      font-size: 2rem;
+      color: #333;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+
+      .stat-item {
+        flex: 1;
+        max-width: 200px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+
+        .stat-icon {
+          font-size: 2rem;
+          color: #007bff;
+        }
+
+        .stat-number {
+          display: block;
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-top: 10px;
+        }
+
+        .stat-label {
+          display: block;
+          font-size: 1rem;
+          color: #555;
+        }
+      }
     }
   }
 }

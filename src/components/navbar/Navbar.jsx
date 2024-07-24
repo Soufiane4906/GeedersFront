@@ -9,6 +9,7 @@ function Navbar() {
 
   const { pathname } = useLocation();
 
+
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
   };
@@ -35,7 +36,7 @@ function Navbar() {
   };
 
   return (
-    <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
+    <div className={active || pathname !== "/"  ? "navbar active" : "navbar"}>
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
@@ -54,8 +55,11 @@ function Navbar() {
               <span>{currentUser?.username}</span>
               {open && (
                 <div className="options">
-                  {currentUser.isSeller && (
+                  {  (!currentUser.isComplete) && (
                     <>
+                    <Link className="link" to="/profile">
+                          Profil
+                        </Link>
                       <Link className="link" to="/mygigs">
                         Guide Profile
                       </Link>
@@ -65,7 +69,7 @@ function Navbar() {
                     </>
                   )}
                   <Link className="link" to="/orders">
-                    Rerervations
+                    Reservations
                   </Link>
                   <Link className="link" to="/messages">
                     Messages
@@ -86,7 +90,7 @@ function Navbar() {
           )}
         </div>
       </div>
-      {(active || pathname !== "/") && (
+      {(active || pathname !== "/" && pathname !=='/profile' && pathname !=='/mygigs' ) && (
         <>
           <hr />
           <div className="menu">

@@ -6,6 +6,7 @@ import Slide from "../../components/slide/Slide";
 import CatCard from "../../components/catCard/CatCard";
 import ProjectCard from "../../components/projectCard/ProjectCard";
 import { cards, projects } from "../../data";
+import { FaCheckCircle, FaPlayCircle } from 'react-icons/fa';
 
 function Home() {
   return (
@@ -18,47 +19,48 @@ function Home() {
         ))}
       </Slide> */}
       <div className="features">
-        <div className="container">
-        <div className="item">
-  <h1>Discover Expert Guides from Around the World</h1>
-  <div className="title">
-    <img src="./img/check.png" alt="" />
-    Guides for Every Destination
-  </div>
-  <p>
-    Access knowledgeable and experienced guides for any location. Whether you're exploring a city or a remote area, we've got you covered.
-  </p>
-  <div className="title">
-    <img src="./img/check.png" alt="" />
-    Tailored Experiences
-  </div>
-  <p>
-    Find guides who can offer personalized tours and experiences based on your interests and needs.
-  </p>
-  <div className="title">
-    <img src="./img/check.png" alt="" />
-    Secure Booking and Payments
-  </div>
-  <p>
-    Book your guide with confidence. Payments are processed securely, and you only pay once you're satisfied with the service.
-  </p>
-  <div className="title">
-    <img src="./img/check.png" alt="" />
-    24/7 Customer Support
-  </div>
-  <p>
-    Get assistance anytime you need it. Our support team is available around the clock to help with any issues or questions.
-  </p>
-</div>
+      <div className="container">
+          <div className="item">
+            <h1>Discover Expert Guides from Around the World</h1>
+            <div className="title">
+              <FaCheckCircle className="check-icon" />
+              Guides for Every Destination
+            </div>
+            <p>
+              Access knowledgeable and experienced guides for any location. Whether you're exploring a city or a remote area, we've got you covered.
+            </p>
+            <div className="title">
+              <FaCheckCircle className="check-icon" />
+              Tailored Experiences
+            </div>
+            <p>
+              Find guides who can offer personalized tours and experiences based on your interests and needs.
+            </p>
+            <div className="title">
+              <FaCheckCircle className="check-icon" />
+              Secure Booking and Payments
+            </div>
+            <p>
+              Book your guide with confidence. Payments are processed securely, and you only pay once you're satisfied with the service.
+            </p>
+            <div className="title">
+              <FaCheckCircle className="check-icon" />
+              24/7 Customer Support
+            </div>
+            <p>
+              Get assistance anytime you need it. Our support team is available around the clock to help with any issues or questions.
+            </p>
+          </div>
 
           <div className="item">
+            <FaPlayCircle className="video-icon" />
             <video src="./img/video.mp4" controls />
           </div>
         </div>
       </div>
       <div className="explore">
       <div className="container">
-  <h1>Explore Points of Interest</h1>
+  <h1>Explore Points of Interest with Our Guides</h1>
   <div className="items">
     <div className="item">
       <img

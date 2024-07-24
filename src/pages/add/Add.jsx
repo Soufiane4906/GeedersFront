@@ -58,7 +58,7 @@ const Add = () => {
     mutationFn: (gig) => {
       const currentUser = getCurrentUser();
 
-      debugger;
+
       return newRequest.post("/gigs", gig);
     },
     onSuccess: () => {
