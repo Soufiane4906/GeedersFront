@@ -1,13 +1,405 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Select from 'react-select';
-import DatePicker from 'react-datepicker';
-import { FaCar, FaMotorcycle, FaDollarSign, FaUser, FaLock } from 'react-icons/fa';
-import 'react-datepicker/dist/react-datepicker.css';
+import { Accordion } from 'react-bootstrap';
 import newRequest from '../../utils/newRequest.js'; // Assuming you have a file for API requests
 import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./profile.scss"
+import 'react-datepicker/dist/react-datepicker.css';
+import './profile.scss';
+import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
+import { FaLock } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
+
+import { Form, Button, Col, Row } from 'react-bootstrap';
+
+const Profile = () => {
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await newRequest.get(`/users/${currentUser._id}`);
+        setUser(response.data);
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to fetch user data.');
+      }
+    };
+
+    fetchUserData();
+  }, [currentUser._id]);
+
+  const handleUpdate = async (updatedData) => {
+    try {
+      await newRequest.put(`/users/${currentUser._id}`, updatedData);
+      setUser((prev) => ({ ...prev, ...updatedData, isComplete: true }));
+      toast.success('Profile updated successfully!');
+    } catch (err) {
+      toast.error('Failed to update profile.');
+    }
+  };
+
+  const handleUpdatePassword = async (passwords) => {
+    try {
+      await newRequest.put(`/users/${currentUser._id}/update-password`, passwords);
+      toast.success('Password updated successfully!');
+    } catch (err) {
+      toast.error('Failed to update password.');
+    }
+  };
+
+  if (!user) return <h1>Loading...</h1>;
+
+  return (
+    <div className="container profile">
+      <div className="text-center mb-4">
+        <img
+          src={user.img}
+          alt="User Avatar"
+          className="img-fluid rounded-circle"
+          style={{ width: '150px', height: '150px' }}
+        />
+      </div>
+      {user.isVerified ? (
+        <h1 className="text-center">Your guide account is Verified 🥳</h1>
+      ) : (
+        <Accordion defaultActiveKey="0">
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>View Profile</Accordion.Header>
+            <Accordion.Body>
+              <ProfileDetail user={user} />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="1">
+            <Accordion.Header>Edit Profile</Accordion.Header>
+            <Accordion.Body>
+              <ProfileEdit user={user} onUpdate={handleUpdate} />
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="2">
+            <Accordion.Header>Change Password</Accordion.Header>
+            <Accordion.Body>
+              <ProfilePassword onUpdatePassword={handleUpdatePassword} />
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      )}
+    </div>
+  );
+};
+
+export default Profile;
+const ProfileDetail = ({ user }) => {
+  return (
+    <div className="profile-detail">
+      <h2>Profile Details</h2>
+      <p><strong>Username:</strong> {user.username}</p>
+      <p><strong>Email:</strong> {user.email}</p>
+      <p><strong>Country:</strong> {user.country}</p>
+      <p><strong>Languages:</strong> {user.languages.join(', ')}</p>
+      <p><strong>City:</strong> {user.city}</p>
+      <p><strong>Phone:</strong> {user.phone}</p>
+      <p><strong>Description:</strong> {user.desc}</p>
+      <p><strong>Bank Card Number:</strong> {user.bankCardNumber}</p>
+      <p><strong>Location:</strong> {user.location}</p>
+      <div className="images">
+        <p><strong>Identity Images:</strong></p>
+        <img src={user.imgRecto} alt="Identity Front" />
+        <img src={user.imgVerso} alt="Identity Back" />
+        <img src={user.imgPassport} alt="Passport" />
+      </div>
+    </div>
+  );
+};
+
+
+
+const ProfileEdit = ({ user, onUpdate }) => {
+  const [formData, setFormData] = useState({
+    username: user.username || '',
+    email: user.email || '',
+    country: user.country || '',
+    languages: user.languages || [],
+    city: user.city || '',
+    phone: user.phone || '',
+    desc: user.desc || '',
+    bankCardNumber: user.bankCardNumber || '',
+    location: user.location || '',
+    imgRecto: user.imgRecto || '',
+    imgVerso: user.imgVerso || '',
+    imgPassport: user.imgPassport || '',
+  });
+
+  const [files, setFiles] = useState({
+    imgRecto: null,
+    imgVerso: null,
+    imgPassport: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (selectedOptions) => {
+    setFormData((prev) => ({
+      ...prev,
+      languages: selectedOptions ? selectedOptions.map(option => option.value) : []
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFiles((prev) => ({
+      ...prev,
+      [name]: files[0],
+    }));
+  };
+
+  const upload = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await newRequest.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data.url;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const imgRectoUrl = files.imgRecto ? await upload(files.imgRecto) : formData.imgRecto;
+      const imgVersoUrl = files.imgVerso ? await upload(files.imgVerso) : formData.imgVerso;
+      const imgPassportUrl = files.imgPassport ? await upload(files.imgPassport) : formData.imgPassport;
+
+      const updatedFormData = {
+        ...formData,
+        imgRecto: imgRectoUrl,
+        imgVerso: imgVersoUrl,
+        imgPassport: imgPassportUrl,
+      };
+
+      await onUpdate(updatedFormData);
+    } catch (err) {
+      toast.error('Failed to update profile.');
+    }
+  };
+
+  return (
+    <Form className="profile-edit" onSubmit={handleSubmit}>
+      <h2 className="mb-4">Edit Profile</h2>
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaUser /> Username</Form.Label>
+          <Form.Control
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Username"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaEnvelope /> Email</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaGlobe /> Country</Form.Label>
+          <Form.Control
+            type="text"
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            placeholder="Country"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaFileAlt /> Languages</Form.Label>
+          <Select
+            name="languages"
+            options={languageOptions} // Define this array with language options
+            isMulti
+            value={formData.languages.map(lang => languageOptions.find(option => option.value === lang))}
+            onChange={handleSelectChange}
+          />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaCity /> City</Form.Label>
+          <Form.Control
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            placeholder="City"
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaPhone /> Phone</Form.Label>
+          <Form.Control
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone"
+          />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="12">
+          <Form.Label><FaFileAlt /> Description</Form.Label>
+          <Form.Control
+            type="text"
+            name="desc"
+            value={formData.desc}
+            onChange={handleChange}
+            placeholder="Description"
+          />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaCreditCard /> Bank Card Number</Form.Label>
+          <Form.Control
+            type="text"
+            name="bankCardNumber"
+            value={formData.bankCardNumber}
+            onChange={handleChange}
+            placeholder="Bank Card Number"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="6">
+          <Form.Label><FaMapMarkerAlt /> Location</Form.Label>
+          <Form.Control
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Location"
+          />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="4">
+          <Form.Label><FaImage /> Upload Recto Image</Form.Label>
+          <Form.Control
+            type="file"
+            name="imgRecto"
+            onChange={handleFileChange}
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="4">
+          <Form.Label><FaImage /> Upload Verso Image</Form.Label>
+          <Form.Control
+            type="file"
+            name="imgVerso"
+            onChange={handleFileChange}
+          />
+        </Form.Group>
+
+        <Form.Group as={Col} md="4">
+          <Form.Label><FaImage /> Upload Passport Image</Form.Label>
+          <Form.Control
+            type="file"
+            name="imgPassport"
+            onChange={handleFileChange}
+          />
+        </Form.Group>
+      </Row>
+
+      <Form.Group className="mb-3">
+        <Button type="submit" variant="primary">
+          Save Changes
+        </Button>
+        <Button type="button" variant="secondary" className="ms-2" onClick={() => setFormData(user)}>
+          Cancel
+        </Button>
+      </Form.Group>
+    </Form>
+  );
+};
+
+
+
+const ProfilePassword = ({ onUpdatePassword }) => {
+  const [passwords, setPasswords] = useState({
+    oldPassword: '',
+    newPassword: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await onUpdatePassword(passwords);
+  };
+
+  return (
+    <form className="profile-password" onSubmit={handleSubmit}>
+      <h2>Change Password</h2>
+      <div className="form-group">
+        <label htmlFor="oldPassword"><FaLock /> Old Password</label>
+        <input
+          name="oldPassword"
+          type="password"
+          className="form-control"
+          value={passwords.oldPassword}
+          onChange={handleChange}
+          placeholder="Current Password"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="newPassword"><FaLock /> New Password</label>
+        <input
+          name="newPassword"
+          type="password"
+          className="form-control"
+          value={passwords.newPassword}
+          onChange={handleChange}
+          placeholder="New Password"
+          required
+        />
+      </div>
+      <button type="submit" className="btn btn-primary mt-3">Change Password</button>
+      <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setPasswords({ oldPassword: '', newPassword: '' })}>Cancel</button>
+    </form>
+  );
+};
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
@@ -75,367 +467,3 @@ const languageOptions = [
   // Add more languages as needed
 
 ];
-const availabilityDaysOptions = [
-  { value: 'monday', label: 'Monday' },
-  { value: 'tuesday', label: 'Tuesday' },
-  { value: 'wednesday', label: 'Wednesday' },
-  { value: 'thursday', label: 'Thursday' },
-  { value: 'friday', label: 'Friday' },
-  { value: 'saturday', label: 'Saturday' },
-  { value: 'sunday', label: 'Sunday' },
-];
-
-function Profile() {
-  const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const [formData, setFormData] = useState({
-    languages: [],
-    hasCar: false,
-    hasScooter: false,
-    price: '',
-    imgRecto: '',
-    imgVerso: '',
-    imgPassport: '',
-    carPrice: '',
-    scooterPrice: '',
-    location: '',
-    availabilityDays: [],
-    availabilityHours: null,
-    username: '',
-    oldPassword: '',
-    newPassword: '',
-  });
-  const [files, setFiles] = useState({
-    imgRecto: null,
-    imgVerso: null,
-    imgPassport: null
-  });
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await newRequest.get(`/users/${currentUser._id}`);
-        setUser(response.data);
-        setFormData({
-          languages: response.data.languages || [],
-          hasCar: response.data.hasCar || false,
-          carPrice: response.data.carPrice || '',
-          scooterPrice: response.data.scooterPrice || '',
-          hasScooter: response.data.hasScooter || false,
-          price: response.data.price || '',
-          imgRecto: response.data.imgRecto || '',
-          imgVerso: response.data.imgVerso || '',
-          imgPassport: response.data.imgPassport || '',
-          location: response.data.location || '',
-          availabilityDays: response.data.availabilityDays || [],
-          // availabilityHours: response.data.availabilityHours || '',
-          username: response.data.username || '',
-        });
-      } catch (err) {
-        console.error(err);
-        toast.error('Failed to fetch user data.');
-      }
-    };
-
-    fetchUserData();
-  }, [currentUser._id]);
-
-  const handleChange = (e) => {
-    const { name, type, checked, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
-
-  const handleSelectChange = (selectedOptions, name) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOptions.map(option => option.value),
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFiles((prev) => ({
-      ...prev,
-      [name]: files[0]
-    }));
-  };
-
-  const upload = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await newRequest.post('/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    return response.data.url;
-  };
-
-  const handleDateChange = (hours) => {
-    setFormData((prevData) => ({ ...prevData, availabilityHours: hours }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (formData.carPrice < 10 || formData.carPrice > 20) {
-      toast.error('Car price must be between $10 and $20 per hour.');
-      return;
-    }
-
-    if (formData.scooterPrice < 5 || formData.scooterPrice > 10) {
-      toast.error('Scooter price must be between $5 and $10 per hour.');
-      return;
-    }
-
-    if (formData.price < 25 || formData.price > 45) {
-      toast.error('Guide price must be between $25 and $45 per hour.');
-      return;
-    }
-
-    try {
-      const imgRectoUrl = files.imgRecto ? await upload(files.imgRecto) : formData.imgRecto;
-      const imgVersoUrl = files.imgVerso ? await upload(files.imgVerso) : formData.imgVerso;
-      const imgPassportUrl = files.imgPassport ? await upload(files.imgPassport) : formData.imgPassport;
-
-      const updatedFormData = {
-        ...formData,
-        imgRecto: imgRectoUrl,
-        imgVerso: imgVersoUrl,
-        imgPassport: imgPassportUrl
-      };
-
-      await newRequest.put(`/users/${currentUser._id}`, updatedFormData);
-      setUser((prev) => ({ ...prev, ...updatedFormData, isComplete: true }));
-      setIsEditing(false);
-      toast.success('Profile updated successfully!');
-    } catch (err) {
-      toast.error('Failed to update profile.');
-    }
-  };
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    try {
-      // Update password logic here
-      await newRequest.put(`/users/${currentUser._id}/update-password`, {
-        oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword
-      });
-      toast.success('Password updated successfully!');
-      setIsChangingPassword(false);
-    } catch (err) {
-      toast.error('Failed to update password.');
-    }
-  };
-
-  if (!user) return <h1>Loading...</h1>;
-
-  return (
-    <div className="container profile">
-  <div className="text-center mb-4">
-    <img
-      src={user.img}
-      alt="User Avatar"
-      className="img-fluid rounded-circle"
-      style={{ width: '150px', height: '150px' }}
-    />
-  </div>
-  {user.isVerified ? (
-    <h1 className="text-center">Your guide account is Verified 🥳</h1>
-  ) : (
-    <div>
-      {isEditing || !user.isComplete ? (
-        <div className="profile-form">
-          <h1>Edit Your Profile</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="row">
-              <div className="col-md-6">
-                <label htmlFor="languages">Languages Spoken</label>
-                <Select
-                  name="languages"
-                  options={languageOptions}
-                  isMulti
-                  value={formData.languages.map(lang => languageOptions.find(option => option.value === lang))}
-                  onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'languages')}
-                />
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="username"><FaUser /> Username</label>
-                <input
-                  name="username"
-                  type="text"
-                  className="form-control"
-                  value={formData.username}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <label htmlFor="hasCar"><FaCar /> Do you have a car?</label>
-                <input
-                  name="hasCar"
-                  type="checkbox"
-                  checked={formData.hasCar}
-                  onChange={handleChange}
-                />
-                {formData.hasCar && (
-                  <>
-                    <label htmlFor="carPrice"><FaCar /> Car price per hour (10$ - 20$)</label>
-                    <input
-                      name="carPrice"
-                      type="number"
-                      className="form-control"
-                      value={formData.carPrice}
-                      onChange={handleChange}
-                    />
-                  </>
-                )}
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="hasScooter"><FaMotorcycle /> Do you have a scooter?</label>
-                <input
-                  name="hasScooter"
-                  type="checkbox"
-                  checked={formData.hasScooter}
-                  onChange={handleChange}
-                />
-                {formData.hasScooter && (
-                  <>
-                    <label htmlFor="scooterPrice"><FaMotorcycle /> Scooter price per hour (5$ - 10$)</label>
-                    <input
-                      name="scooterPrice"
-                      type="number"
-                      className="form-control"
-                      value={formData.scooterPrice}
-                      onChange={handleChange}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <label htmlFor="price"><FaDollarSign /> Price per hour (25$ - 45$)</label>
-                <input
-                  name="price"
-                  type="number"
-                  className="form-control"
-                  value={formData.price}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="location">Location</label>
-                <input
-                  name="location"
-                  type="text"
-                  className="form-control"
-                  value={formData.location}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <label htmlFor="availabilityDays">Availability Days</label>
-                <Select
-                  name="availabilityDays"
-                  options={availabilityDaysOptions}
-                  isMulti
-                  value={formData.availabilityDays.map(day => availabilityDaysOptions.find(option => option.value === day))}
-                  onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'availabilityDays')}
-                />
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="availabilityHours">Availability Hours</label>
-                <DatePicker
-                  selected={formData.availabilityHours}
-                  onChange={handleDateChange}
-                  showTimeSelect
-                  dateFormat="Pp"
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-4">
-                <label htmlFor="imgRecto">Recto Image</label>
-                <input
-                  type="file"
-                  name="imgRecto"
-                  className="form-control"
-                  onChange={handleFileChange}
-                />
-              </div>
-              <div className="col-md-4">
-                <label htmlFor="imgVerso">Verso Image</label>
-                <input
-                  type="file"
-                  name="imgVerso"
-                  className="form-control"
-                  onChange={handleFileChange}
-                />
-              </div>
-              <div className="col-md-4">
-                <label htmlFor="imgPassport">Passport Image</label>
-                <input
-                  type="file"
-                  name="imgPassport"
-                  className="form-control"
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>
-            <button type="submit" className="btn btn-primary mt-3">Save Changes</button>
-            {isEditing && <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setIsEditing(false)}>Cancel</button>}
-          </form>
-        </div>
-      ) : (
-        <div className="profile-complete">
-          <h1>Complete Your Profile</h1>
-          <form onSubmit={handlePasswordChange}>
-            <div className="row">
-              <div className="col-md-6">
-                <label htmlFor="oldPassword"><FaLock /> Old Password</label>
-                <input
-                  name="oldPassword"
-                  type="password"
-                  className="form-control"
-                  value={formData.oldPassword}
-                  onChange={handleChange}
-                  placeholder="Current Password"
-                />
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="newPassword"><FaLock /> New Password</label>
-                <input
-                  name="newPassword"
-                  type="password"
-                  className="form-control"
-                  value={formData.newPassword}
-                  onChange={handleChange}
-                  placeholder="New Password"
-                />
-              </div>
-            </div>
-            <button type="submit" className="btn btn-primary mt-3">Change Password</button>
-                <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setIsChangingPassword(false)}>Cancel</button>
-              </form>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default Profile;

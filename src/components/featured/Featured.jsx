@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faCity, faLanguage, faCar, faMotorcycle } from '@fortawesome/free-solid-svg-icons';
 import "./Featured.scss";
+
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
@@ -264,7 +265,7 @@ function Featured() {
     const vehicleParam = selectedVehicles.length > 0
       ? `vehicles=${selectedVehicles.join(",")}`
       : '';
-    navigate(`/gigs?search=${input}&country=${country}&city=${city}&languages=${selectedLanguages.join(",")}&${vehicleParam}`);
+    navigate(`/gigs?search=&country=${country}&city=${city}&languages=${selectedLanguages.join(",")}&${vehicleParam}`);
   };
 
   return (
@@ -308,7 +309,7 @@ function Featured() {
             <div className="col-md-4">
               <div className="select">
                 <label>
-                  <FontAwesomeIcon icon={faLanguage} /> Languages Spoken:
+                  <FontAwesomeIcon icon={faLanguage} /> Languages:
                 </label>
                 <Select
                   name="languages"

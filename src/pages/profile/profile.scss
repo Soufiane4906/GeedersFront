@@ -1,169 +1,250 @@
-.profile {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  .profile-form, .profile-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .profile-form {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-    h1 {
-      color: #ff6f61;
-    }
-
-    label {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-      color: #333;
-      font-weight: bold;
-
-      svg {
-        margin-right: 8px;
-      }
-    }
-
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    input[type="checkbox"] {
-      margin-left: 10px;
-    }
-
-    button {
-      background-color: #ff6f61;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #e65c50;
-      }
-    }
-  }
-
-  .profile-details {
-    background-color: #e8f5e9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-    h1 {
-      color: #388e3c;
-    }
-
-    p {
-      margin: 10px 0;
-      color: #333;
-
-      svg {
-        margin-right: 8px;
-        color: #388e3c;
-      }
-    }
-
-    button {
-      background-color: #388e3c;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #2e7d32;
-      }
-    }
-  }
+.container.profile {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-.react-datepicker-wrapper {
-  width: 100%;
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+h1.text-center {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #28a745;
+}
+
+.profile-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #007bff;
+}
+
+.profile-form label {
+  font-weight: 500;
+  color: #495057;
   display: flex;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
-.react-datepicker {
-  font-family: Arial, sans-serif;
-  border: 1px solid #ddd;
+.profile-form label svg {
+  margin-right: 0.5rem;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
   border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #495057;
+  background-color: #ffffff;
 }
 
-.react-datepicker__header {
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.col-md-4,
+.col-md-6 {
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.col-md-4 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+}
+
+.col-md-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  background-color: #f3f4f6;
+  border: 1px solid #007bff;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 4px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-primary {
   background-color: #007bff;
-  color: #fff;
-  border-bottom: 1px solid #007bff;
+  border-color: #007bff;
 }
 
-.react-datepicker__current-month {
-  font-size: 16px;
-  font-weight: bold;
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
 }
 
-.react-datepicker__day,
-.react-datepicker__day-name {
-  font-size: 14px;
-  color: #333;
+.btn-primary:hover,
+.btn-secondary:hover {
+  background-color: darken(#007bff, 10%);
+  border-color: darken(#007bff, 10%);
 }
 
-.react-datepicker__day--selected {
-  background-color: #007bff;
-  color: #fff;
+.mt-3 {
+  margin-top: 1rem;
 }
 
-.react-datepicker__day--keyboard-selected {
-  background-color: #0056b3;
-  color: #fff;
+.ms-2 {
+  margin-left: 0.5rem;
 }
 
-.react-datepicker__time-container {
-  border-left: 1px solid #ddd;
-}
 
-.react-datepicker__time {
-  font-size: 14px;
-}
+//---------edit
+.edit-profile {
+  background-color: #d91616;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-.react-datepicker__time-box {
-  background-color: #fff;
-}
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+  }
 
-.react-datepicker__time-list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
+  label {
+    font-weight: 500;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
 
-.react-datepicker__time-list-item {
-  padding: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
+    svg {
+      margin-right: 0.5rem;
+    }
+  }
 
-.react-datepicker__time-list-item:hover {
-  background-color: #f0f0f0;
-}
+  .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #495057;
+    background-color: #ffffff;
 
-.css-10wo9uf-option {
-  background-color: #9286c7 !important;
-}
+    &:focus {
+      border-color: #80bdff;
+      outline: 0;
+      box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+    }
+  }
 
-.css-d7l1ni-option {
-  background-color: #1dbf73 !important;
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+
+    .col-md-4,
+    .col-md-6 {
+      position: relative;
+      width: 100%;
+      padding-right: 15px;
+      padding-left: 15px;
+
+      &.col-md-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+      }
+
+      &.col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &.btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    &.btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    &:hover {
+      background-color: darken(#007bff, 10%);
+      border-color: darken(#007bff, 10%);
+    }
+  }
+
+  .mt-3 {
+    margin-top: 1rem;
+  }
+
+  .ms-2 {
+    margin-left: 0.5rem;
+  }
 }

@@ -20,6 +20,9 @@ import {
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
 import Profile from "./pages/profile/profile";
+import Users from "./pages/users/users";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   const queryClient = new QueryClient();
@@ -59,6 +62,11 @@ function App() {
         {
           path: "/gigs",
           element: <Gigs />,
+        },
+        {
+          path: "/users",
+          element: <Users />,
+
         },
         {
           path: "/profile",

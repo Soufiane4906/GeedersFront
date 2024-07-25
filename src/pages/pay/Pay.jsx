@@ -5,9 +5,11 @@ import { Elements } from "@stripe/react-stripe-js";
 import newRequest from "../../utils/newRequest";
 import { useParams } from "react-router-dom";
 import CheckoutForm from "../../components/checkoutForm/CheckoutForm";
+//import bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const stripePromise = loadStripe(
-  "paste your public key"
+  "pk_test_51OtdAyGmXNQGydzP913niVXoymwGsHLrlllPlvqx2fcP96HMGtgp8vHs4wTPuvXtl5yD9SEBjAI6EjrEJIjdCjuh00GtozZgkO"
 );
 
 const Pay = () => {
@@ -37,7 +39,7 @@ const Pay = () => {
     appearance,
   };
 
-  return <div className="pay">
+  return <div className="pay container">
     {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <CheckoutForm />

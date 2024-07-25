@@ -21,6 +21,13 @@
       label {
         color: gray;
         font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        svg {
+          margin-right: 5px;
+        }
       }
 
       .info,
@@ -35,17 +42,22 @@
         select,
         textarea {
           padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
         }
 
-        .images{
+        .priceField {
           display: flex;
           align-items: center;
-          gap: 20px;
-
-          .imagesInputs{
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+          gap: 10px;
+          svg {
+            color: green;
+          }
+          label {
+            color: green;
+          }
+          input {
+            border: 1px solid green;
           }
         }
 
@@ -57,22 +69,23 @@
           font-size: 18px;
           background-color: #1dbf73;
           cursor: pointer;
+          border-radius: 5px;
         }
 
-        .add{
+        .add {
           display: flex;
           justify-content: space-between;
 
-          input{
+          input {
             width: 80%;
           }
         }
 
-        .addedFeatures{
+        .addedFeatures {
           display: flex;
           gap: 20px;
 
-          button{
+          button {
             height: 30px;
             font-size: 12px;
             font-weight: 400;

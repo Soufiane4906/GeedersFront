@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Gig.scss";
-import { Slider } from "infinite-react-carousel/lib";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import Reviews from "../../components/reviews/Reviews";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  FaMapMarkerAlt,
+  FaClock,
+  FaRecycle,
+  FaCheck,
+  FaStar,
+  FaRegCalendarAlt,
+  FaRegClock,
+  FaRegFlag,
+} from "react-icons/fa";
+import { format, parseISO } from 'date-fns';
 
+const formatDate = (dateString) => {
+  const parsedDate = parseISO(dateString);
+  return format(parsedDate, 'dd/MM/yyyy HH:mm:ss');
+};
 function Gig() {
   const { id } = useParams();
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig"],
@@ -32,8 +50,15 @@ function Gig() {
     enabled: !!userId,
   });
 
+  const handleVehicleChange = (e) => {
+    const vehicle = e.target.value;
+    setSelectedVehicle(vehicle);
+    const price = vehicle === "car" ? 100 : 50;
+    setTotalPrice(data.price + price);
+  };
+
   return (
-    <div className="gig">
+    <div className="gig container">
       {isLoading ? (
         "loading"
       ) : error ? (
@@ -42,9 +67,8 @@ function Gig() {
         <div className="container">
           <div className="left">
             <span className="breadcrumbs">
-              Fiverr {">"} Graphics & Design {">"}
+              <FaMapMarkerAlt /> {data.country} {">"} {data.city} {">"}
             </span>
-            <h1>{data.title}</h1>
             {isLoadingUser ? (
               "loading"
             ) : errorUser ? (
@@ -62,19 +86,14 @@ function Gig() {
                     {Array(Math.round(data.totalStars / data.starNumber))
                       .fill()
                       .map((item, i) => (
-                        <img src="/img/star.png" alt="" key={i} />
+                        <FaStar key={i} />
                       ))}
                     <span>{Math.round(data.totalStars / data.starNumber)}</span>
                   </div>
                 )}
               </div>
             )}
-            <Slider slidesToShow={1} arrowsScroll={1} className="slider">
-              {data.images.map((img) => (
-                <img key={img} src={img} alt="" />
-              ))}
-            </Slider>
-            <h2>About This Gig</h2>
+            <h2 style={{color : 'black'}}>About This Post</h2>
             <p>{data.desc}</p>
             {isLoadingUser ? (
               "loading"
@@ -82,7 +101,7 @@ function Gig() {
               "Something went wrong!"
             ) : (
               <div className="seller">
-                <h2>About The Seller</h2>
+                <h2 style={{color : 'black'}}>About The Guide</h2>
                 <div className="user">
                   <img src={dataUser.img || "/img/noavatar.jpg"} alt="" />
                   <div className="info">
@@ -92,7 +111,7 @@ function Gig() {
                         {Array(Math.round(data.totalStars / data.starNumber))
                           .fill()
                           .map((item, i) => (
-                            <img src="/img/star.png" alt="" key={i} />
+                            <FaStar key={i} />
                           ))}
                         <span>
                           {Math.round(data.totalStars / data.starNumber)}
@@ -106,23 +125,33 @@ function Gig() {
                   <div className="items">
                     <div className="item">
                       <span className="title">From</span>
-                      <span className="desc">{dataUser.country}</span>
+                      <span className="desc">
+                        <FaRegFlag /> {dataUser.country}
+                      </span>
                     </div>
                     <div className="item">
                       <span className="title">Member since</span>
-                      <span className="desc">Aug 2022</span>
+                      <span className="desc">
+                        <FaRegCalendarAlt /> Aug 2022
+                      </span>
                     </div>
                     <div className="item">
                       <span className="title">Avg. response time</span>
-                      <span className="desc">4 hours</span>
+                      <span className="desc">
+                        <FaRegClock /> 4 hours
+                      </span>
                     </div>
                     <div className="item">
-                      <span className="title">Last delivery</span>
-                      <span className="desc">1 day</span>
+                      <span className="title">Last Tour</span>
+                      <span className="desc">
+                        <FaRegCalendarAlt /> 1 day
+                      </span>
                     </div>
                     <div className="item">
                       <span className="title">Languages</span>
-                      <span className="desc">English</span>
+                      <span className="desc">
+                        {dataUser.languages.join(", ")}
+                      </span>
                     </div>
                   </div>
                   <hr />
@@ -130,34 +159,57 @@ function Gig() {
                 </div>
               </div>
             )}
+            <div className="extra-info">
+              <h3>Additional Information</h3>
+              {/* <p><strong>ID:</strong> {dataUser}</p>
+              <p><strong>Email:</strong> {dataUser.email}</p>
+              <p><strong>Phone:</strong> {dataUser.phone}</p>
+              <p><strong>City:</strong> {dataUser.city}</p>
+              <p><strong>Availability:</strong> {dataUser.availabilityDays.join(", ")} at {dataUser.availabilityHours}</p> */}
+            </div>
             <Reviews gigId={id} />
           </div>
           <div className="right">
             <div className="price">
-              <h3>{data.shortTitle}</h3>
-              <h2>$ {data.price}</h2>
+              <h3 style={{color : 'black'}}> Total Price :       {data.shortTitle}</h3>
+              <h2>$ {totalPrice || data.price}</h2>
             </div>
             <p>{data.shortDesc}</p>
             <div className="details">
               <div className="item">
-                <img src="/img/clock.png" alt="" />
-                <span>{data.deliveryDate} Days Delivery</span>
-              </div>
-              <div className="item">
-                <img src="/img/recycle.png" alt="" />
-                <span>{data.revisionNumber} Revisions</span>
+                <FaRegClock style={{ color: 'green', fontSize: '24px' }} />
+                <span className="text-black">Available At:    {data.availabilityTimes.map((time, index) => (
+                <li key={index}>{formatDate(time)}</li>
+              ))}</span>
               </div>
             </div>
             <div className="features">
+              <h3>Features:</h3>
               {data.features.map((feature) => (
                 <div className="item" key={feature}>
-                  <img src="/img/greencheck.png" alt="" />
+                  <FaCheck />
                   <span>{feature}</span>
                 </div>
               ))}
             </div>
+            <div className="vehicle-select">
+              <h3>Select Vehicle:</h3>
+              <select onChange={handleVehicleChange}>
+                <option value="">None</option>
+                <option value="car">Car (+$100)</option>
+                <option value="moto">Moto (+$50)</option>
+              </select>
+            </div>
+            <div className="privacy">
+              <input
+                type="checkbox"
+                checked={privacyAccepted}
+                onChange={() => setPrivacyAccepted(!privacyAccepted)}
+              />
+              <label>I accept all privacy conditions</label>
+            </div>
             <Link to={`/pay/${id}`}>
-            <button>Continue</button>
+              <button disabled={!privacyAccepted}>Continue</button>
             </Link>
           </div>
         </div>

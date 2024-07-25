@@ -1,6 +1,13 @@
 .reviews {
   margin-top: 50px;
 
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+  }
+
   .add {
     margin-top: 20px;
     display: flex;
@@ -14,13 +21,30 @@
 
       input {
         padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
       }
 
-      select {
-        width: 200px;
-        padding: 20px;
-        align-self: flex-end;
+      .star-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        select {
+          width: 60px;
+          padding: 5px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+        }
+
+        .stars {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          color: #f39c12;
+        }
       }
+
       button {
         align-self: flex-end;
         width: 100px;
@@ -28,6 +52,7 @@
         padding: 10px;
         color: white;
         background-color: #1dbf73;
+        border-radius: 5px;
         cursor: pointer;
       }
     }

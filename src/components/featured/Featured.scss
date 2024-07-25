@@ -71,9 +71,13 @@
     }
 
     .right {
-      height: 104%;
-      width: 50%; /* Adjust the width as necessary */
-      background: url('https://i0.wp.com/i.pinimg.com/originals/56/b3/ab/56b3ab3c6068991447ace74aae976e87.jpg?resize=160,120') no-repeat center center/cover;
+      z-index: 3;
+      border-radius: 7px;
+      box-shadow: 1px 1px 20px 8px #4a85c0;
+
+      height: 59%;
+      width: 95%;
+      background: url('https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg') no-repeat center center/cover;
 
       img {
         height: 100%;

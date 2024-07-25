@@ -11,6 +11,10 @@ export const INITIAL_STATE = {
   revisionNumber: 0,
   features: [],
   price: 0,
+  hasCar: false,
+  carPrice: 0,
+  hasScooter: false,
+  scooterPrice: 0,
 };
 
 export const gigReducer = (state, action) => {
@@ -38,7 +42,6 @@ export const gigReducer = (state, action) => {
           (feature) => feature !== action.payload
         ),
       };
-
     default:
       return state;
   }

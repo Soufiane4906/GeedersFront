@@ -1,174 +1,181 @@
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import "./Add.scss";
-import { gigReducer, INITIAL_STATE } from "../../reducers/gigReducer";
-import upload from "../../utils/upload";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar, faMotorcycle, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 const Add = () => {
+  const navigate = useNavigate();
   const [singleFile, setSingleFile] = useState(undefined);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-
-  const [state, dispatch] = useReducer(gigReducer, INITIAL_STATE);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [formData, setFormData] = useState({
+    title: "",
+    desc: "",
+    country: "",
+    city: "",
+    hasCar: "",
+    carPrice: "",
+    hasScooter: "",
+    scooterPrice: "",
+    availabilityTimes: selectedDate,
+    shortDesc: "",
+    price: "",
+    features: [],
+  });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    dispatch({
-      type: "CHANGE_INPUT",
-      payload: { name: e.target.name, value: e.target.value },
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
   const handleFeature = (e) => {
     e.preventDefault();
-    dispatch({
-      type: "ADD_FEATURE",
-      payload: e.target[0].value,
-    });
-    e.target[0].value = "";
-  };
-
-  const handleUpload = async () => {
-    setUploading(true);
-    try {
-      const cover = await upload(singleFile);
-
-      const images = await Promise.all(
-        [...files].map(async (file) => {
-          const url = await upload(file);
-          return url;
-        })
-      );
-      setUploading(false);
-      dispatch({ type: "ADD_IMAGES", payload: { cover, images } });
-    } catch (err) {
-      console.log(err);
+    const feature = e.target[0].value;
+    if (feature) {
+      setFormData((prevData) => ({
+        ...prevData,
+        features: [...prevData.features, feature],
+      }));
+      e.target[0].value = "";
     }
   };
-  const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("currentUser"));
-  };
 
-
-  const navigate = useNavigate();
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: (gig) => {
-      const currentUser = getCurrentUser();
-
-
-      return newRequest.post("/gigs", gig);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["myGigs"]);
-    },
-  });
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const currentUser = getCurrentUser();
-    const gigData = { ...state, userId: currentUser._id };
-    mutation.mutate(gigData);
-    // navigate("/mygigs")
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      const gigData = { ...formData, userId: currentUser._id, availabilityTimes: selectedDate };
+      await newRequest.post("/gigs", gigData);
+      navigate("/myGigs");
+    } catch (error) {
+      setError("Error creating gig: " + error.message);
+    }
   };
 
   return (
     <div className="add">
       <div className="container">
-        <h1>Add New Gig</h1>
+        <h1>Add New Post</h1>
+        {error && <div className="error">{error}</div>}
         <div className="sections">
           <div className="info">
-            <label htmlFor="">Title</label>
+            <label htmlFor="title">Title</label>
             <input
               type="text"
               name="title"
               placeholder="e.g. I will do something I'm really good at"
               onChange={handleChange}
+              required
             />
-            <label htmlFor="">Category</label>
-            <select name="cat" id="cat" onChange={handleChange}>
-              <option value="design">Design</option>
-              <option value="web">Web Development</option>
-              <option value="animation">Animation</option>
-              <option value="music">Music</option>
-            </select>
-            <div className="images">
-              <div className="imagesInputs">
-                <label htmlFor="">Cover Image</label>
-                <input
-                  type="file"
-                  onChange={(e) => setSingleFile(e.target.files[0])}
-                />
-                <label htmlFor="">Upload Images</label>
-                <input
-                  type="file"
-                  multiple
-                  onChange={(e) => setFiles(e.target.files)}
-                />
-              </div>
-              <button onClick={handleUpload}>
-                {uploading ? "uploading" : "Upload"}
-              </button>
-            </div>
-            <label htmlFor="">Description</label>
+            <label htmlFor="desc">Description</label>
             <textarea
               name="desc"
-              id=""
+              id="desc"
               placeholder="Brief descriptions to introduce your service to customers"
               cols="0"
               rows="16"
               onChange={handleChange}
+              required
             ></textarea>
+            <label htmlFor="country">Country</label>
+            <input type="text" name="country" placeholder="Country" onChange={handleChange} required />
+            <label htmlFor="city">City</label>
+            <input type="text" name="city" placeholder="City" onChange={handleChange} required />
+            <label htmlFor="hasCar">Do you have a car?</label>
+            <select name="hasCar" onChange={handleChange} required>
+              <option value="">Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {formData.hasCar === "true" && (
+              <div className="priceField">
+                <FontAwesomeIcon icon={faCar} />
+                <label htmlFor="carPrice">Car Price per Hour</label>
+                <input
+                  type="number"
+                  name="carPrice"
+                  placeholder="Price per hour"
+                  onChange={handleChange}
+                  required={formData.hasCar === "true"}
+                />
+              </div>
+            )}
+            <label htmlFor="hasScooter">Do you have a scooter?</label>
+            <select name="hasScooter" onChange={handleChange} required>
+              <option value="">Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {formData.hasScooter === "true" && (
+              <div className="priceField">
+                <FontAwesomeIcon icon={faMotorcycle} />
+                <label htmlFor="scooterPrice">Scooter Price per Hour</label>
+                <input
+                  type="number"
+                  name="scooterPrice"
+                  placeholder="Price per hour"
+                  onChange={handleChange}
+                  required={formData.hasScooter === "true"}
+                />
+              </div>
+            )}
+            <label htmlFor="availabilityTimes">Available Times</label>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => {
+                setSelectedDate(date);
+                handleChange({ target: { name: "availabilityTimes", value: date } });
+              }}
+              showTimeSelect
+              dateFormat="Pp"
+              required
+            />
             <button onClick={handleSubmit}>Create</button>
           </div>
           <div className="details">
-            <label htmlFor="">Service Title</label>
-            <input
-              type="text"
-              name="shortTitle"
-              placeholder="e.g. One-page web design"
-              onChange={handleChange}
-            />
-            <label htmlFor="">Short Description</label>
+            <label htmlFor="shortDesc">Short Description</label>
             <textarea
               name="shortDesc"
-              onChange={handleChange}
-              id=""
+              id="shortDesc"
               placeholder="Short description of your service"
               cols="30"
               rows="10"
-            ></textarea>
-            <label htmlFor="">Delivery Time (e.g. 3 days)</label>
-            <input type="number" name="deliveryTime" onChange={handleChange} />
-            <label htmlFor="">Revision Number</label>
-            <input
-              type="number"
-              name="revisionNumber"
               onChange={handleChange}
-            />
-            <label htmlFor="">Add Features</label>
+              required
+            ></textarea>
+            <label htmlFor="price">Price</label>
+            <input type="number" name="price" onChange={handleChange} required />
+            <label htmlFor="addFeature">Add Features</label>
             <form action="" className="add" onSubmit={handleFeature}>
               <input type="text" placeholder="e.g. page design" />
-              <button type="submit">add</button>
+              <button type="submit">Add</button>
             </form>
             <div className="addedFeatures">
-              {state?.features?.map((f) => (
-                <div className="item" key={f}>
+              {formData.features.map((feature, index) => (
+                <div className="item" key={index}>
                   <button
                     onClick={() =>
-                      dispatch({ type: "REMOVE_FEATURE", payload: f })
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        features: prevData.features.filter((f) => f !== feature),
+                      }))
                     }
                   >
-                    {f}
+                    {feature}
                     <span>X</span>
                   </button>
                 </div>
               ))}
             </div>
-            <label htmlFor="">Price</label>
-            <input type="number" onChange={handleChange} name="price" />
           </div>
         </div>
       </div>

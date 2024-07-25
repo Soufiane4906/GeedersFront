@@ -20,11 +20,6 @@
     h1 {
     }
 
-    p {
-      color: #999;
-      font-weight: 300;
-    }
-
     .menu {
       display: flex;
       align-items: center;
@@ -38,18 +33,18 @@
         color: #555;
         font-weight: 300;
 
-        input{
+        input {
           padding: 5px;
           border: 1px solid lightgrey;
           border-radius: 5px;
           outline: none;
 
-          &::placeholder{
+          &::placeholder {
             color: #999;
           }
         }
 
-        button{
+        button {
           padding: 5px 10px;
           background-color: #1dbf73;
           color: white;
@@ -59,6 +54,22 @@
           cursor: pointer;
         }
 
+        .vehicle-filters {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          label {
+            font-weight: 300;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+
+            input {
+              margin-right: 5px;
+            }
+          }
+        }
       }
 
       .right {

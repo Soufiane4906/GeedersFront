@@ -3,9 +3,15 @@ import React from "react";
 import newRequest from "../../utils/newRequest";
 import Review from "../review/Review";
 import "./Reviews.scss";
-const Reviews = ({ gigId }) => {
+//icons
+import { FaStar } from "react-icons/fa";
+import { FaStarHalfAlt } from "react-icons/fa";
+import { FaStarHalf } from "react-icons/fa";
+//chat icons
+import { FaCommentDots } from "react-icons/fa";
 
-  const queryClient = useQueryClient()
+const Reviews = ({ gigId }) => {
+  const queryClient = useQueryClient();
   const { isLoading, error, data } = useQuery({
     queryKey: ["reviews"],
     queryFn: () =>
@@ -18,9 +24,9 @@ const Reviews = ({ gigId }) => {
     mutationFn: (review) => {
       return newRequest.post("/reviews", review);
     },
-    onSuccess:()=>{
-      queryClient.invalidateQueries(["reviews"])
-    }
+    onSuccess: () => {
+      queryClient.invalidateQueries(["reviews"]);
+    },
   });
 
   const handleSubmit = (e) => {
@@ -32,7 +38,9 @@ const Reviews = ({ gigId }) => {
 
   return (
     <div className="reviews">
-      <h2>Reviews</h2>
+      <h2>
+        <FaCommentDots /> Reviews
+      </h2>
       {isLoading
         ? "loading"
         : error
@@ -41,14 +49,24 @@ const Reviews = ({ gigId }) => {
       <div className="add">
         <h3>Add a review</h3>
         <form action="" className="addForm" onSubmit={handleSubmit}>
-          <input type="text" placeholder="write your opinion" />
-          <select name="" id="">
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-            <option value={4}>4</option>
-            <option value={5}>5</option>
-          </select>
+          <input type="text" placeholder="Write your opinion" />
+          <div className="star-rating">
+            <h3>Stars</h3>
+            <select name="" id="">
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={4}>4</option>
+              <option value={5}>5</option>
+            </select>
+            <div className="stars">
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStarHalfAlt />
+            </div>
+          </div>
           <button>Send</button>
         </form>
       </div>
