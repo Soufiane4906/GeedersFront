@@ -94,7 +94,7 @@ function Gig() {
               </div>
             )}
             <h2 style={{color : 'black'}}>About This Post</h2>
-            <p>{data.desc}</p>
+            <p>{data.shortDesc}</p>
             {isLoadingUser ? (
               "loading"
             ) : errorUser ? (

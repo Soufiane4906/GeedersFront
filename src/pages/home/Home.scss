@@ -56,7 +56,7 @@
           flex: 3;
         }
 
-        img{
+        img {
           width: 100%;
         }
         h1 {
@@ -83,19 +83,11 @@
           letter-spacing: 1px;
         }
 
-        video{
+        video {
           width: 720px;
         }
       }
     }
-
-    //   &.reverse {
-    //     background-color: #0d084d;
-    //     color: white;
-    //     .container {
-    //       flex-direction: row-reverse;
-    //     }
-    //   }
   }
 
   .explore {
@@ -106,7 +98,7 @@
     .container {
       width: 1400px;
 
-      h1{
+      h1 {
         color: #555;
       }
 
@@ -132,7 +124,7 @@
             height: 50px;
           }
 
-          .line{
+          .line {
             width: 50px;
             height: 2px;
             background-color: lightgray;
@@ -143,8 +135,8 @@
             font-weight: 300;
           }
 
-          &:hover{
-            .line{
+          &:hover {
+            .line {
               width: 80px;
               background-color: #1dbf73;
             }
@@ -153,4 +145,73 @@
       }
     }
   }
+
+  .geeders-info {
+    padding: 50px 0;
+    background-color: #f9f9f9;
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .text-content {
+      flex: 2;
+      h1 {
+        font-size: 2.5em;
+        color: #1dbf73;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      p {
+        font-size: 1.1em;
+        color: #333;
+        margin: 15px 0;
+        line-height: 1.6;
+
+        strong {
+          font-weight: bold;
+          color: #1dbf73;
+          text-decoration: underline;
+          display: block;
+          margin-bottom: 10px;
+          font-size: 1.2em;
+        }
+
+        svg {
+          margin-right: 8px;
+          color: #1dbf73;
+        }
+      }
+    }
+
+    .image-collage {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 40%;
+        height: 10%;
+margin-top: 10%;
+        object-fit: cover;
+        border-radius: 10px;
+        transform: rotate(5deg);
+        transition: transform 0.5s;
+
+        &:hover {
+          transform: rotate(0deg);
+        }
+      }
+    }
+  }
+
+
 }

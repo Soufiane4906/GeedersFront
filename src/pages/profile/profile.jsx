@@ -9,7 +9,8 @@ import './profile.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
 import { FaLock } from 'react-icons/fa';
-import { FaUser, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
+import { FaUser, FaEdit, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
+import { FaUserCircle } from 'react-icons/fa';
 
 import { Form, Button, Col, Row } from 'react-bootstrap';
 
@@ -55,37 +56,50 @@ const Profile = () => {
 
   return (
     <div className="container profile">
-      <div className="text-center mb-4">
-        <img
-          src={user.img}
-          alt="User Avatar"
-          className="img-fluid rounded-circle"
-          style={{ width: '150px', height: '150px' }}
-        />
+       <div className="text-center mb-4">
+        {user.img ? (
+          <img
+            src={user.img}
+            alt="User Avatar"
+            className="img-fluid rounded-circle"
+            style={{ width: '150px', height: '150px' }}
+          />
+        ) : (
+          <FaUserCircle
+            size={150}
+            className="img-fluid rounded-circle"
+          />
+        )}
       </div>
       {user.isVerified ? (
         <h1 className="text-center">Your guide account is Verified 🥳</h1>
       ) : (
         <Accordion defaultActiveKey="0">
-          <Accordion.Item eventKey="0">
-            <Accordion.Header>View Profile</Accordion.Header>
-            <Accordion.Body>
-              <ProfileDetail user={user} />
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="1">
-            <Accordion.Header>Edit Profile</Accordion.Header>
-            <Accordion.Body>
-              <ProfileEdit user={user} onUpdate={handleUpdate} />
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="2">
-            <Accordion.Header>Change Password</Accordion.Header>
-            <Accordion.Body>
-              <ProfilePassword onUpdatePassword={handleUpdatePassword} />
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>
+            <FaUser style={{ marginRight: '8px' }} /> View Profile
+          </Accordion.Header>
+          <Accordion.Body>
+            <ProfileDetail user={user} />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>
+            <FaEdit style={{ marginRight: '8px' }} /> Edit Profile
+          </Accordion.Header>
+          <Accordion.Body>
+            <ProfileEdit user={user} onUpdate={handleUpdate} />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>
+            <FaLock style={{ marginRight: '8px' }} /> Change Password
+          </Accordion.Header>
+          <Accordion.Body>
+            <ProfilePassword onUpdatePassword={handleUpdatePassword} />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
       )}
     </div>
   );

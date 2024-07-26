@@ -5,13 +5,10 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar, faMotorcycle, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faMapMarkerAlt, faCity, faCar, faMotorcycle, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 const Add = () => {
   const navigate = useNavigate();
-  const [singleFile, setSingleFile] = useState(undefined);
-  const [files, setFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [formData, setFormData] = useState({
     title: "",
@@ -62,46 +59,71 @@ const Add = () => {
   };
 
   return (
-    <div className="add">
-      <div className="container">
-        <h1>Add New Post</h1>
-        {error && <div className="error">{error}</div>}
-        <div className="sections">
-          <div className="info">
-            <label htmlFor="title">Title</label>
+    <div className="add container">
+      <h1>Add New Post</h1>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <div className="row">
+        <div className="col-md-6">
+          <div className="form-group">
+            <label htmlFor="title">
+              <FontAwesomeIcon icon={faTachometerAlt} /> Title
+            </label>
             <input
               type="text"
+              className="form-control"
               name="title"
-              placeholder="e.g. I will do something I'm really good at"
+              placeholder="e.g. I will guide you"
               onChange={handleChange}
               required
             />
-            <label htmlFor="desc">Description</label>
-            <textarea
-              name="desc"
-              id="desc"
-              placeholder="Brief descriptions to introduce your service to customers"
-              cols="0"
-              rows="16"
+          </div>
+          <div className="form-group">
+            <label htmlFor="country">
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> Country
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              name="country"
+              placeholder="Country"
               onChange={handleChange}
               required
-            ></textarea>
-            <label htmlFor="country">Country</label>
-            <input type="text" name="country" placeholder="Country" onChange={handleChange} required />
-            <label htmlFor="city">City</label>
-            <input type="text" name="city" placeholder="City" onChange={handleChange} required />
-            <label htmlFor="hasCar">Do you have a car?</label>
-            <select name="hasCar" onChange={handleChange} required>
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="city">
+              <FontAwesomeIcon icon={faCity} /> City
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              name="city"
+              placeholder="City"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="hasCar">
+              <FontAwesomeIcon icon={faCar} /> Do you have a car?
+            </label>
+            <select
+              name="hasCar"
+              className="form-control"
+              onChange={handleChange}
+              required
+            >
               <option value="">Select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
             {formData.hasCar === "true" && (
-              <div className="priceField">
+              <div className="priceField mt-2">
                 <FontAwesomeIcon icon={faCar} />
                 <label htmlFor="carPrice">Car Price per Hour</label>
                 <input
                   type="number"
+                  className="form-control"
                   name="carPrice"
                   placeholder="Price per hour"
                   onChange={handleChange}
@@ -109,18 +131,28 @@ const Add = () => {
                 />
               </div>
             )}
-            <label htmlFor="hasScooter">Do you have a scooter?</label>
-            <select name="hasScooter" onChange={handleChange} required>
+          </div>
+          <div className="form-group">
+            <label htmlFor="hasScooter">
+              <FontAwesomeIcon icon={faMotorcycle} /> Do you have a scooter?
+            </label>
+            <select
+              name="hasScooter"
+              className="form-control"
+              onChange={handleChange}
+              required
+            >
               <option value="">Select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
             {formData.hasScooter === "true" && (
-              <div className="priceField">
+              <div className="priceField mt-2">
                 <FontAwesomeIcon icon={faMotorcycle} />
                 <label htmlFor="scooterPrice">Scooter Price per Hour</label>
                 <input
                   type="number"
+                  className="form-control"
                   name="scooterPrice"
                   placeholder="Price per hour"
                   onChange={handleChange}
@@ -128,7 +160,11 @@ const Add = () => {
                 />
               </div>
             )}
-            <label htmlFor="availabilityTimes">Available Times</label>
+          </div>
+          <div className="form-group">
+            <label htmlFor="availabilityTimes">
+              <FontAwesomeIcon icon={faDollarSign} /> Available Times
+            </label>
             <DatePicker
               selected={selectedDate}
               onChange={(date) => {
@@ -137,32 +173,53 @@ const Add = () => {
               }}
               showTimeSelect
               dateFormat="Pp"
+              className="form-control"
               required
             />
-            <button onClick={handleSubmit}>Create</button>
           </div>
-          <div className="details">
-            <label htmlFor="shortDesc">Short Description</label>
+          <button className="btn btn-success mt-3" onClick={handleSubmit}>
+            Create
+          </button>
+        </div>
+        <div className="col-md-6">
+          <div className="form-group">
+            <label htmlFor="shortDesc">
+              <FontAwesomeIcon icon={faDollarSign} /> Short Description
+            </label>
             <textarea
               name="shortDesc"
-              id="shortDesc"
+              className="form-control"
               placeholder="Short description of your service"
-              cols="30"
-              rows="10"
+              rows="6"
               onChange={handleChange}
               required
             ></textarea>
-            <label htmlFor="price">Price</label>
-            <input type="number" name="price" onChange={handleChange} required />
-            <label htmlFor="addFeature">Add Features</label>
-            <form action="" className="add" onSubmit={handleFeature}>
-              <input type="text" placeholder="e.g. page design" />
-              <button type="submit">Add</button>
+          </div>
+          <div className="form-group">
+            <label htmlFor="price">
+              <FontAwesomeIcon icon={faDollarSign} /> Price
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              name="price"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="addFeature">
+              <FontAwesomeIcon icon={faDollarSign} /> Add Features
+            </label>
+            <form className="addFeatureForm" onSubmit={handleFeature}>
+              <input type="text" className="form-control" placeholder="e.g. page design" />
+              <button type="submit" className="btn btn-primary mt-2">Add</button>
             </form>
-            <div className="addedFeatures">
+            <div className="addedFeatures mt-2">
               {formData.features.map((feature, index) => (
-                <div className="item" key={index}>
+                <div className="feature-item" key={index}>
                   <button
+                    className="btn btn-danger btn-sm"
                     onClick={() =>
                       setFormData((prevData) => ({
                         ...prevData,
@@ -170,8 +227,7 @@ const Add = () => {
                       }))
                     }
                   >
-                    {feature}
-                    <span>X</span>
+                    {feature} <span className="remove-icon">x</span>
                   </button>
                 </div>
               ))}

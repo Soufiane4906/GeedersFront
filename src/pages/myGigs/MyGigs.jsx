@@ -35,7 +35,7 @@ function MyGigs() {
         <div className="container">
           <div className="title">
             <h1>My Gigs</h1>
-            {currentUser.isSeller && (
+            { !currentUser.isSeller && (
               <Link to="/add">
                 <button>Add New Gig</button>
               </Link>

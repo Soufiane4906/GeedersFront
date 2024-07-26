@@ -1,103 +1,143 @@
 .add {
-  display: flex;
-  justify-content: center;
+  padding: 30px;
+  background-color: #f8f9fa;
 
-  .container {
-    width: 1400px;
-    padding: 50px 0px;
+  h1 {
+    margin-bottom: 30px;
+    color: #343a40;
+    font-weight: 300;
+  }
 
-    h1 {
-      width: max-content;
-      margin-bottom: 30px;
-      color: gray;
-      font-weight: 300;
+  .form-group {
+    margin-bottom: 15px;
+
+    label {
+      color: #495057;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+
+      svg {
+        margin-right: 8px;
+      }
     }
 
-    .sections {
-      display: flex;
-      justify-content: space-between;
-      gap: 100px;
+    .form-control {
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+      transition: border-color 0.3s ease;
 
-      label {
-        color: gray;
-        font-size: 18px;
+      &:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+      }
+    }
+
+    .priceField {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+
+      svg {
+        color: #28a745;
+      }
+
+      input {
+        border: 1px solid #28a745;
+      }
+    }
+
+    .addFeatureForm {
+      display: flex;
+      gap: 10px;
+
+      input {
+        flex: 1;
+      }
+
+      button {
+        flex-shrink: 0;
+      }
+    }
+
+    .addedFeatures {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+
+      .feature-item {
         display: flex;
         align-items: center;
-        gap: 5px;
-
-        svg {
-          margin-right: 5px;
-        }
-      }
-
-      .info,
-      .details {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        justify-content: space-between;
-
-        input,
-        select,
-        textarea {
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-        }
-
-        .priceField {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          svg {
-            color: green;
-          }
-          label {
-            color: green;
-          }
-          input {
-            border: 1px solid green;
-          }
-        }
 
         button {
-          border: none;
-          padding: 20px;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          border: 1px solid transparent;
+          background-color: #dc3545;
           color: white;
-          font-weight: 500;
-          font-size: 18px;
-          background-color: #1dbf73;
-          cursor: pointer;
           border-radius: 5px;
-        }
+          padding: 5px 10px;
 
-        .add {
-          display: flex;
-          justify-content: space-between;
-
-          input {
-            width: 80%;
-          }
-        }
-
-        .addedFeatures {
-          display: flex;
-          gap: 20px;
-
-          button {
-            height: 30px;
-            font-size: 12px;
-            font-weight: 400;
-            background: transparent;
-            color: red;
-            border: 1px solid red;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+          .remove-icon {
+            font-size: 14px;
+            font-weight: bold;
           }
         }
       }
     }
+  }
+
+  .btn {
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+
+    &.btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+
+      &:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+    }
+
+    &.btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+
+      &:hover {
+        background-color: #0069d9;
+        border-color: #0062cc;
+      }
+    }
+    &.btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+
+      &:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+      }
+    }
+  }
+
+  .alert {
+    margin-bottom: 20px;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 16px;
+    transition: opacity 0.3s ease;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
   }
 }

@@ -7,7 +7,7 @@ const UserCard = ({ item }) => {
       <img src={item.img} alt={item.username} />
       <h2>{item.username}</h2>
       <p>{item.desc}</p>
-      <span>{item.country}</span>
+      <span>{item.country} , {item.city} </span>
     </div>
   );
 };

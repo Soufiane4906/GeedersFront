@@ -262,10 +262,21 @@ function Featured() {
   };
 
   const handleSubmit = () => {
+    // Create a query string for vehicles if selected
     const vehicleParam = selectedVehicles.length > 0
       ? `vehicles=${selectedVehicles.join(",")}`
       : '';
-    navigate(`/gigs?search=&country=${country}&city=${city}&languages=${selectedLanguages.join(",")}&${vehicleParam}`);
+
+    // Build the query string for the URL
+    const queryParams = new URLSearchParams({
+      country,
+      city,
+      languages: selectedLanguages.join(","),
+      ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
+    });
+
+    // Navigate to the new URL
+    navigate(`/gigs?${queryParams.toString()}`);
   };
 
   return (
@@ -326,51 +337,52 @@ function Featured() {
           </div>
           <div className="row">
             <div className="col-md-9">
-              <div className="additional-fields">
-                <p>A guide with a motorcycle or a car?</p>
-                <div>
-                  <label>
-                    <input
-                      type="radio"
-                      name="vehicleMenu"
-                      value="yes"
-                      onChange={handleVehicleMenuChange}
-                    />
-                    Yes
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="vehicleMenu"
-                      value="no"
-                      onChange={handleVehicleMenuChange}
-                    />
-                    No
-                  </label>
-                </div>
-                {showVehicleOptions && (
-                  <div>
-                    <label className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}>
-                      <input
-                        type="checkbox"
-                        value="scooter"
-                        checked={selectedVehicles.includes('scooter')}
-                        onChange={handleVehicleChange}
-                      />
-                      <FontAwesomeIcon icon={faMotorcycle} /> Scooter
-                    </label>
-                    <label className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}>
-                      <input
-                        type="checkbox"
-                        value="car"
-                        checked={selectedVehicles.includes('car')}
-                        onChange={handleVehicleChange}
-                      />
-                      <FontAwesomeIcon icon={faCar} /> Car
-                    </label>
-                  </div>
-                )}
-              </div>
+            <div className="additional-fields">
+  <p>A guide with a motorcycle or a car?</p>
+  <div>
+    <label>
+      <input
+        type="radio"
+        name="vehicleMenu"
+        value="yes"
+        onChange={handleVehicleMenuChange}
+      />
+      Yes
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="vehicleMenu"
+        value="no"
+        onChange={handleVehicleMenuChange}
+      />
+      No
+    </label>
+  </div>
+  {showVehicleOptions && (
+    <div>
+      <label className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}>
+        <input
+          type="checkbox"
+          value="scooter"
+          checked={selectedVehicles.includes('scooter')}
+          onChange={handleVehicleChange}
+        />
+        <FontAwesomeIcon icon={faMotorcycle} /> Scooter
+      </label>
+      <label className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}>
+        <input
+          type="checkbox"
+          value="car"
+          checked={selectedVehicles.includes('car')}
+          onChange={handleVehicleChange}
+        />
+        <FontAwesomeIcon icon={faCar} /> Car
+      </label>
+    </div>
+  )}
+</div>
+
             </div>
           </div>
           <button onClick={handleSubmit}>Search</button>
