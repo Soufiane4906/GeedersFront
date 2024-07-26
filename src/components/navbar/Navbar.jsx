@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Navbar.scss";
-//import profile icons , calendar and plus
 import { FaUserCircle, FaCalendarAlt, FaPlus, FaEnvelope, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaMapMarkerAlt } from 'react-icons/fa';
-
 
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
 
   const { pathname } = useLocation();
-
+  const navigate = useNavigate();
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
@@ -26,8 +24,6 @@ function Navbar() {
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     try {
       await newRequest.post("/auth/logout");
@@ -39,123 +35,81 @@ function Navbar() {
   };
 
   return (
-    <div className={active || pathname !== "/"  ? "navbar active" : "navbar"}>
+    <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
             <span className="text">Geeders</span>
           </Link>
-          {/* <span className="dot"> > </span> */}
         </div>
         <div className="links">
-          {/* <span>guideers Business</span> */}
-          <span>Explore</span>
-          <span>English</span>
-          {currentUser?.isSeller && <span>Become a Guide</span>}
-          {currentUser   ? (
+          {!currentUser?.isSeller && <span>Become a Guide</span>}
+          {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
               <span>{currentUser?.username}</span>
               {open && (
                 <div className="options">
-                  {  !(currentUser.isSeller) && (
+                  {!currentUser.isSeller && (
                     <>
-                    <Link className="link" to="/profile">
-                    <FaUserCircle /> Profil
-                        </Link>
                       <Link className="link" to="/mygigs">
-                      <FaCalendarAlt /> My Posts
+                        <FaCalendarAlt /> My Posts
                       </Link>
                       <Link className="link" to="/add">
-                      <FaPlus /> Add new
+                        <FaPlus /> Add new
                       </Link>
                     </>
                   )}
+                  <Link className="link" to="/profile">
+                    <FaUserCircle /> Profile
+                  </Link>
                   <Link className="link" to="/orders">
-                  <FaMapMarkerAlt /> Reservations
+                    <FaMapMarkerAlt /> Orders
                   </Link>
                   <Link className="link" to="/messages">
-                  <FaEnvelope /> Messages
+                    <FaEnvelope /> Messages
                   </Link>
                   <Link className="link" onClick={handleLogout}>
-                  <FaSignOutAlt /> Logout
+                    <FaSignOutAlt /> Logout
                   </Link>
                 </div>
               )}
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">      <FaSignInAlt /> Sign in</Link>
+              <Link to="/login" className="link">
+                <FaSignInAlt /> Sign in
+              </Link>
               <Link className="link" to="/register">
-            <button><FaUserPlus /> Join</button>
+                <button><FaUserPlus /> Join</button>
               </Link>
             </>
           )}
         </div>
       </div>
-      {(active || pathname !== "/" && pathname !=='/profile' && pathname !=='/mygigs' ) && (
+      {(active || pathname !== "/" && pathname !== '/profile' && pathname !== '/mygigs') && (
         <>
           <hr />
           <div className="menu">
-  <Link className="link menuLink" to="/paris">
-    Eiffel Tower, Paris
-  </Link>
-  <Link className="link menuLink" to="/rome">
-    Colosseum, Rome
-  </Link>
-  <Link className="link menuLink" to="/nyc">
-    Statue of Liberty, NYC
-  </Link>
-  <Link className="link menuLink" to="/cairo">
-    Pyramids of Giza, Cairo
-  </Link>
-  <Link className="link menuLink" to="/sydney">
-    Sydney Opera House, Sydney
-  </Link>
-  {/* <Link className="link menuLink" to="/beijing">
-    Great Wall of China, Beijing
-  </Link>
-  <Link className="link menuLink" to="/tokyo">
-    Mount Fuji, Tokyo
-  </Link> */}
-  <Link className="link menuLink" to="/london">
-    Big Ben, London
-  </Link>
-  {/* <Link className="link menuLink" to="/dubai">
-    Burj Khalifa, Dubai
-  </Link> */}
-  <Link className="link menuLink" to="/rio">
-    Christ the Redeemer, Rio de Janeiro
-  </Link>
-  {/* <Link className="link menuLink" to="/barcelona">
-    Sagrada Familia, Barcelona
-  </Link>
-  <Link className="link menuLink" to="/athens">
-    Acropolis, Athens
-  </Link> */}
-  <Link className="link menuLink" to="/mumbai">
-    Gateway of India, Mumbai
-  </Link>
-  <Link className="link menuLink" to="/moscow">
-    Red Square, Moscow
-  </Link>
-  <Link className="link menuLink" to="/venice">
-    Grand Canal, Venice
-  </Link>
-  {/* <Link className="link menuLink" to="/istanbul">
-    Hagia Sophia, Istanbul
-  </Link>
-  <Link className="link menuLink" to="/bangkok">
-    Grand Palace, Bangkok
-  </Link>
-  <Link className="link menuLink" to="/capetown">
-    Table Mountain, Cape Town
-  </Link>
-  <Link className="link menuLink" to="/machupicchu">
-    Machu Picchu, Peru
-  </Link> */}
-</div>
-
+            <Link className="link menuLink" to="/gigs?country=United+States&city=Chicago">Chicago, United States</Link>
+            <Link className="link menuLink" to="/gigs?country=France&city=Paris">Paris, France</Link>
+            <Link className="link menuLink" to="/gigs?country=Italy&city=Rome">Rome, Italy</Link>
+            <Link className="link menuLink" to="/gigs?country=United+Kingdom&city=London">London, United Kingdom</Link>
+            <Link className="link menuLink" to="/gigs?country=Brazil&city=Rio+de+Janeiro">Rio de Janeiro, Brazil</Link>
+            <Link className="link menuLink" to="/gigs?country=India&city=Mumbai">Mumbai, India</Link>
+            <Link className="link menuLink" to="/gigs?country=Russia&city=Moscow">Moscow, Russia</Link>
+            <Link className="link menuLink" to="/gigs?country=Australia&city=Sydney">Sydney, Australia</Link>
+          <Link className="link menuLink" to="/gigs?country=Japan&city=Tokyo">Tokyo, Japan</Link>
+          <Link className="link menuLink" to="/gigs?country=Germany&city=Berlin">Berlin, Germany</Link>
+          <Link className="link menuLink" to="/gigs?country=Canada&city=Toronto">Toronto, Canada</Link>
+          <Link className="link menuLink" to="/gigs?country=Brazil&city=Rio+de+Janeiro">Rio de Janeiro, Brazil</Link>
+            <Link className="link menuLink" to="/gigs?country=India&city=Mumbai">Mumbai, India</Link>
+            <Link className="link menuLink" to="/gigs?country=Russia&city=Moscow">Moscow, Russia</Link>
+            <Link className="link menuLink" to="/gigs?country=Australia&city=Sydney">Sydney, Australia</Link>
+          <Link className="link menuLink" to="/gigs?country=Japan&city=Tokyo">Tokyo, Japan</Link>
+          <Link className="link menuLink" to="/gigs?country=Germany&city=Berlin">Berlin, Germany</Link>
+          <Link className="link menuLink" to="/gigs?country=Canada&city=Toronto">Toronto, Canada</Link>
+          </div>
           <hr />
         </>
       )}

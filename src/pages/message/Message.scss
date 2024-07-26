@@ -1,28 +1,40 @@
 .message {
   display: flex;
   justify-content: center;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+
   .container {
-    width: 1200px;
-    margin: 50px;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+
     .breadcrumbs {
       font-weight: 300;
       font-size: 13px;
       color: #555;
+      margin-bottom: 20px;
     }
+
     .messages {
-      margin: 30px 0px;
-      padding: 50px;
+      margin: 20px 0;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
       height: 500px;
-      overflow: scroll;
+      overflow-y: auto;
 
       .item {
         display: flex;
-        gap: 20px;
+        gap: 15px;
         max-width: 600px;
-        font-size: 18px;
+        font-size: 16px;
+        align-items: center;
 
         &.owner {
           flex-direction: row-reverse;
@@ -30,9 +42,10 @@
 
           p {
             max-width: 500px;
-            border-radius: 20px 0px 20px 20px;
+            border-radius: 20px 0 20px 20px;
             background-color: royalblue;
             color: white;
+            padding: 15px;
           }
         }
 
@@ -45,15 +58,14 @@
 
         p {
           max-width: 500px;
-          padding: 20px;
+          padding: 15px;
           background-color: rgb(244, 241, 241);
-          border-radius: 0px 20px 20px 20px;
+          border-radius: 0 20px 20px 20px;
           color: gray;
           font-weight: 300;
         }
       }
     }
-
     hr {
       height: 0;
       border: 0.5px solid rgb(232, 230, 230);
@@ -71,17 +83,27 @@
         padding: 10px;
         border: 1px solid lightgray;
         border-radius: 10px;
+        resize: none;
+        font-size: 16px;
       }
 
-      button{
+      button {
         background-color: #1dbf73;
-        padding: 20px;
         color: white;
-        font-weight: 500;
         border: none;
         border-radius: 10px;
+        padding: 10px 20px;
         cursor: pointer;
-        width: 100px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+
+        &:hover {
+          background-color: #17a34b;
+          transform: scale(1.05);
+        }
+
+        svg {
+          vertical-align: middle;
+        }
       }
     }
   }

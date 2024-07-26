@@ -6,8 +6,9 @@ import Slide from "../../components/slide/Slide";
 import CatCard from "../../components/catCard/CatCard";
 import ProjectCard from "../../components/projectCard/ProjectCard";
 import { cards, projects } from "../../data";
-import { FaCheckCircle, FaPlayCircle } from 'react-icons/fa';
+import { FaArrowCircleRight, FaCheckCircle, FaPlaceOfWorship, FaPlayCircle, FaQuestionCircle, FaSearchPlus, FaStamp, FaStopwatch } from 'react-icons/fa';
 import { FaMapPin, FaGlobe, FaClock } from 'react-icons/fa';
+import { FaCartPlus } from "react-icons/fa6";
 
 function Home() {
   return (
@@ -57,15 +58,15 @@ function Home() {
       <div className="geeders-info">
       <div className="container">
         <div className="text-content">
-          <h1><FaMapPin /> Find your ideal Geeders</h1>
+          <h1> More To Explore with Geeders <FaSearchPlus /></h1>
           <p>
-            <strong><FaGlobe /> What is a Geeders?</strong> A Geeders is a person just like you and me who loves their city and wants to share it with tourists. Anyone can become a Geeders in their own city, showcasing the best spots such as monuments, restaurants, clubs, museums, and more, during their free time. A Geeders operates independently, not tied to a tour agency with fixed schedules and programs. The tourist chooses what they want to do and where they want to go, and the Geeders adapts accordingly.
+            <strong> What is a Geeders <FaQuestionCircle /> </strong> A Geeders is a person just like you and me who loves their city and wants to share it with tourists. Anyone can become a Geeders in their own city, showcasing the best spots such as monuments, restaurants, clubs, museums, and more, during their free time. A Geeders operates independently, not tied to a tour agency with fixed schedules and programs. The tourist chooses what they want to do and where they want to go, and the Geeders adapts accordingly.
           </p>
           <p>
-            <strong><FaClock /> Wherever you are in any city around the globe</strong>, you can find a Geeders to accompany you on your journey for an hour or as long as you need. Simply choose one from the Geeders profiles, selecting based on your interests and the language you speak. Our Geeders are everyday people who want to share the best spots for your vacation and make some extra money by becoming guides in their spare time.
+            <strong><FaMapPin /> Wherever you are in any city around the globe</strong> You can find a Geeders to accompany you on your journey for an hour or as long as you need. Simply choose one from the Geeders profiles, selecting based on your interests and the language you speak. Our Geeders are everyday people who want to share the best spots for your vacation and make some extra money by becoming guides in their spare time.
           </p>
           <p>
-            <strong><FaCheckCircle /> No more getting up at 5 AM for long, endless excursions</strong> to places you may not want to visit. With our Geeders, you can manage your schedule and destinations according to your preferences.
+            <strong><FaClock /> No more getting up at 5 AM  </strong> For long, endless excursions to places you may not want to visit. With our Geeders, you can manage your schedule and destinations according to your preferences.
           </p>
         </div>
         <div className="image-collage">

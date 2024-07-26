@@ -1,58 +1,80 @@
 .messages {
   display: flex;
   justify-content: center;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
 
   .container {
-    width: 1400px;
-    padding: 50px 0px;
+    width: 100%;
+    max-width: 1400px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
 
     .title {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      margin-bottom: 20px;
 
-      button {
-        background-color: #1dbf73;
-        color: white;
-        font-weight: 500;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
+      h1 {
+        font-size: 24px;
+        color: #333;
+      }
+
+      svg {
+        transition: transform 0.3s ease-in-out;
+        &:hover {
+          transform: scale(1.2);
+        }
       }
     }
 
-    table {
-      width: 100%;
-
+    .table {
       tr {
-        height: 100px;
-        th {
-          text-align: left;
-        }
-        td {
-          padding: 10px;
-
-          &:first-child {
-            font-weight: 500;
-          }
-          
-          &:nth-child(2),
-          &:nth-child(3) {
-            color: gray;
-          }
-        }
-
-        button {
-          background-color: #1dbf73;
-          color: white;
-          padding: 10px;
-          border: none;
-          cursor: pointer;
-        }
-
-        &.active {
-          background-color: #1dbf730f;
+        transition: background-color 0.3s ease;
+        &:hover {
+          background-color: #e9f5f2;
         }
       }
+
+      th {
+        background-color: #1dbf73;
+        color: white;
+        font-weight: 600;
+      }
+
+      td {
+        font-size: 14px;
+        color: #555;
+      }
+
+      .btn-success {
+        background-color: #1dbf73;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        &:hover {
+          background-color: #17a34b;
+        }
+      }
+    }
+
+    .link {
+      color: #1dbf73;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .active {
+      background-color: #e9f5f2;
     }
   }
 }

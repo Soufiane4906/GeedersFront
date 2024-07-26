@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from 'react-select';
-//import bootsrap
 import axios from 'axios';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe, faCity, faLanguage, faCar, faMotorcycle } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faCity, faLanguage, faCar, faMotorcycle, faChevronDown, faCog } from '@fortawesome/free-solid-svg-icons';
 import "./Featured.scss";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons/faChevronUp";
+import { FaRoadCircleCheck } from "react-icons/fa6";
+import { faRoad } from "@fortawesome/free-solid-svg-icons/faRoad";
+import { faMapMarkedAlt } from "@fortawesome/free-solid-svg-icons/faMapMarkedAlt";
+import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
@@ -76,8 +80,7 @@ const languageOptions = [
   // Add more languages as needed
 
 ];
-
-const pointsOfInterestData = [
+const pointsOfInterestOptions  = [
   { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
   { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
   { name: "Night Club", icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000" },
@@ -87,7 +90,6 @@ const pointsOfInterestData = [
   { name: "Amusement Park", icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000" },
   { name: "Restaurant", icon: "https://img.icons8.com/ios/50/000000/restaurant.png" },
   { name: "Hiking", icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000" },
-  { name: "Waterfall", icon: "https://img.icons8.com/ios/50/000000/waterfall.png" },
 ];
 const countriesData = [
   { name: "France", flag: "🇫🇷" },
@@ -223,6 +225,9 @@ function Featured() {
   const [hasVehicle, setHasVehicle] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const navigate = useNavigate();
+  const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
+  const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
+  const [backgroundImage, setBackgroundImage] = useState('https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg');
 
   const handleCountryChange = async (e) => {
     const selectedCountry = e.target.value;
@@ -237,6 +242,14 @@ function Featured() {
     } catch (error) {
       console.error("There was an error fetching the cities!", error);
     }
+  };
+  const handleMoreDetailsClick = () => {
+    setShowPointsOfInterest(prev => !prev);
+    setBackgroundImage(prev =>
+      prev === 'https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg'
+        ? 'https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg' // Replace with the new image URL
+        : 'https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg'
+    );
   };
 
   const handleCityChange = (e) => {
@@ -262,6 +275,11 @@ function Featured() {
   };
 
   const handleSubmit = () => {
+    if (!country || !city) {
+      alert("Please select both country and city.");
+      return;
+    }
+
     // Create a query string for vehicles if selected
     const vehicleParam = selectedVehicles.length > 0
       ? `vehicles=${selectedVehicles.join(",")}`
@@ -292,7 +310,7 @@ function Featured() {
                 <label>
                   <FontAwesomeIcon icon={faGlobe} /> Country:
                 </label>
-                <select onChange={handleCountryChange} style={{ width: '100%' }}>
+                <select required onChange={handleCountryChange} style={{ width: '100%' }}>
                   <option value="">Select Country</option>
                   {countriesData.map((country) => (
                     <option key={country.name} value={country.name}>
@@ -307,7 +325,7 @@ function Featured() {
                 <label>
                   <FontAwesomeIcon icon={faCity} /> City:
                 </label>
-                <select onChange={handleCityChange} style={{ width: '100%' }} disabled={!showCity}>
+                <select required onChange={handleCityChange} style={{ width: '100%' }} disabled={!showCity}>
                   <option value="">Select City</option>
                   {cities.map((city) => (
                     <option key={city} value={city}>
@@ -323,6 +341,7 @@ function Featured() {
                   <FontAwesomeIcon icon={faLanguage} /> Languages:
                 </label>
                 <Select
+                r
                   name="languages"
                   options={languageOptions}
                   isMulti
@@ -338,26 +357,28 @@ function Featured() {
           <div className="row">
             <div className="col-md-9">
             <div className="additional-fields">
-  <p>A guide with a motorcycle or a car?</p>
+  <p> <FontAwesomeIcon icon={faRoad} style={{marginRight : '5px'}} />
+ With  Car Options ?</p>
   <div>
-    <label>
-      <input
-        type="radio"
-        name="vehicleMenu"
-        value="yes"
-        onChange={handleVehicleMenuChange}
-      />
-      Yes
-    </label>
-    <label>
-      <input
-        type="radio"
-        name="vehicleMenu"
-        value="no"
-        onChange={handleVehicleMenuChange}
-      />
-      No
-    </label>
+  <label>
+  <input
+    type="radio"
+    name="vehicleMenu"
+    value="yes"
+    onChange={handleVehicleMenuChange}
+  />
+  <span></span> Yes
+</label>
+<label>
+  <input
+    type="radio"
+    name="vehicleMenu"
+    value="no"
+    onChange={handleVehicleMenuChange}
+  />
+  <span></span> No
+</label>
+
   </div>
   {showVehicleOptions && (
     <div>
@@ -385,9 +406,52 @@ function Featured() {
 
             </div>
           </div>
-          <button onClick={handleSubmit}>Search</button>
+          <button onClick={handleMoreDetailsClick}>
+  {showPointsOfInterest ? (
+    <>
+      <FontAwesomeIcon icon={faChevronUp} />
+      {" Show Less"}
+    </>
+  ) : (
+    <>
+      <FontAwesomeIcon icon={faChevronDown} />
+      {"     Would you like a guide with specific places or volunteers ?"}
+    </>
+  )}
+</button>
+
+          {showPointsOfInterest && (
+            <div className="points-of-interest">
+  <p className="p-poi">
+  <FontAwesomeIcon icon={faMapPin} />    Select Points of Interest
+
+  </p>              <div className="poi-options">
+                {pointsOfInterestOptions.map((poi) => (
+                  <label key={poi.name} className={`poi-container ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}>
+                    <input
+                      type="checkbox"
+                      value={poi.name}
+                      checked={selectedPointsOfInterest.includes(poi.name)}
+                      onChange={(e) => {
+                        const { value, checked } = e.target;
+                        setSelectedPointsOfInterest(prev =>
+                          checked
+                            ? [...prev, value]
+                            : prev.filter(poi => poi !== value)
+                        );
+                      }}
+                    />
+                    <img src={poi.icon} alt={poi.name} style={{ width: 30, height: 30, marginRight: 10 }} />
+                    {poi.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+                    <button onClick={handleSubmit}>Search</button>
+
         </div>
-        <div className="right">
+        <div className="right" style={{ backgroundImage: `url(${backgroundImage})` }}>
           <img src="./img/man.png" alt="" />
         </div>
       </div>

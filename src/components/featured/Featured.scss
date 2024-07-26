@@ -1,10 +1,11 @@
 .featured {
-  height: 600px;
+  height: auto;
   display: flex;
   justify-content: center;
   background: linear-gradient(45deg, #1dbf73, #0d6efd);
   color: white;
-
+padding: 3%;
+padding-bottom: 7%;
   .container {
     width: 100%;
     max-width: 1400px;
@@ -58,6 +59,7 @@
           display: flex;
           align-items: center;
           gap: 10px;
+          margin-right: 6%;
 
           input[type="radio"] {
             margin-right: 10px;
@@ -98,8 +100,9 @@
 }
 .additional-fields p {
 
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
   margin-top: 13px;
 }
 
@@ -115,8 +118,8 @@
 }
 
 .checkbox-container.active {
-  border-color: #c19dce;
-  background-color: #c19dce;
+  border-color: #007bff;
+  background-color: #007bff;
 
 }
 
@@ -135,4 +138,111 @@
 
 #root > div > div.home > div.featured > div > div.left > div:nth-child(3) > div > div > div{
   display: inline-flex;
+}
+.additional-fields label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+input[type="radio"] + span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="radio"]:checked + span {
+  background: #1d1dbf;
+  border-color: #1d1dbf;
+}
+
+input[type="radio"]:checked + span::after {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+button {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    background-color: #ddd;
+    color: #aaa;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+
+.points-of-interest {
+  margin-top: 20px;
+}
+
+.poi-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .poi-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 15px;
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    img {
+      margin-right: 10px;
+    }
+
+    &.active {
+      background: linear-gradient(45deg, #1dbf73, #0d6efd);
+      padding: 3px;
+      border-radius: 3px;
+      color: black;
+
+    }
+  }
+}
+
+
+.p-poi{
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  margin-top: 13px;
 }

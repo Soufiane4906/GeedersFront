@@ -61,14 +61,22 @@ function MyGigs() {
                     </div>
                   </td>
                   <td>
-                    <div className="stars">
-                      {[...Array(gig.totalStars)].map((_, index) => (
-                        <i key={index} className="fa fa-star" aria-hidden="true"></i>
-                      ))}
-                      {[...Array(5 - gig.totalStars)].map((_, index) => (
-                        <i key={index} className="fa fa-star-o" aria-hidden="true"></i>
-                      ))}
-                    </div>
+                  <div className="stars">
+  {gig.totalStars > 0 && gig.totalStars <= 5 ? (
+    <>
+      {[...Array(gig.totalStars)].map((_, index) => (
+        <i key={index} className="fa fa-star" aria-hidden="true"></i>
+      ))}
+      {[...Array(5 - gig.totalStars)].map((_, index) => (
+        <i key={index + gig.totalStars} className="fa fa-star-o" aria-hidden="true"></i>
+      ))}
+    </>
+  ) : (
+    // Optional: Show a default state when no stars are available
+    <p>No ratings yet</p>
+  )}
+</div>
+
                   </td>
                   <td>
                     {gig.availabilityTimes.map((time, index) => (

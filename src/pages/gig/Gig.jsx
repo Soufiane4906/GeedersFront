@@ -7,8 +7,6 @@ import Reviews from "../../components/reviews/Reviews";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   FaMapMarkerAlt,
-  FaClock,
-  FaRecycle,
   FaCheck,
   FaStar,
   FaRegCalendarAlt,
@@ -21,6 +19,7 @@ const formatDate = (dateString) => {
   const parsedDate = parseISO(dateString);
   return format(parsedDate, 'dd/MM/yyyy HH:mm:ss');
 };
+
 function Gig() {
   const { id } = useParams();
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -67,7 +66,7 @@ function Gig() {
         <div className="container">
           <div className="left">
             <span className="breadcrumbs">
-              <FaMapMarkerAlt /> {data.country} {">"} {data.city} {">"}
+              <FaMapMarkerAlt /> {data.country} {">"} {data.city}
             </span>
             {isLoadingUser ? (
               "loading"
@@ -93,7 +92,7 @@ function Gig() {
                 )}
               </div>
             )}
-            <h2 style={{color : 'black'}}>About This Post</h2>
+            <h2>About This Post</h2>
             <p>{data.shortDesc}</p>
             {isLoadingUser ? (
               "loading"
@@ -101,7 +100,7 @@ function Gig() {
               "Something went wrong!"
             ) : (
               <div className="seller">
-                <h2 style={{color : 'black'}}>About The Guide</h2>
+                <h2>About The Guide</h2>
                 <div className="user">
                   <img src={dataUser.img || "/img/noavatar.jpg"} alt="" />
                   <div className="info">
@@ -159,26 +158,17 @@ function Gig() {
                 </div>
               </div>
             )}
-            <div className="extra-info">
-              <h3>Additional Information</h3>
-              {/* <p><strong>ID:</strong> {dataUser}</p>
-              <p><strong>Email:</strong> {dataUser.email}</p>
-              <p><strong>Phone:</strong> {dataUser.phone}</p>
-              <p><strong>City:</strong> {dataUser.city}</p>
-              <p><strong>Availability:</strong> {dataUser.availabilityDays.join(", ")} at {dataUser.availabilityHours}</p> */}
-            </div>
             <Reviews gigId={id} />
           </div>
           <div className="right">
             <div className="price">
-              <h3 style={{color : 'black'}}> Total Price :       {data.shortTitle}</h3>
+              <h3>Total Price: {data.shortTitle}</h3>
               <h2>$ {totalPrice || data.price}</h2>
             </div>
-            <p>{data.shortDesc}</p>
             <div className="details">
               <div className="item">
-                <FaRegClock style={{ color: 'green', fontSize: '24px' }} />
-                <span className="text-black">Available At:    {data.availabilityTimes.map((time, index) => (
+                <FaRegClock style={{ color: 'green', fontSize: '1rem' }} />
+                <span>Available At:{data.availabilityTimes.map((time, index) => (
                 <li key={index}>{formatDate(time)}</li>
               ))}</span>
               </div>
@@ -193,7 +183,7 @@ function Gig() {
               ))}
             </div>
             <div className="vehicle-select">
-              <h3>Select Vehicle:</h3>
+              <h3>With Car Option:</h3>
               <select onChange={handleVehicleChange}>
                 <option value="">None</option>
                 <option value="car">Car (+$100)</option>

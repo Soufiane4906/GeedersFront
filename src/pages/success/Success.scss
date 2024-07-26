@@ -1,0 +1,26 @@
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa; // Bootstrap background color
+}
+
+.success-content {
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.success-title {
+  color: #28a745; // Bootstrap success color
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.success-text {
+  color: #495057; // Bootstrap text color
+  font-size: 1.25rem;
+}

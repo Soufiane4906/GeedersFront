@@ -10,44 +10,64 @@
     .title {
       display: flex;
       justify-content: space-between;
+      align-items: center;
 
-      button {
-        background-color: #1dbf73;
-        color: white;
-        font-weight: 500;
-        border: none;
+      .search-input {
         padding: 10px;
-        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 200px;
+        font-size: 16px;
       }
     }
 
     table {
       width: 100%;
 
-      tr {
-        height: 50px;
-        th {
-          text-align: left;
-        }
-        td {
-          
-          sup{
-            font-size: 12px;
-          }
-
-          .image {
-            width: 50px;
-            height: 25px;
-            object-fit: cover;
-          }
-
-          .message {
-            width: 25px;
-            cursor: pointer;
+      thead {
+        tr {
+          th {
+            text-align: left;
+            background-color: #f4f4f4;
+            padding: 10px;
           }
         }
-        &:nth-child(even) {
-          background-color: #1dbf730f;
+      }
+
+      tbody {
+        tr {
+          height: 50px;
+
+          &:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+
+          td {
+            padding: 10px;
+            vertical-align: middle;
+
+            .image {
+              width: 50px;
+              height: 50px;
+              object-fit: cover;
+              border-radius: 5px;
+            }
+
+            .message {
+              width: 25px;
+              cursor: pointer;
+            }
+
+            .gig-link {
+              color: #1dbf73;
+              text-decoration: none;
+              font-weight: bold;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
         }
       }
     }

@@ -3,28 +3,23 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Message.scss";
+import { FaUserCircle } from 'react-icons/fa';
+import { BsFillTelephoneFill } from 'react-icons/bs';
+import { AiFillMessage } from 'react-icons/ai';
 
 const Message = () => {
   const { id } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
   const queryClient = useQueryClient();
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["messages"],
-    queryFn: () =>
-      newRequest.get(`/messages/${id}`).then((res) => {
-        return res.data;
-      }),
+    queryFn: () => newRequest.get(`/messages/${id}`).then(res => res.data),
   });
 
   const mutation = useMutation({
-    mutationFn: (message) => {
-      return newRequest.post(`/messages`, message);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["messages"]);
-    },
+    mutationFn: (message) => newRequest.post(`/messages`, message),
+    onSuccess: () => queryClient.invalidateQueries(["messages"]),
   });
 
   const handleSubmit = (e) => {
@@ -40,19 +35,19 @@ const Message = () => {
     <div className="message">
       <div className="container">
         <span className="breadcrumbs">
-          <Link to="/messages">Messages</Link> &gt John Doe &gt
+          <Link to="/messages">Messages</Link> &gt; John Doe
         </span>
         {isLoading ? (
-          "loading"
+          "Loading..."
         ) : error ? (
-          "error"
+          "Error"
         ) : (
           <div className="messages">
             {data.map((m) => (
               <div className={m.userId === currentUser._id ? "owner item" : "item"} key={m._id}>
                 <img
                   src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
+                  alt="User"
                 />
                 <p>{m.desc}</p>
               </div>
@@ -61,8 +56,10 @@ const Message = () => {
         )}
         <hr />
         <form className="write" onSubmit={handleSubmit}>
-          <textarea type="text" placeholder="write a message" />
-          <button type="submit">Send</button>
+          <textarea type="text" placeholder="Write a message" />
+          <button type="submit">
+            <AiFillMessage size={20} />
+          </button>
         </form>
       </div>
     </div>
