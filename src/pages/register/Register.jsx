@@ -7,8 +7,307 @@ import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faCity, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Country data
+// toast.configure();
+
+function Register() {
+  const [files, setFiles] = useState({
+    profile: null,
+    recto: null,
+    verso: null,
+    passport: null,
+  });
+
+  const [step, setStep] = useState(1);
+  const [identityType, setIdentityType] = useState("");
+  const [user, setUser] = useState({
+    username: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    img: "",
+    imgRecto: "",
+    imgVerso: "",
+    imgPassport: "",
+    country: "",
+    city: "",
+    isSeller: false,
+    phone: "",
+    desc: "",
+  });
+
+  const [cities, setCities] = useState([]);
+  const [showCity, setShowCity] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleCountryChange = async (e) => {
+    const selectedCountry = e.target.value;
+    setUser((prev) => ({ ...prev, country: selectedCountry, city: "" }));
+    setShowCity(true);
+    try {
+      const response = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
+        country: selectedCountry
+      });
+      setCities(response.data.data);
+    } catch (error) {
+      console.error("There was an error fetching the cities!", error);
+    }
+  };
+
+  const handleCityChange = (e) => {
+    const selectedCity = e.target.value;
+    setUser((prev) => ({ ...prev, city: selectedCity }));
+  };
+
+  const handleChange = (e) => {
+    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSeller = (e) => {
+    setUser((prev) => ({ ...prev, isSeller: e.target.checked }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFiles((prev) => ({ ...prev, [name]: files[0] }));
+  };
+
+  const handleIdentityChange = (e) => {
+    setIdentityType(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const profileImgUrl = await upload(files.profile);
+    const rectoImgUrl = files.recto ? await upload(files.recto) : "";
+    const versoImgUrl = files.verso ? await upload(files.verso) : "";
+    const passportImgUrl = files.passport ? await upload(files.passport) : "";
+
+    try {
+      await newRequest.post("/auth/register", {
+        ...user,
+        img: profileImgUrl,
+        imgRecto: rectoImgUrl,
+        imgVerso: versoImgUrl,
+        imgPassport: passportImgUrl,
+      });
+      toast.success("Registration successful!");
+      navigate("/");
+    } catch (err) {
+      toast.error("There was an error during registration!");
+      console.log(err);
+    }
+  };
+
+  const nextStep = () => {
+    setStep((prevStep) => prevStep + 1);
+  };
+
+  const prevStep = () => {
+    setStep((prevStep) => prevStep - 1);
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <>
+            <h1>Register</h1>
+            <label htmlFor="username">Username</label>
+            <input
+              name="username"
+              type="text"
+              placeholder="johndoe"
+              value={user.username}
+              onChange={handleChange}
+            />
+            <label htmlFor="email">Email</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="email"
+              value={user.email}
+              onChange={handleChange}
+            />
+            <label htmlFor="password">Password</label>
+            <input
+              name="password"
+              type="password"
+              value={user.password}
+              onChange={handleChange}
+            />
+            <label htmlFor="profile">Profile Picture</label>
+            <input
+              name="profile"
+              type="file"
+              onChange={handleFileChange}
+            />
+            <label htmlFor="country">
+              <FontAwesomeIcon icon={faGlobe} /> Country
+            </label>
+            <select
+              name="country"
+              value={user.country}
+              onChange={handleCountryChange}
+              style={{ width: '100%' }}
+            >
+              <option value="">Select Country</option>
+              {countriesData.map((country) => (
+                <option key={country.name} value={country.name}>
+                  {country.flag} {country.name}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="city">
+              <FontAwesomeIcon icon={faCity} /> City
+            </label>
+            <select
+              name="city"
+              value={user.city}
+              onChange={handleCityChange}
+              style={{ width: '100%' }}
+              disabled={!showCity}
+            >
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+            <button type="button" onClick={nextStep}>Next</button>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <h1>Do you want to be a guide?</h1>
+            <div className="toggle">
+              <label htmlFor="isSeller">Activate the guide account</label>
+              <label className="switch">
+                <input type="checkbox" checked={user.isSeller} onChange={handleSeller} />
+                <span className="slider round"></span>
+              </label>
+            </div>
+            <label htmlFor="phone">Phone Number</label>
+            <input
+              name="phone"
+              type="text"
+              placeholder="+1 234 567 89"
+              value={user.phone}
+              onChange={handleChange}
+            />
+            <label htmlFor="desc">Description</label>
+            <textarea
+              name="desc"
+              placeholder="A short description of yourself"
+              cols="30"
+              rows="10"
+              value={user.desc}
+              onChange={handleChange}
+            ></textarea>
+            <div className="identity-type">
+              <h2>Select Identity Type</h2>
+              <label>
+                <input
+                  type="radio"
+                  value="cin"
+                  checked={identityType === "cin"}
+                  onChange={handleIdentityChange}
+                />
+                CIN
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="passport"
+                  checked={identityType === "passport"}
+                  onChange={handleIdentityChange}
+                />
+                Passport
+              </label>
+            </div>
+            {identityType === "cin" && (
+              <>
+                <label htmlFor="recto">CIN Recto</label>
+                <input
+                  name="recto"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+                <label htmlFor="verso">CIN Verso</label>
+                <input
+                  name="verso"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+              </>
+            )}
+            {identityType === "passport" && (
+              <>
+                <label htmlFor="passport">Passport</label>
+                <input
+                  name="passport"
+                  type="file"
+                  onChange={handleFileChange}
+                />
+              </>
+            )}
+            <div className="buttons">
+              <button type="button" className="back-button" onClick={prevStep}>Back</button>
+              <button type="button" onClick={nextStep}>Next</button>
+            </div>
+          </>
+        );
+      case 3:
+        return (
+          <>
+            <label htmlFor="paypal">PayPal Account</label>
+            <input
+              name="paypal"
+              type="text"
+              placeholder="PayPal Account"
+              value={user.paypal}
+              onChange={handleChange}
+            />
+            <div className="buttons">
+              <button type="button" className="back-button" onClick={prevStep}>Back</button>
+              <button type="submit">Register</button>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="register">
+      <div className="progress-bar">
+        <div className={`step ${step >= 1 ? "active" : ""}`}>1</div>
+        <div className={`step ${step >= 2 ? "active" : ""}`}>2</div>
+        <div className={`step ${step >= 3 ? "active" : ""}`}>3</div>
+      </div>
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <form onSubmit={handleSubmit}>
+          {renderStep()}
+        </form>
+      </motion.div>
+    </div>
+  );
+}
+
+export default Register;
+
 const countriesData = [
   { name: "France", flag: "🇫🇷" },
   { name: "Germany", flag: "🇩🇪" },
@@ -130,231 +429,3 @@ const countriesData = [
 
 ];
 countriesData.sort((a, b) => a.name.localeCompare(b.name));
-
-function Register() {
-  const [files, setFiles] = useState({
-    profile: null,
-    recto: null,
-    verso: null,
-    passport: null,
-  });
-
-  const [identityType, setIdentityType] = useState(""); // State for identity type
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-    password: "",
-    img: "",
-    imgRecto: "",
-    imgVerso: "",
-    imgPassport: "",
-    country: "",
-    city: "",
-    isSeller: false,
-    desc: "",
-  });
-
-  const [cities, setCities] = useState([]);
-  const [showCity, setShowCity] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleCountryChange = async (e) => {
-    const selectedCountry = e.target.value;
-    setUser((prev) => ({ ...prev, country: selectedCountry, city: "" }));
-    setShowCity(true);
-    try {
-      const response = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
-        country: selectedCountry
-      });
-      setCities(response.data.data);
-    } catch (error) {
-      console.error("There was an error fetching the cities!", error);
-    }
-  };
-
-  const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    setUser((prev) => ({ ...prev, city: selectedCity }));
-  };
-
-  const handleChange = (e) => {
-    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSeller = (e) => {
-    setUser((prev) => ({ ...prev, isSeller: e.target.checked }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFiles((prev) => ({ ...prev, [name]: files[0] }));
-  };
-
-  const handleIdentityChange = (e) => {
-    setIdentityType(e.target.value);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const profileImgUrl = await upload(files.profile);
-    const rectoImgUrl = files.recto ? await upload(files.recto) : "";
-    const versoImgUrl = files.verso ? await upload(files.verso) : "";
-    const passportImgUrl = files.passport ? await upload(files.passport) : "";
-
-    try {
-      await newRequest.post("/auth/register", {
-        ...user,
-        img: profileImgUrl,
-        imgRecto: rectoImgUrl,
-        imgVerso: versoImgUrl,
-        imgPassport: passportImgUrl,
-      });
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  return (
-    <div className="register">
-      <form onSubmit={handleSubmit}>
-        <div className="left">
-          <h1>Create a new account</h1>
-          <label htmlFor="username">Username</label>
-          <input
-            name="username"
-            type="text"
-            placeholder="johndoe"
-            onChange={handleChange}
-          />
-          <label htmlFor="email">Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="email"
-            onChange={handleChange}
-          />
-          <label htmlFor="password">Password</label>
-          <input
-            name="password"
-            type="password"
-            onChange={handleChange}
-          />
-          <label htmlFor="profile">Profile Picture</label>
-          <input
-            name="profile"
-            type="file"
-            onChange={handleFileChange}
-          />
-          <label htmlFor="country">
-            <FontAwesomeIcon icon={faGlobe} /> Country
-          </label>
-          <select
-            name="country"
-            onChange={handleCountryChange}
-            style={{ width: '100%' }}
-          >
-            <option value="">Select Country</option>
-            {countriesData.map((country) => (
-              <option key={country.name} value={country.name}>
-                {country.flag} {country.name}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="city">
-            <FontAwesomeIcon icon={faCity} /> City
-          </label>
-          <select
-            name="city"
-            onChange={handleCityChange}
-            style={{ width: '100%' }}
-            disabled={!showCity}
-          >
-            <option value="">Select City</option>
-            {cities.map((city) => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-          <button type="submit">Register</button>
-        </div>
-        <div className="right">
-          <h1>I want to become a guide</h1>
-          <div className="toggle">
-            <label htmlFor="isSeller">Activate the guide account</label>
-            <label className="switch">
-              <input type="checkbox" onChange={handleSeller} />
-              <span className="slider round"></span>
-            </label>
-          </div>
-          <label htmlFor="phone">Phone Number</label>
-          <input
-            name="phone"
-            type="text"
-            placeholder="+1 234 567 89"
-            onChange={handleChange}
-          />
-          <label htmlFor="desc">Description</label>
-          <textarea
-            name="desc"
-            placeholder="A short description of yourself"
-            cols="30"
-            rows="10"
-            onChange={handleChange}
-          ></textarea>
-          <div className="identity-type">
-            <h2>Select Identity Type</h2>
-            <label>
-              <input
-                type="radio"
-                value="cin"
-                checked={identityType === "cin"}
-                onChange={handleIdentityChange}
-              />
-              CIN
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="passport"
-                checked={identityType === "passport"}
-                onChange={handleIdentityChange}
-              />
-              Passport
-            </label>
-          </div>
-          {identityType === "cin" && (
-            <>
-              <label htmlFor="recto">CIN Recto</label>
-              <input
-                name="recto"
-                type="file"
-                onChange={handleFileChange}
-              />
-              <label htmlFor="verso">CIN Verso</label>
-              <input
-                name="verso"
-                type="file"
-                onChange={handleFileChange}
-              />
-            </>
-          )}
-          {identityType === "passport" && (
-            <>
-              <label htmlFor="passport">Passport</label>
-              <input
-                name="passport"
-                type="file"
-                onChange={handleFileChange}
-              />
-            </>
-          )}
-        </div>
-      </form>
-    </div>
-  );
-}
-
-export default Register;

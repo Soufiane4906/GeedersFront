@@ -1,143 +1,142 @@
+/* Add.scss */
 .add {
-  padding: 30px;
-  background-color: #f8f9fa;
+  .container {
+    padding: 20px;
+    background-color: white; /* Ensure the background is white */
+  }
 
   h1 {
-    margin-bottom: 30px;
-    color: #343a40;
-    font-weight: 300;
+    color: #2c3e50; /* Dark gray for headings */
   }
 
   .form-group {
     margin-bottom: 15px;
 
     label {
-      color: #495057;
-      font-weight: 500;
       display: flex;
       align-items: center;
-
-      svg {
-        margin-right: 8px;
-      }
+      color: #2c3e50; /* Black color for labels */
+      margin-bottom: 5px;
+      font-weight: bold; /* Add some emphasis */
+      font-size: 1rem; /* Consistent font size */
     }
 
     .form-control {
-      padding: 15px;
+      border: 1px solid #3498db; /* Blue border for input fields */
       border-radius: 5px;
-      border: 1px solid #ced4da;
-      transition: border-color 0.3s ease;
-
-      &:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
-      }
+      padding: 0.75rem;
+      font-size: 1rem;
     }
 
-    .priceField {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-
-      svg {
-        color: #28a745;
-      }
-
-      input {
-        border: 1px solid #28a745;
-      }
+    .form-control-range {
+      margin-top: 5px;
     }
 
-    .addFeatureForm {
-      display: flex;
-      gap: 10px;
-
-      input {
-        flex: 1;
-      }
-
-      button {
-        flex-shrink: 0;
-      }
+    .price-display {
+      margin-top: 5px;
+      color: #2ecc71; /* Green color for price display */
+      font-weight: bold;
     }
 
-    .addedFeatures {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
+    .btn {
+      &.btn-primary {
+        background-color: #3498db;
+        border: none;
+        color: white;
+        transition: background-color 0.3s, transform 0.2s;
 
-      .feature-item {
-        display: flex;
-        align-items: center;
+        &:hover {
+          background-color: #2980b9;
+          transform: scale(1.05);
+        }
+      }
+      &.btn-success {
+        background-color: #2ecc71;
+        border: none;
+        color: white;
+        transition: background-color 0.3s, transform 0.2s;
 
-        button {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          border: 1px solid transparent;
-          background-color: #dc3545;
-          color: white;
-          border-radius: 5px;
-          padding: 5px 10px;
+        &:hover {
+          background-color: #27ae60;
+          transform: scale(1.05);
+        }
+      }
+      &.btn-danger {
+        background-color: #e74c3c;
+        border: none;
+        color: white;
+        transition: background-color 0.3s, transform 0.2s;
 
-          .remove-icon {
-            font-size: 14px;
-            font-weight: bold;
-          }
+        &:hover {
+          background-color: #c0392b;
+          transform: scale(1.05);
         }
       }
     }
   }
 
-  .btn {
-    border-radius: 5px;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 10px 20px;
-    transition: background-color 0.3s ease;
+  .addFeatureForm {
+    display: flex;
+    align-items: center;
 
-    &.btn-success {
-      background-color: #28a745;
-      border-color: #28a745;
-
-      &:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-      }
+    input[type="text"] {
+      flex: 1;
+      border: 1px solid #3498db; /* Blue border for feature input */
+      border-radius: 5px;
+      padding: 0.75rem;
     }
 
-    &.btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
+    button {
+      margin-left: 10px;
+      transition: background-color 0.3s, transform 0.2s;
 
       &:hover {
-        background-color: #0069d9;
-        border-color: #0062cc;
+        background-color: #2ecc71; /* Green button color */
+        transform: scale(1.05);
       }
     }
-    &.btn-danger {
-      background-color: #dc3545;
-      border-color: #dc3545;
+  }
 
-      &:hover {
-        background-color: #c82333;
-        border-color: #bd2130;
+  .addedFeatures {
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+
+      .btn {
+        display: flex;
+        align-items: center;
+
+        .remove-icon {
+          margin-left: 5px;
+        }
       }
     }
   }
 
   .alert {
-    margin-bottom: 20px;
-    border-radius: 5px;
-    padding: 15px;
-    font-size: 16px;
-    transition: opacity 0.3s ease;
+    margin-top: 20px;
   }
+}
 
-  .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
-  }
+.slider-track {
+  background: #ddd;
+  height: 6px;
+}
+
+.slider-thumb {
+  background: #007bff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#root > div.app > div.add.container > div > div:nth-child(1) > button{
+  background-color: #007bff;
 }

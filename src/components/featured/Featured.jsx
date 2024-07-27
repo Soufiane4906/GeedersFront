@@ -275,7 +275,7 @@ function Featured() {
   };
 
   const handleSubmit = () => {
-    if (!country || !city) {
+    if (!country ) {
       alert("Please select both country and city.");
       return;
     }
@@ -288,9 +288,9 @@ function Featured() {
     // Build the query string for the URL
     const queryParams = new URLSearchParams({
       country,
-      city,
-      languages: selectedLanguages.join(","),
-      ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
+      // city,
+      // languages: selectedLanguages.join(","),
+      // ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
     });
 
     // Navigate to the new URL

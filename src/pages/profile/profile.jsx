@@ -11,7 +11,8 @@ import Select from 'react-select';
 import { FaLock } from 'react-icons/fa';
 import { FaUser, FaEdit, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
-
+import {   FaIdCard } from 'react-icons/fa';
+import { AiFillMessage } from 'react-icons/ai';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 
 const Profile = () => {
@@ -71,9 +72,7 @@ const Profile = () => {
           />
         )}
       </div>
-      {user.isVerified ? (
-        <h1 className="text-center">Your guide account is Verified 🥳</h1>
-      ) : (
+
         <Accordion defaultActiveKey="0">
         <Accordion.Item eventKey="0">
           <Accordion.Header>
@@ -100,7 +99,7 @@ const Profile = () => {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      )}
+
     </div>
   );
 };
@@ -110,20 +109,22 @@ const ProfileDetail = ({ user }) => {
   return (
     <div className="profile-detail">
       <h2>Profile Details</h2>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Country:</strong> {user.country}</p>
-      <p><strong>Languages:</strong> {user.languages.join(', ')}</p>
-      <p><strong>City:</strong> {user.city}</p>
-      <p><strong>Phone:</strong> {user.phone}</p>
-      <p><strong>Description:</strong> {user.desc}</p>
-      <p><strong>Bank Card Number:</strong> {user.bankCardNumber}</p>
-      <p><strong>Location:</strong> {user.location}</p>
+      <div className="profile-info">
+        <p><FaUserCircle className="icon" /> <strong>Username:</strong> {user.username}</p>
+        <p><FaEnvelope className="icon" /> <strong>Email:</strong> {user.email}</p>
+        <p><FaGlobe className="icon" /> <strong>Country:</strong> {user.country}</p>
+        <p><FaGlobe className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
+        <p><FaMapMarkerAlt className="icon" /> <strong>City:</strong> {user.city}</p>
+        <p><FaPhone className="icon" /> <strong>Phone:</strong> {user.phone}</p>
+        <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
+        <p><FaCreditCard className="icon" /> <strong>Bank Card Number:</strong> {user.bankCardNumber}</p>
+        <p><FaMapMarkerAlt className="icon" /> <strong>Location:</strong> {user.location}</p>
+      </div>
       <div className="images">
         <p><strong>Identity Images:</strong></p>
-        <img src={user.imgRecto} alt="Identity Front" />
-        <img src={user.imgVerso} alt="Identity Back" />
-        <img src={user.imgPassport} alt="Passport" />
+        {user.imgRecto ? <img src={user.imgRecto} alt="Identity Front" /> : <p>No front image available.</p>}
+        {user.imgVerso ? <img src={user.imgVerso} alt="Identity Back" /> : <p>No back image available.</p>}
+        {user.imgPassport ? <img src={user.imgPassport} alt="Passport" /> : <p>No passport image available.</p>}
       </div>
     </div>
   );
@@ -141,6 +142,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
     phone: user.phone || '',
     desc: user.desc || '',
     bankCardNumber: user.bankCardNumber || '',
+    paypalCardNumber: user.paypalCardNumber || '',
     location: user.location || '',
     imgRecto: user.imgRecto || '',
     imgVerso: user.imgVerso || '',
@@ -300,15 +302,31 @@ const ProfileEdit = ({ user, onUpdate }) => {
 
       <Row className="mb-3">
         <Form.Group as={Col} md="6">
-          <Form.Label><FaCreditCard /> Bank Card Number</Form.Label>
-          <Form.Control
-            type="text"
-            name="bankCardNumber"
-            value={formData.bankCardNumber}
-            onChange={handleChange}
-            placeholder="Bank Card Number"
-            required
-          />
+          {user.isSeller ? (
+            <>
+              <Form.Label> PayPal Card Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="paypalCardNumber"
+                value={formData.paypalCardNumber}
+                onChange={handleChange}
+                placeholder="PayPal Card Number"
+                required
+              />
+            </>
+          ) : (
+            <>
+              <Form.Label><FaCreditCard /> Bank Card Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="bankCardNumber"
+                value={formData.bankCardNumber}
+                onChange={handleChange}
+                placeholder="Bank Card Number"
+                required
+              />
+            </>
+          )}
         </Form.Group>
 
         <Form.Group as={Col} md="6">
@@ -366,54 +384,6 @@ const ProfileEdit = ({ user, onUpdate }) => {
 
 
 
-const ProfilePassword = ({ onUpdatePassword }) => {
-  const [passwords, setPasswords] = useState({
-    oldPassword: '',
-    newPassword: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await onUpdatePassword(passwords);
-  };
-
-  return (
-    <form className="profile-password" onSubmit={handleSubmit}>
-      <h2>Change Password</h2>
-      <div className="form-group">
-        <label htmlFor="oldPassword"><FaLock /> Old Password</label>
-        <input
-          name="oldPassword"
-          type="password"
-          className="form-control"
-          value={passwords.oldPassword}
-          onChange={handleChange}
-          placeholder="Current Password"
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="newPassword"><FaLock /> New Password</label>
-        <input
-          name="newPassword"
-          type="password"
-          className="form-control"
-          value={passwords.newPassword}
-          onChange={handleChange}
-          placeholder="New Password"
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary mt-3">Change Password</button>
-      <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setPasswords({ oldPassword: '', newPassword: '' })}>Cancel</button>
-    </form>
-  );
-};
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
@@ -481,3 +451,51 @@ const languageOptions = [
   // Add more languages as needed
 
 ];
+const ProfilePassword = ({ onUpdatePassword }) => {
+  const [passwords, setPasswords] = useState({
+    oldPassword: '',
+    newPassword: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await onUpdatePassword(passwords);
+  };
+
+  return (
+    <form className="profile-password" onSubmit={handleSubmit}>
+      <h2>Change Password</h2>
+      <div className="form-group">
+        <label htmlFor="oldPassword"><FaLock /> Old Password</label>
+        <input
+          name="oldPassword"
+          type="password"
+          className="form-control"
+          value={passwords.oldPassword}
+          onChange={handleChange}
+          placeholder="Current Password"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="newPassword"><FaLock /> New Password</label>
+        <input
+          name="newPassword"
+          type="password"
+          className="form-control"
+          value={passwords.newPassword}
+          onChange={handleChange}
+          placeholder="New Password"
+          required
+        />
+      </div>
+      <button type="submit" className="btn btn-primary mt-3">Change Password</button>
+      <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setPasswords({ oldPassword: '', newPassword: '' })}>Cancel</button>
+    </form>
+  );
+};

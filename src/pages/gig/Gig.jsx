@@ -5,14 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import Reviews from "../../components/reviews/Reviews";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  FaMapMarkerAlt,
-  FaCheck,
-  FaStar,
-  FaRegCalendarAlt,
-  FaRegClock,
-  FaRegFlag,
-} from "react-icons/fa";
+import { FaMapMarkerAlt, FaCheck, FaStar, FaRegCalendarAlt, FaRegClock, FaRegFlag } from "react-icons/fa";
 import { format, parseISO } from 'date-fns';
 
 const formatDate = (dateString) => {
@@ -29,37 +22,39 @@ function Gig() {
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig"],
     queryFn: () =>
-      newRequest.get(`/gigs/single/${id}`).then((res) => {
-        return res.data;
-      }),
+      newRequest.get(`/gigs/single/${id}`).then((res) => res.data),
   });
 
   const userId = data?.userId;
 
-  const {
-    isLoading: isLoadingUser,
-    error: errorUser,
-    data: dataUser,
-  } = useQuery({
+  const { isLoading: isLoadingUser, error: errorUser, data: dataUser } = useQuery({
     queryKey: ["user"],
     queryFn: () =>
-      newRequest.get(`/users/${userId}`).then((res) => {
-        return res.data;
-      }),
+      newRequest.get(`/users/${userId}`).then((res) => res.data),
     enabled: !!userId,
   });
 
   const handleVehicleChange = (e) => {
     const vehicle = e.target.value;
     setSelectedVehicle(vehicle);
-    const price = vehicle === "car" ? 100 : 50;
-    setTotalPrice(data.price + price);
+    let additionalPrice = 0;
+
+    if (vehicle === "car") {
+      additionalPrice = data.carPrice || 0; // Default to 0 if not provided
+    } else if (vehicle === "moto") {
+      additionalPrice = data.scooterPrice || 0; // Default to 0 if not provided
+    }
+
+    setTotalPrice(data.price + additionalPrice);
   };
+
+  if (isLoading || isLoadingUser) return <div>Loading...</div>;
+  if (error || errorUser) return <div>Something went wrong!</div>;
 
   return (
     <div className="gig container">
       {isLoading ? (
-        "loading"
+        "Loading..."
       ) : error ? (
         "Something went wrong!"
       ) : (
@@ -69,7 +64,7 @@ function Gig() {
               <FaMapMarkerAlt /> {data.country} {">"} {data.city}
             </span>
             {isLoadingUser ? (
-              "loading"
+              "Loading..."
             ) : errorUser ? (
               "Something went wrong!"
             ) : (
@@ -79,7 +74,7 @@ function Gig() {
                   src={dataUser.img || "/img/noavatar.jpg"}
                   alt=""
                 />
-                <span>{dataUser.username}</span>
+                <span className="ml-3">{dataUser.username}</span>
                 {!isNaN(data.totalStars / data.starNumber) && (
                   <div className="stars">
                     {Array(Math.round(data.totalStars / data.starNumber))
@@ -95,7 +90,7 @@ function Gig() {
             <h2>About This Post</h2>
             <p>{data.shortDesc}</p>
             {isLoadingUser ? (
-              "loading"
+              "Loading..."
             ) : errorUser ? (
               "Something went wrong!"
             ) : (
@@ -117,7 +112,6 @@ function Gig() {
                         </span>
                       </div>
                     )}
-                    <button>Contact Me</button>
                   </div>
                 </div>
                 <div className="box">
@@ -149,7 +143,7 @@ function Gig() {
                     <div className="item">
                       <span className="title">Languages</span>
                       <span className="desc">
-                        {dataUser.languages.join(", ")}
+                        {dataUser.languages?.join(", ")}
                       </span>
                     </div>
                   </div>
@@ -162,15 +156,18 @@ function Gig() {
           </div>
           <div className="right">
             <div className="price">
-              <h3>Total Price: {data.shortTitle}</h3>
-              <h2>$ {totalPrice || data.price}</h2>
+              <h3>Total Price:</h3>
+              <h2>$ {totalPrice}</h2>
             </div>
             <div className="details">
               <div className="item">
                 <FaRegClock style={{ color: 'green', fontSize: '1rem' }} />
-                <span>Available At:{data.availabilityTimes.map((time, index) => (
-                <li key={index}>{formatDate(time)}</li>
-              ))}</span>
+                <span>Available At:</span>
+                <ul>
+                  {data.availabilityTimes.map((time, index) => (
+                    <li key={index}>{formatDate(time)}</li>
+                  ))}
+                </ul>
               </div>
             </div>
             <div className="features">
@@ -183,11 +180,11 @@ function Gig() {
               ))}
             </div>
             <div className="vehicle-select">
-              <h3>With Car Option:</h3>
+              <h3>With Vehicle Option:</h3>
               <select onChange={handleVehicleChange}>
                 <option value="">None</option>
-                <option value="car">Car (+$100)</option>
-                <option value="moto">Moto (+$50)</option>
+                <option value="car">Car (+${data.carPrice || 100})</option>
+                <option value="moto">Moto (+${data.scooterPrice || 50})</option>
               </select>
             </div>
             <div className="privacy">
@@ -199,7 +196,7 @@ function Gig() {
               <label>I accept all privacy conditions</label>
             </div>
             <Link to={`/pay/${id}`}>
-              <button disabled={!privacyAccepted}>Continue</button>
+              <button className="btn btn-success" disabled={!privacyAccepted}>Continue</button>
             </Link>
           </div>
         </div>

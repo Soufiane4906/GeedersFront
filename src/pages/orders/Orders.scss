@@ -1,71 +1,73 @@
 .orders {
-  display: flex;
-  justify-content: center;
-  color: #555;
-
   .container {
-    width: 1400px;
-    padding: 50px 0px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 
     .title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
+      margin-bottom: 20px;
 
-      .search-input {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        width: 200px;
-        font-size: 16px;
+      h1 {
+        font-size: 2.5rem;
+        color: #007bff;
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: #0056b3;
+        }
       }
     }
 
-    table {
-      width: 100%;
-
+    .table {
       thead {
-        tr {
-          th {
-            text-align: left;
-            background-color: #f4f4f4;
-            padding: 10px;
-          }
+        background-color: #f8f9fa;
+        th {
+          font-weight: bold;
+          color: #343a40;
         }
       }
 
       tbody {
         tr {
-          height: 50px;
-
-          &:nth-child(even) {
-            background-color: #f9f9f9;
+          transition: background-color 0.3s ease;
+          &:hover {
+            background-color: #e9ecef;
           }
 
-          td {
-            padding: 10px;
-            vertical-align: middle;
+          .image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
 
-            .image {
-              width: 50px;
-              height: 50px;
-              object-fit: cover;
-              border-radius: 5px;
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+
+          .icon {
+            font-size: 1.5rem;
+
+            &.completed {
+              color: #28a745;
             }
 
-            .message {
-              width: 25px;
-              cursor: pointer;
+            &.pending {
+              color: #ffc107;
             }
+          }
 
-            .gig-link {
-              color: #1dbf73;
-              text-decoration: none;
-              font-weight: bold;
+          .message-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #007bff;
+            transition: color 0.3s ease;
 
-              &:hover {
-                text-decoration: underline;
-              }
+            &:hover {
+              color: #0056b3;
             }
           }
         }

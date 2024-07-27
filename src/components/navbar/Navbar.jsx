@@ -50,7 +50,7 @@ function Navbar() {
               <span>{currentUser?.username}</span>
               {open && (
                 <div className="options">
-                  {!currentUser.isSeller && (
+                  {currentUser.isSeller && (
                     <>
                       <Link className="link" to="/mygigs">
                         <FaCalendarAlt /> My Posts
@@ -94,6 +94,7 @@ function Navbar() {
             <Link className="link menuLink" to="/gigs?country=United+States&city=Chicago">Chicago, United States</Link>
             <Link className="link menuLink" to="/gigs?country=France&city=Paris">Paris, France</Link>
             <Link className="link menuLink" to="/gigs?country=Italy&city=Rome">Rome, Italy</Link>
+            <Link className="link menuLink" to="/gigs?country=Morocco">Morocco, Casablanca</Link>
             <Link className="link menuLink" to="/gigs?country=United+Kingdom&city=London">London, United Kingdom</Link>
             <Link className="link menuLink" to="/gigs?country=Brazil&city=Rio+de+Janeiro">Rio de Janeiro, Brazil</Link>
             <Link className="link menuLink" to="/gigs?country=India&city=Mumbai">Mumbai, India</Link>
