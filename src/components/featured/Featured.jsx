@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Select from 'react-select';
-import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe, faCity, faLanguage, faCar, faMotorcycle, faChevronDown, faCog } from '@fortawesome/free-solid-svg-icons';
+import Select from "react-select";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGlobe,
+  faCity,
+  faLanguage,
+  faCar,
+  faMotorcycle,
+  faChevronDown,
+  faCog,
+} from "@fortawesome/free-solid-svg-icons";
 import "./Featured.scss";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons/faChevronUp";
@@ -17,79 +25,98 @@ const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
   { value: "German", label: "🇩🇪 German" },
-  { value: "Italian", label: "🇮🇹 Italian"},
-  { value: "Spanish", label: "🇪🇸 Spanish"},
-  { value: "Chinese", label: "🇨🇳 Chinese"},
-  { value: "Japanese", label: "🇯🇵 Japanese"},
+  { value: "Italian", label: "🇮🇹 Italian" },
+  { value: "Spanish", label: "🇪🇸 Spanish" },
+  { value: "Chinese", label: "🇨🇳 Chinese" },
+  { value: "Japanese", label: "🇯🇵 Japanese" },
   { value: "Korean", label: "🇰🇷 Korean" },
   { value: "Arabic", label: "🇦🇪 Arabic" },
   { value: "Russian", label: "🇷🇺 Russian" },
-  { value: "Portuguese", label: "🇵🇹 Portuguese"},
-  { value: "Dutch", label: "🇳🇱 Dutch"},
-  { value: "Greek", label: "🇬🇷 Greek"},
-  { value: "Hindi", label: "🇮🇳 Hindi"},
-  { value: "Urdu", label: "🇵🇰 Urdu"},
-  { value: "Turkish", label: "🇹🇷 Turkish"},
-  { value: "Swedish", label: "🇸🇪 Swedish"},
-  { value: "Norwegian", label: "🇳🇴 Norwegian"},
-  { value: "Danish", label: "🇩🇰 Danish"},
-  { value: "Finnish", label: "🇫🇮 Finnish"},
-  { value: "Polish", label: "🇵🇱 Polish"},
-  { value: "Czech", label: "🇨🇿 Czech"},
-  { value: "Slovak", label: "🇸🇰 Slovak"},
-  { value: "Hungarian", label: "🇭🇺 Hungarian"},
-  { value: "Romanian", label: "🇷🇴 Romanian"},
-  { value: "Bulgarian", label: "🇧🇬 Bulgarian"},
-  { value: "Serbian", label: "🇷🇸 Serbian"},
-  { value: "Croatian", label: "🇭🇷 Croatian"},
-  { value: "Slovenian", label: "🇸🇮 Slovenian"},
-  { value: "Albanian", label: "🇦🇱 Albanian"},
-  { value: "Macedonian", label: "🇲🇰 Macedonian"},
-  { value: "Bosnian", label: "🇧🇦 Bosnian"},
-  { value: "Montenegrin", label: "🇲🇪 Montenegrin"},
-  { value: "Kosovar", label: "🇽🇰 Kosovar"},
-  { value: "Georgian", label: "🇬🇪 Georgian"},
-  { value: "Armenian", label: "🇦🇲 Armenian"},
-  { value: "Azerbaijani", label: "🇦🇿 Azerbaijani"},
-  { value: "Kazakh", label: "🇰🇿 Kazakh"},
-  { value: "Uzbek", label: "🇺🇿 Uzbek"},
-  { value: "Turkmen", label: "🇹🇲 Turkmen"},
-  { value: "Kyrgyz", label: "🇰🇬 Kyrgyz"},
-  { value: "Tajik", label: "🇹🇯 Tajik"},
-  { value: "Afghan", label: "🇦🇫 Afghan"},
-  { value: "Pakistani", label: "🇵🇰 Pakistani"},
-  { value: "Indian", label: "🇮🇳 Indian"},
-  { value: "Bangladeshi", label: "🇧🇩 Bangladeshi"},
-  { value: "Nepali", label: "🇳🇵 Nepali"},
-  { value: "Bhutanese", label: "🇧🇹 Bhutanese"},
-  { value: "Sri Lankan", label: "🇱🇰 Sri Lankan"},
-  { value: "Maldivian", label: "🇲🇻 Maldivian"},
-  { value: "American", label: "🇺🇸 American"},
-  { value: "Canadian", label: "🇨🇦 Canadian"},
-  { value: "Mexican", label: "🇲🇽 Mexican"},
-  { value: "Brazilian", label: "🇧🇷 Brazilian"},
-  { value: "Argentinian", label: "🇦🇷 Argentinian"},
-  { value: "Chilean", label: "🇨🇱 Chilean"},
-  { value: "Peruvian", label: "🇵🇪 Peruvian"},
-  { value: "Colombian", label: "🇨🇴 Colombian"},
-  { value: "Venezuelan", label: "🇻🇪 Venezuelan"},
-  { value: "Ecuadorian", label: "🇪🇨 Ecuadorian"},
+  { value: "Portuguese", label: "🇵🇹 Portuguese" },
+  { value: "Dutch", label: "🇳🇱 Dutch" },
+  { value: "Greek", label: "🇬🇷 Greek" },
+  { value: "Hindi", label: "🇮🇳 Hindi" },
+  { value: "Urdu", label: "🇵🇰 Urdu" },
+  { value: "Turkish", label: "🇹🇷 Turkish" },
+  { value: "Swedish", label: "🇸🇪 Swedish" },
+  { value: "Norwegian", label: "🇳🇴 Norwegian" },
+  { value: "Danish", label: "🇩🇰 Danish" },
+  { value: "Finnish", label: "🇫🇮 Finnish" },
+  { value: "Polish", label: "🇵🇱 Polish" },
+  { value: "Czech", label: "🇨🇿 Czech" },
+  { value: "Slovak", label: "🇸🇰 Slovak" },
+  { value: "Hungarian", label: "🇭🇺 Hungarian" },
+  { value: "Romanian", label: "🇷🇴 Romanian" },
+  { value: "Bulgarian", label: "🇧🇬 Bulgarian" },
+  { value: "Serbian", label: "🇷🇸 Serbian" },
+  { value: "Croatian", label: "🇭🇷 Croatian" },
+  { value: "Slovenian", label: "🇸🇮 Slovenian" },
+  { value: "Albanian", label: "🇦🇱 Albanian" },
+  { value: "Macedonian", label: "🇲🇰 Macedonian" },
+  { value: "Bosnian", label: "🇧🇦 Bosnian" },
+  { value: "Montenegrin", label: "🇲🇪 Montenegrin" },
+  { value: "Kosovar", label: "🇽🇰 Kosovar" },
+  { value: "Georgian", label: "🇬🇪 Georgian" },
+  { value: "Armenian", label: "🇦🇲 Armenian" },
+  { value: "Azerbaijani", label: "🇦🇿 Azerbaijani" },
+  { value: "Kazakh", label: "🇰🇿 Kazakh" },
+  { value: "Uzbek", label: "🇺🇿 Uzbek" },
+  { value: "Turkmen", label: "🇹🇲 Turkmen" },
+  { value: "Kyrgyz", label: "🇰🇬 Kyrgyz" },
+  { value: "Tajik", label: "🇹🇯 Tajik" },
+  { value: "Afghan", label: "🇦🇫 Afghan" },
+  { value: "Pakistani", label: "🇵🇰 Pakistani" },
+  { value: "Indian", label: "🇮🇳 Indian" },
+  { value: "Bangladeshi", label: "🇧🇩 Bangladeshi" },
+  { value: "Nepali", label: "🇳🇵 Nepali" },
+  { value: "Bhutanese", label: "🇧🇹 Bhutanese" },
+  { value: "Sri Lankan", label: "🇱🇰 Sri Lankan" },
+  { value: "Maldivian", label: "🇲🇻 Maldivian" },
+  { value: "American", label: "🇺🇸 American" },
+  { value: "Canadian", label: "🇨🇦 Canadian" },
+  { value: "Mexican", label: "🇲🇽 Mexican" },
+  { value: "Brazilian", label: "🇧🇷 Brazilian" },
+  { value: "Argentinian", label: "🇦🇷 Argentinian" },
+  { value: "Chilean", label: "🇨🇱 Chilean" },
+  { value: "Peruvian", label: "🇵🇪 Peruvian" },
+  { value: "Colombian", label: "🇨🇴 Colombian" },
+  { value: "Venezuelan", label: "🇻🇪 Venezuelan" },
+  { value: "Ecuadorian", label: "🇪🇨 Ecuadorian" },
   //more
 
-
   // Add more languages as needed
-
 ];
-const pointsOfInterestOptions  = [
+const pointsOfInterestOptions = [
   { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
   { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
-  { name: "Night Club", icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000" },
-  { name: "Park", icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000" },
-  { name: "Shopping Mall", icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png" },
-  { name: "Theatre", icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000" },
-  { name: "Amusement Park", icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000" },
-  { name: "Restaurant", icon: "https://img.icons8.com/ios/50/000000/restaurant.png" },
-  { name: "Hiking", icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000" },
+  {
+    name: "Night Club",
+    icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000",
+  },
+  {
+    name: "Park",
+    icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000",
+  },
+  {
+    name: "Shopping Mall",
+    icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png",
+  },
+  {
+    name: "Theatre",
+    icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000",
+  },
+  {
+    name: "Amusement Park",
+    icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000",
+  },
+  {
+    name: "Restaurant",
+    icon: "https://img.icons8.com/ios/50/000000/restaurant.png",
+  },
+  {
+    name: "Hiking",
+    icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000",
+  },
 ];
 const countriesData = [
   { name: "France", flag: "🇫🇷" },
@@ -199,7 +226,7 @@ const countriesData = [
   { name: "Lesotho", flag: "🇱🇸" },
   { name: "Swaziland", flag: "🇸🇿" },
   { name: "Burundi", flag: "🇧🇮" },
-  { name: "Rwanda", flag: "🇷🇼"},
+  { name: "Rwanda", flag: "🇷🇼" },
   //come on for the last time
   { name: "Antarctica", flag: "🇦🇶" },
   { name: "Greenland", flag: "🇬🇱" },
@@ -209,10 +236,8 @@ const countriesData = [
   { name: "United Kingdom", flag: "🇬🇧" },
   { name: "Ireland", flag: "🇮🇪" },
   //you understand me ?
-
 ];
 countriesData.sort((a, b) => a.name.localeCompare(b.name));
-
 
 function Featured() {
   const [input, setInput] = useState("");
@@ -227,7 +252,9 @@ function Featured() {
   const navigate = useNavigate();
   const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
-  const [backgroundImage, setBackgroundImage] = useState('https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg');
+  const [backgroundImage, setBackgroundImage] = useState(
+    "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+  );
 
   const handleCountryChange = async (e) => {
     const selectedCountry = e.target.value;
@@ -235,20 +262,24 @@ function Featured() {
     setShowCity(true);
     setCity("");
     try {
-      const response = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
-        country: selectedCountry
-      });
+      const response = await axios.post(
+        "https://countriesnow.space/api/v0.1/countries/cities",
+        {
+          country: selectedCountry,
+        }
+      );
       setCities(response.data.data);
     } catch (error) {
       console.error("There was an error fetching the cities!", error);
     }
   };
   const handleMoreDetailsClick = () => {
-    setShowPointsOfInterest(prev => !prev);
-    setBackgroundImage(prev =>
-      prev === 'https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg'
-        ? 'https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg' // Replace with the new image URL
-        : 'https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg'
+    setShowPointsOfInterest((prev) => !prev);
+    setBackgroundImage((prev) =>
+      prev ===
+      "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+        ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
+        : "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
     );
   };
 
@@ -258,38 +289,39 @@ function Featured() {
   };
 
   const handleLanguageChange = (selectedOptions) => {
-    setSelectedLanguages(selectedOptions.map(option => option.value));
+    setSelectedLanguages(selectedOptions.map((option) => option.value));
   };
 
   const handleVehicleChange = (e) => {
     const { value, checked } = e.target;
-    setSelectedVehicles(prevVehicles =>
+    setSelectedVehicles((prevVehicles) =>
       checked
         ? [...prevVehicles, value]
-        : prevVehicles.filter(vehicle => vehicle !== value)
+        : prevVehicles.filter((vehicle) => vehicle !== value)
     );
   };
 
   const handleVehicleMenuChange = (e) => {
-    setShowVehicleOptions(e.target.value === 'yes');
+    setShowVehicleOptions(e.target.value === "yes");
   };
 
   const handleSubmit = () => {
-    if (!country ) {
+    if (!country) {
       alert("Please select both country and city.");
       return;
     }
 
     // Create a query string for vehicles if selected
-    const vehicleParam = selectedVehicles.length > 0
-      ? `vehicles=${selectedVehicles.join(",")}`
-      : '';
+    const vehicleParam =
+      selectedVehicles.length > 0
+        ? `vehicles=${selectedVehicles.join(",")}`
+        : "";
 
     // Build the query string for the URL
     const queryParams = new URLSearchParams({
       country,
-      // city,
-      // languages: selectedLanguages.join(","),
+      city,
+      languages: selectedLanguages.join(","),
       // ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
     });
 
@@ -310,7 +342,11 @@ function Featured() {
                 <label>
                   <FontAwesomeIcon icon={faGlobe} /> Country:
                 </label>
-                <select required onChange={handleCountryChange} style={{ width: '100%' }}>
+                <select
+                  required
+                  onChange={handleCountryChange}
+                  style={{ width: "100%" }}
+                >
                   <option value="">Select Country</option>
                   {countriesData.map((country) => (
                     <option key={country.name} value={country.name}>
@@ -325,7 +361,12 @@ function Featured() {
                 <label>
                   <FontAwesomeIcon icon={faCity} /> City:
                 </label>
-                <select required onChange={handleCityChange} style={{ width: '100%' }} disabled={!showCity}>
+                <select
+                  required
+                  onChange={handleCityChange}
+                  style={{ width: "100%" }}
+                  disabled={!showCity}
+                >
                   <option value="">Select City</option>
                   {cities.map((city) => (
                     <option key={city} value={city}>
@@ -341,7 +382,7 @@ function Featured() {
                   <FontAwesomeIcon icon={faLanguage} /> Languages:
                 </label>
                 <Select
-                r
+                  r
                   name="languages"
                   options={languageOptions}
                   isMulti
@@ -349,109 +390,136 @@ function Featured() {
                     selectedLanguages.includes(option.value)
                   )}
                   onChange={handleLanguageChange}
-                  styles={{ container: (base) => ({ ...base, width: '100%' }) }}
+                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}
                 />
               </div>
             </div>
           </div>
           <div className="row">
             <div className="col-md-9">
-            <div className="additional-fields">
-  <p> <FontAwesomeIcon icon={faRoad} style={{marginRight : '5px'}} />
- With  Car Options ?</p>
-  <div>
-  <label>
-  <input
-    type="radio"
-    name="vehicleMenu"
-    value="yes"
-    onChange={handleVehicleMenuChange}
-  />
-  <span></span> Yes
-</label>
-<label>
-  <input
-    type="radio"
-    name="vehicleMenu"
-    value="no"
-    onChange={handleVehicleMenuChange}
-  />
-  <span></span> No
-</label>
-
-  </div>
-  {showVehicleOptions && (
-    <div>
-      <label className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}>
-        <input
-          type="checkbox"
-          value="scooter"
-          checked={selectedVehicles.includes('scooter')}
-          onChange={handleVehicleChange}
-        />
-        <FontAwesomeIcon icon={faMotorcycle} /> Scooter
-      </label>
-      <label className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}>
-        <input
-          type="checkbox"
-          value="car"
-          checked={selectedVehicles.includes('car')}
-          onChange={handleVehicleChange}
-        />
-        <FontAwesomeIcon icon={faCar} /> Car
-      </label>
-    </div>
-  )}
-</div>
-
+              <div className="additional-fields">
+                <p>
+                  {" "}
+                  <FontAwesomeIcon
+                    icon={faRoad}
+                    style={{ marginRight: "5px" }}
+                  />
+                  With Car Options ?
+                </p>
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="vehicleMenu"
+                      value="yes"
+                      onChange={handleVehicleMenuChange}
+                    />
+                    <span></span> Yes
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="vehicleMenu"
+                      value="no"
+                      onChange={handleVehicleMenuChange}
+                    />
+                    <span></span> No
+                  </label>
+                </div>
+                {showVehicleOptions && (
+                  <div>
+                    <label
+                      className={`checkbox-container ${
+                        selectedVehicles.includes("scooter") ? "active" : ""
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        value="scooter"
+                        checked={selectedVehicles.includes("scooter")}
+                        onChange={handleVehicleChange}
+                      />
+                      <FontAwesomeIcon icon={faMotorcycle} /> Scooter
+                    </label>
+                    <label
+                      className={`checkbox-container ${
+                        selectedVehicles.includes("car") ? "active" : ""
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        value="car"
+                        checked={selectedVehicles.includes("car")}
+                        onChange={handleVehicleChange}
+                      />
+                      <FontAwesomeIcon icon={faCar} /> Car
+                    </label>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <button onClick={handleMoreDetailsClick}>
-  {showPointsOfInterest ? (
-    <>
-      <FontAwesomeIcon icon={faChevronUp} />
-      {" Show Less"}
-    </>
-  ) : (
-    <>
-      <FontAwesomeIcon icon={faChevronDown} />
-      {"     Would you like a guide with specific places or volunteers ?"}
-    </>
-  )}
-</button>
+            {showPointsOfInterest ? (
+              <>
+                <FontAwesomeIcon icon={faChevronUp} />
+                {" Show Less"}
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronDown} />
+                {
+                  "     Would you like a guide with specific places or volunteers ?"
+                }
+              </>
+            )}
+          </button>
 
           {showPointsOfInterest && (
             <div className="points-of-interest">
-  <p className="p-poi">
-  <FontAwesomeIcon icon={faMapPin} />    Select Points of Interest
-
-  </p>              <div className="poi-options">
+              <p className="p-poi">
+                <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
+              </p>{" "}
+              <div className="poi-options">
                 {pointsOfInterestOptions.map((poi) => (
-                  <label key={poi.name} className={`poi-container ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}>
+                  <label
+                    key={poi.name}
+                    className={`poi-container ${
+                      selectedPointsOfInterest.includes(poi.name)
+                        ? "active"
+                        : ""
+                    }`}
+                  >
                     <input
                       type="checkbox"
                       value={poi.name}
                       checked={selectedPointsOfInterest.includes(poi.name)}
                       onChange={(e) => {
                         const { value, checked } = e.target;
-                        setSelectedPointsOfInterest(prev =>
+                        setSelectedPointsOfInterest((prev) =>
                           checked
                             ? [...prev, value]
-                            : prev.filter(poi => poi !== value)
+                            : prev.filter((poi) => poi !== value)
                         );
                       }}
                     />
-                    <img src={poi.icon} alt={poi.name} style={{ width: 30, height: 30, marginRight: 10 }} />
+                    <img
+                      src={poi.icon}
+                      alt={poi.name}
+                      style={{ width: 30, height: 30, marginRight: 10 }}
+                    />
                     {poi.name}
                   </label>
                 ))}
               </div>
             </div>
           )}
-                    <button onClick={handleSubmit}>Search</button>
-
+          <button onClick={handleSubmit}>Search</button>
         </div>
-        <div className="right" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div
+          className="right"
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
           <img src="./img/man.png" alt="" />
         </div>
       </div>

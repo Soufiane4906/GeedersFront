@@ -14,6 +14,7 @@ const Messages = () => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["conversations"],
     queryFn: () => newRequest.get(`/conversations`).then(res => res.data),
+    initialData: [], // Add initialData to avoid undefined data
   });
 
   const mutation = useMutation({
@@ -25,6 +26,10 @@ const Messages = () => {
     mutation.mutate(id);
   };
 
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error) return <p>Error fetching messages: {error.message}</p>;
+
   return (
     <div className="messages">
       <div className="container">
@@ -32,44 +37,48 @@ const Messages = () => {
           <h1>Messages</h1>
           <FaEnvelope size={24} color="#1dbf73" />
         </div>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
-              <th>Last Message</th>
-              <th>Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((c) => (
-              <tr
-                className={
-                  ((currentUser.isSeller && !c.readBySeller) ||
-                    (!currentUser.isSeller && !c.readByBuyer)) &&
-                  "active"
-                }
-                key={c.id}
-              >
-                <td>{currentUser.isSeller ? c.buyerId : c.sellerId}</td>
-                <td>
-                  <Link to={`/message/${c.id}`} className="link">
-                    {c?.lastMessage?.substring(0, 100)}...
-                  </Link>
-                </td>
-                <td>{moment(c.updatedAt).fromNow()}</td>
-                <td>
-                  {((currentUser.isSeller && !c.readBySeller) ||
-                    (!currentUser.isSeller && !c.readByBuyer)) && (
-                    <button className="btn btn-success" onClick={() => handleRead(c.id)}>
-                      Mark as Read
-                    </button>
-                  )}
-                </td>
+        {data.length === 0 ? (
+          <p>No messages available</p>
+        ) : (
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
+                <th>Last Message</th>
+                <th>Date</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((c) => (
+                <tr
+                  className={
+                    ((currentUser.isSeller && !c.readBySeller) ||
+                      (!currentUser.isSeller && !c.readByBuyer)) &&
+                    "active"
+                  }
+                  key={c.id}
+                >
+                  <td>{currentUser.isSeller ? c.buyerId : c.sellerId}</td>
+                  <td>
+                    <Link to={`/message/${c.id}`} className="link">
+                      {c?.lastMessage?.substring(0, 100)}...
+                    </Link>
+                  </td>
+                  <td>{moment(c.updatedAt).fromNow()}</td>
+                  <td>
+                    {((currentUser.isSeller && !c.readBySeller) ||
+                      (!currentUser.isSeller && !c.readByBuyer)) && (
+                      <button className="btn btn-success" onClick={() => handleRead(c.id)}>
+                        Mark as Read
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

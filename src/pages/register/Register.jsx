@@ -147,6 +147,42 @@ function Register() {
               type="file"
               onChange={handleFileChange}
             />
+
+            <button type="button" onClick={nextStep}>Next</button>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <h1>Do you want to be a guide?</h1>
+            <div className="toggle">
+              <label htmlFor="isSeller">Activate the guide account</label>
+              <label className="switch">
+                <input type="checkbox" checked={user.isSeller} onChange={handleSeller} />
+                <span className="slider round"></span>
+              </label>
+            </div>
+            <label htmlFor="phone">Phone Number</label>
+            <input
+              name="phone"
+              type="text"
+              placeholder="+1 234 567 89"
+              value={user.phone}
+              onChange={handleChange}
+            />
+            {user.isSeller && (
+              <>
+            <label htmlFor="desc">Description</label>
+            <textarea
+              name="desc"
+              placeholder="A short description of yourself"
+              cols="30"
+              rows="10"
+              value={user.desc}
+              onChange={handleChange}
+            ></textarea>
+
+            </>)}
             <label htmlFor="country">
               <FontAwesomeIcon icon={faGlobe} /> Country
             </label>
@@ -180,57 +216,29 @@ function Register() {
                 </option>
               ))}
             </select>
-            <button type="button" onClick={nextStep}>Next</button>
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <h1>Do you want to be a guide?</h1>
-            <div className="toggle">
-              <label htmlFor="isSeller">Activate the guide account</label>
-              <label className="switch">
-                <input type="checkbox" checked={user.isSeller} onChange={handleSeller} />
-                <span className="slider round"></span>
-              </label>
-            </div>
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              name="phone"
-              type="text"
-              placeholder="+1 234 567 89"
-              value={user.phone}
-              onChange={handleChange}
-            />
-            <label htmlFor="desc">Description</label>
-            <textarea
-              name="desc"
-              placeholder="A short description of yourself"
-              cols="30"
-              rows="10"
-              value={user.desc}
-              onChange={handleChange}
-            ></textarea>
-            <div className="identity-type">
+            <div className="identity-type" style={{textAlign :'center'}}>
               <h2>Select Identity Type</h2>
-              <label>
-                <input
-                  type="radio"
-                  value="cin"
-                  checked={identityType === "cin"}
-                  onChange={handleIdentityChange}
-                />
-                CIN
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="passport"
-                  checked={identityType === "passport"}
-                  onChange={handleIdentityChange}
-                />
-                Passport
-              </label>
+              <div className="radio-group" >
+                <label>
+                  <input
+                    type="radio"
+                    value="cin"
+                    checked={identityType === "cin"}
+                    onChange={handleIdentityChange}
+                  />
+                  CIN
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="passport"
+                    checked={identityType === "passport"}
+                    onChange={handleIdentityChange}
+                  />
+                  Passport
+                </label>
+
+              </div>
             </div>
             {identityType === "cin" && (
               <>
@@ -267,14 +275,30 @@ function Register() {
       case 3:
         return (
           <>
-            <label htmlFor="paypal">PayPal Account</label>
-            <input
-              name="paypal"
-              type="text"
-              placeholder="PayPal Account"
-              value={user.paypal}
-              onChange={handleChange}
-            />
+
+            {user.isSeller && (
+              <>
+                <label htmlFor="paypal">PayPal Account</label>
+                <input
+                  name="paypal"
+                  type="text"
+                  placeholder="PayPal Account"
+                  value={user.paypal}
+                  onChange={handleChange}
+                />
+              </>
+            )}
+            <div className="privacy-info">
+              <label>
+                <input
+                  type="checkbox"
+                  name="privacy"
+                  checked={user.privacy}
+                  onChange={handleChange}
+                />
+                I agree to the privacy policy and understand that my data will be handled responsibly.
+              </label>
+            </div>
             <div className="buttons">
               <button type="button" className="back-button" onClick={prevStep}>Back</button>
               <button type="submit">Register</button>
@@ -285,6 +309,7 @@ function Register() {
         return null;
     }
   };
+
 
   return (
     <div className="register">

@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Home.scss";
 import Featured from "../../components/featured/Featured";
 import TrustedBy from "../../components/trustedBy/TrustedBy";
 import Slide from "../../components/slide/Slide";
-import CatCard from "../../components/catCard/CatCard";
-import ProjectCard from "../../components/projectCard/ProjectCard";
-import { cards, projects } from "../../data";
+import Loading from '../../components/loading/Loading';
+
 import { FaArrowCircleRight, FaCheckCircle, FaPlaceOfWorship, FaPlayCircle, FaQuestionCircle, FaSearchPlus, FaStamp, FaStopwatch } from 'react-icons/fa';
 import { FaMapPin, FaGlobe, FaClock } from 'react-icons/fa';
 import { FaCartPlus } from "react-icons/fa6";
 
 function Home() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div className="home">
       <Featured />

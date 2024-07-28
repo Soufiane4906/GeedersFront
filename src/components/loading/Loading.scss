@@ -1,0 +1,31 @@
+// src/components/Loading.scss
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+
+  .loading-icons {
+    display: flex;
+    gap: 1rem;
+    font-size: 2rem;
+    color: #007bff; // Example color
+
+    .icon {
+      animation: spin 2s linear infinite;
+    }
+  }
+
+  p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}

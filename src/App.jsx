@@ -1,6 +1,7 @@
 import "./app.scss";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import React from "react";
+import { createBrowserRouter, RouterProvider ,Outlet} from "react-router-dom";
+import React, { Suspense, lazy } from 'react';
+import Loading from './components/loading/Loading';
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Home from "./pages/home/Home";
@@ -13,44 +14,32 @@ import Orders from "./pages/orders/Orders";
 import Messages from "./pages/messages/Messages";
 import Message from "./pages/message/Message";
 import MyGigs from "./pages/myGigs/MyGigs";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
 import Profile from "./pages/profile/profile";
-import Users from "./pages/users/users";
+import Users from "./pages/users/Users";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function App() {
   const queryClient = new QueryClient();
 
-  const Layout = () => {
-    return (
-      <div className="app">
-        <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Outlet />
-          <Footer />
-        </QueryClientProvider>
-      </div>
-    );
-  };
-  const LayoutProfile = () => {
-    return (
-      <div className="app">
-        <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Outlet />
-          <Footer />
-        </QueryClientProvider>
-      </div>
-    );
-  };
+  const Layout = () => (
+    <div className="app">
+      <QueryClientProvider client={queryClient}>
+        <Navbar />
+        <main>
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        </main>
+        <Footer />
+        <ToastContainer />
+      </QueryClientProvider>
+    </div>
+  );
 
   const router = createBrowserRouter([
     {
@@ -68,7 +57,6 @@ function App() {
         {
           path: "/users",
           element: <Users />,
-
         },
         {
           path: "/profile",

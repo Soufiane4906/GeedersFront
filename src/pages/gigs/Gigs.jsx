@@ -4,6 +4,13 @@ import GigCard from "../../components/gigCard/GigCard";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { useLocation } from "react-router-dom";
+import { format, parseISO } from 'date-fns';
+import Loading from "../../components/loading/Loading";
+
+const formatDate = (dateString) => {
+  const parsedDate = parseISO(dateString);
+  return format(parsedDate, 'dd/MM/yyyy ');
+};
 
 function Gigs() {
   const [sort, setSort] = useState("sales");
@@ -36,6 +43,16 @@ function Gigs() {
     refetch();
   };
 
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div className="gigs">
       <div className="container">
@@ -62,17 +79,18 @@ function Gigs() {
           <div className="right">
             <span className="sortBy">Sort by</span>
             <span className="sortType">
-              {sort === "sales" ? "Best Guide" : "Newest"}
+              {sort === "sales"
+                ? "Best Selling"
+                : sort === "popularity"
+                ? "Popular"
+                : "Newest"}
             </span>
             <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
             {open && (
               <div className="rightMenu">
-                {sort === "sales" ? (
-                  <span onClick={() => reSort("createdAt")}>Newest</span>
-                ) : (
-                  <span onClick={() => reSort("sales")}>Best Selling</span>
-                )}
-                <span onClick={() => reSort("sales")}>Popular</span>
+                <span onClick={() => reSort("createdAt")}>Newest</span>
+                <span onClick={() => reSort("sales")}>Best Selling</span>
+                <span onClick={() => reSort("popularity")}>Popular</span>
               </div>
             )}
           </div>

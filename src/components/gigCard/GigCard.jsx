@@ -1,19 +1,18 @@
 import React from "react";
 import "./GigCard.scss";
 import { Link } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
-import { format, parseISO } from 'date-fns';
-//import motos and icon card
-import { FaMotorcycle } from "react-icons/fa";
-import { FaCar } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaMotorcycle,
+  FaCar,
+  FaStar,
+  FaRegStar,
+  FaBan,
+} from "react-icons/fa";
 
-// Fonction de formatage
-const formatDate = (dateString) => {
-  const parsedDate = parseISO(dateString);
-  return format(parsedDate, 'dd/MM/yyyy HH:mm:ss');
-};
+
 
 const GigCard = ({ item }) => {
   const { isLoading, error, data } = useQuery({
@@ -22,10 +21,17 @@ const GigCard = ({ item }) => {
       newRequest.get(`/users/${item.userId}`).then((res) => res.data),
   });
 
+  // Ensure data is available and check for properties before accessing
+  const userData = data || {}; // Fallback to an empty object if data is not yet available
+  const languages = userData.languages || []; // Default to an empty array if languages is undefined
+  const rating = !isNaN(item.totalStars / item.starNumber)
+    ? Math.round(item.totalStars / item.starNumber)
+    : 0;
+
   return (
     <div className="gigCard">
       <div className="topSection">
-        {/* <img src={data.img} alt="" className="coverImage" /> */}
+        {/* <img src={userData.img} alt="" className="coverImage" /> */}
         <div className="userInfo">
           <div className="user">
             {isLoading ? (
@@ -34,10 +40,16 @@ const GigCard = ({ item }) => {
               "Something went wrong!"
             ) : (
               <>
-                <img src={data.img || "/img/noavatar.jpg"} alt="" className="userAvatar" />
+                <img
+                  src={userData.img || "/img/noavatar.jpg"}
+                  alt=""
+                  className={`userAvatar ${
+                    userData.isVerified ? "verified-avatar" : ""
+                  }`}
+                />
                 <div className="userDetails">
-                  <span className="username">{data.username}</span>
-                  {data.isVerified && (
+                  <span className="username">{userData.username}</span>
+                  {userData.isVerified && (
                     <div className="verified">
                       <FaCheckCircle color="green" />
                       <span>This guide is verified</span>
@@ -47,26 +59,25 @@ const GigCard = ({ item }) => {
               </>
             )}
           </div>
-          <p className="description">{item.shortDesc}</p>
           <div className="rating">
-            <img src="./img/star.png" alt="Star Icon" />
-            <span>
-              {!isNaN(item.totalStars / item.starNumber) &&
-                Math.round(item.totalStars / item.starNumber)}
-            </span>
+            {[...Array(5)].map((_, index) => (
+              <span key={index}>
+                {index < rating ? (
+                  <FaStar color="gold" />
+                ) : (
+                  <FaRegStar color="gold" />
+                )}
+              </span>
+            ))}
+            <span className="ratingValue">{rating}</span>
           </div>
-          <div className="availability">
-            <h4>Availability:</h4>
-            <ul>
-              {item.availabilityTimes.map((time, index) => (
-                <li key={index}>{formatDate(time)}</li>
-              ))}
-            </ul>
-          </div>
+
           <div className="languages">
             <h4>Languages Spoken:</h4>
             <div className="flags">
-              {/* {data} */}
+              {languages.length > 0
+                ? languages.join(", ")
+                : "No languages specified"}
             </div>
           </div>
         </div>
@@ -75,19 +86,23 @@ const GigCard = ({ item }) => {
           <div className="detail">
             <div className="price">
               <span>STARTING AT</span>
-              <h2 style={{color : 'green'}}>$ {item.price} / hour</h2>
+              <h2 style={{ color: "green" }}>$ {item.price} / hour</h2>
             </div>
             <div className="features">
-              {item.hasCar && (
+              {item.hasCar ? (
                 <div className="feature">
-                  <FaCar></FaCar>
-                  <span>Car: ${item.carPrice}/hour</span>
+                  <FaCar />
+                  <span>Car: ${item.carPrice} / hour</span>
                 </div>
-              )}
-              {item.hasScooter && (
+              ) : item.hasScooter ? (
                 <div className="feature">
-                 <FaMotorcycle></FaMotorcycle>
+                  <FaMotorcycle />
                   <span>Scooter: ${item.scooterPrice} / hour</span>
+                </div>
+              ) : (
+                <div className="noOptions">
+                  <FaBan />
+                  <span>No options available</span>
                 </div>
               )}
             </div>

@@ -6,14 +6,16 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faMapMarkerAlt, faCity, faCar, faMotorcycle, faDollarSign, faGlobe, faInfo, faInfoCircle, faStarAndCrescent, faStarOfLife, faTimeline, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faCity, faCar, faMotorcycle, faDollarSign, faGlobe, faInfoCircle, faStarOfLife, faClock, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import Slider from 'react-slider';
-import { FaTimesCircle } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+//select
+import Select from 'react-select';
 
 const Add = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDates, setSelectedDates] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     desc: "",
@@ -23,17 +25,16 @@ const Add = () => {
     carPrice: 0,
     hasScooter: "",
     scooterPrice: 0,
-    availabilityTimes: selectedDate,
+    availabilityTimes: selectedDates,
     shortDesc: "",
     price: 0,
     features: [],
+    poi : [],
   });
   const [error, setError] = useState("");
   const [cities, setCities] = useState([]);
   const [showCity, setShowCity] = useState(false);
-
-  // Local list of countries
-
+  const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
 
   const handleCountryChange = async (e) => {
     const selectedCountry = e.target.value;
@@ -74,27 +75,30 @@ const Add = () => {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      const gigData = { ...formData, userId: currentUser._id, availabilityTimes: selectedDate };
+      const gigData = { ...formData, userId: currentUser._id, availabilityTimes: selectedDates };
       await newRequest.post("/gigs", gigData);
+      toast.success("Gig created successfully!");
       navigate("/myGigs");
     } catch (error) {
-      setError("Error creating gig: " + error.message);
+      toast.error("Error creating gig: " + error.message);
     }
   };
-
+//handle poi
   return (
     <div className="add container">
       <h1>Add New Post</h1>
+      <ToastContainer />
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="row">
         <div className="col-md-6">
           <div className="form-group">
             <label htmlFor="title">
-              <FontAwesomeIcon icon={faTachometerAlt} style={{marginInlineEnd : '2%'}} /> Title
+              <FontAwesomeIcon icon={faTachometerAlt} style={{ marginInlineEnd: '2%' }} /> Title
             </label>
             <input
               type="text"
@@ -107,13 +111,14 @@ const Add = () => {
           </div>
           <div className="form-group">
             <label htmlFor="country">
-              <FontAwesomeIcon icon={faGlobe} style={{marginInlineEnd : '2%'}} /> Country
+              <FontAwesomeIcon icon={faGlobe} style={{ marginInlineEnd: '2%' }} /> Country
             </label>
             <select
               name="country"
               value={formData.country}
               onChange={handleCountryChange}
               style={{ width: '100%' }}
+              className="country-city-selector"
             >
               <option value="">Select Country</option>
               {countriesData.map((country) => (
@@ -125,7 +130,7 @@ const Add = () => {
           </div>
           <div className="form-group">
             <label htmlFor="city">
-              <FontAwesomeIcon icon={faCity} style={{marginInlineEnd : '2%'}}/> City
+              <FontAwesomeIcon icon={faCity} style={{ marginInlineEnd: '2%' }} /> City
             </label>
             <select
               name="city"
@@ -133,6 +138,7 @@ const Add = () => {
               onChange={handleCityChange}
               style={{ width: '100%' }}
               disabled={!showCity}
+              className="country-city-selector"
             >
               <option value="">Select City</option>
               {cities.map((city) => (
@@ -144,7 +150,7 @@ const Add = () => {
           </div>
           <div className="form-group">
             <label htmlFor="hasCar">
-              <FontAwesomeIcon icon={faCar} style={{marginInlineEnd : '2%'}} /> Will you have a car?
+              <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: '2%' }} /> Will you have a car?
             </label>
             <select
               name="hasCar"
@@ -157,9 +163,9 @@ const Add = () => {
               <option value="false">No</option>
             </select>
             {formData.hasCar === "true" && (
-              <div className="priceField mt-2" style={{marginInlineEnd : '2%'}}>
-                <FontAwesomeIcon icon={faDollarSign} style={{color : 'green'}} />
-                <label htmlFor="carPrice" style={{color : 'green'}}>Car Price per Hour</label>
+              <div className="priceField mt-2" style={{ marginInlineEnd: '2%' }}>
+                <FontAwesomeIcon icon={faDollarSign} style={{ color: 'green' }} />
+                <label htmlFor="carPrice" style={{ color: 'green' }}>Car Price per Hour</label>
                 <Slider
                   value={formData.carPrice}
                   onChange={(value) => setFormData((prevData) => ({ ...prevData, carPrice: value }))}
@@ -175,7 +181,7 @@ const Add = () => {
           <br />
           <div className="form-group">
             <label htmlFor="hasScooter">
-              <FontAwesomeIcon icon={faMotorcycle} style={{marginInlineEnd : '2%'}} /> Will you have a scooter?
+              <FontAwesomeIcon icon={faMotorcycle} style={{ marginInlineEnd: '2%' }} /> Will you have a scooter?
             </label>
             <select
               name="hasScooter"
@@ -188,9 +194,9 @@ const Add = () => {
               <option value="false">No</option>
             </select>
             {formData.hasScooter === "true" && (
-              <div className="priceField mt-2" style={{color : 'green'}}>
-                <FontAwesomeIcon icon={faDollarSign} style={{marginInlineEnd : '2%'}} />
-                <label htmlFor="scooterPrice" style={{color : 'green'}}>Scooter Price per Hour</label>
+              <div className="priceField mt-2" style={{ color: 'green' }}>
+                <FontAwesomeIcon icon={faDollarSign} style={{ marginInlineEnd: '2%' }} />
+                <label htmlFor="scooterPrice" style={{ color: 'green' }}>Scooter Price per Hour</label>
                 <Slider
                   value={formData.scooterPrice}
                   onChange={(value) => setFormData((prevData) => ({ ...prevData, scooterPrice: value }))}
@@ -206,16 +212,25 @@ const Add = () => {
           <br />
           <div className="form-group">
             <label htmlFor="availabilityTimes">
-              <FontAwesomeIcon icon={faClock} style={{marginInlineEnd : '2%'}} /> Available Times
+              <FontAwesomeIcon icon={faClock} style={{ marginInlineEnd: '2%' }} /> Available Times
             </label>
             <DatePicker
-              selected={selectedDate}
-              onChange={(date) => {
-                setSelectedDate(date);
-                handleChange({ target: { name: "availabilityTimes", value: date } });
+              selected={selectedDates[0]} // Display the first selected date
+              onChange={(dates) => {
+                if (Array.isArray(dates)) {
+                  setSelectedDates(dates);
+                  handleChange({ target: { name: "availabilityTimes", value: dates } });
+                } else {
+                  setSelectedDates([dates]);
+                  handleChange({ target: { name: "availabilityTimes", value: [dates] } });
+                }
               }}
-              showTimeSelect
-              dateFormat="Pp"
+              onSelect={(date) => setSelectedDates([...selectedDates, date])}
+              shouldCloseOnSelect={false} // Keep the picker open for multiple selections
+              inline // Display the calendar inline
+              selectsRange // Allow range selection
+              startDate={selectedDates[0]} // Start date for range
+              endDate={selectedDates[selectedDates.length - 1]} // End date for range
               className="form-control"
               required
             />
@@ -227,7 +242,7 @@ const Add = () => {
         <div className="col-md-6">
           <div className="form-group">
             <label htmlFor="shortDesc">
-              <FontAwesomeIcon icon={faInfoCircle}  style={{marginInlineEnd : '2%'}} /> Short Description about yourself
+              <FontAwesomeIcon icon={faInfoCircle} style={{ marginInlineEnd: '2%' }} /> Short Description about yourself
             </label>
             <textarea
               name="shortDesc"
@@ -239,8 +254,8 @@ const Add = () => {
             ></textarea>
           </div>
           <div className="form-group">
-            <label htmlFor="price" style={{color : 'green'}}>
-              <FontAwesomeIcon icon={faDollarSign}  style={{marginInlineEnd : '2%'}} /> Price / hour
+            <label htmlFor="price" style={{ color: 'green' }}>
+              <FontAwesomeIcon icon={faDollarSign} style={{ marginInlineEnd: '2%' }} /> Price / hour
             </label>
             <Slider
               value={formData.price}
@@ -279,6 +294,49 @@ const Add = () => {
               ))}
             </div>
           </div>
+
+          <div className="form-group">
+          <div className="points-of-interest">
+              <p className="p-poi">
+                <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
+              </p>{" "}
+              <div className="poi-options">
+                {pointsOfInterestOptions.map((poi) => (
+                  <label
+                    key={poi.name}
+                    className={`poi-container ${
+                      selectedPointsOfInterest.includes(poi.name)
+                        ? "active"
+                        : ""
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={poi.name}
+                      checked={selectedPointsOfInterest.includes(poi.name)}
+                      onChange={(e) => {
+                        const { value, checked } = e.target;
+                        setSelectedPointsOfInterest((prev) =>
+                          checked
+                            ? [...prev, value]
+                            : prev.filter((poi) => poi !== value)
+                        );
+                      }}
+                    />
+                    <img
+                      src={poi.icon}
+                      alt={poi.name}
+                      style={{ width: 30, height: 30, marginRight: 10 }}
+                    />
+                    {poi.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+        </div>
+
+
+
         </div>
       </div>
     </div>
@@ -286,7 +344,23 @@ const Add = () => {
 };
 
 export default Add;
-
+const CustomOption = (props) => (
+  <div {...props.innerProps} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+    <img src={props.data.icon} alt={props.data.name} style={{ width: 20, height: 20, marginRight: 10 }} />
+    {props.data.label}
+  </div>
+);
+const pointsOfInterestOptions  = [
+  { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
+  { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
+  { name: "Night Club", icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000" },
+  { name: "Park", icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000" },
+  { name: "Shopping Mall", icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png" },
+  { name: "Theatre", icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000" },
+  { name: "Amusement Park", icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000" },
+  { name: "Restaurant", icon: "https://img.icons8.com/ios/50/000000/restaurant.png" },
+  { name: "Hiking", icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000" },
+];
 const countriesData = [
   { name: "France", flag: "🇫🇷" },
   { name: "Germany", flag: "🇩🇪" },

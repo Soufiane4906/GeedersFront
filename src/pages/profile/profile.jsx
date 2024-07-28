@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './profile.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
-import { FaLock } from 'react-icons/fa';
+import { FaLanguage, FaLock } from 'react-icons/fa';
 import { FaUser, FaEdit, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
 import {   FaIdCard } from 'react-icons/fa';
@@ -113,12 +113,14 @@ const ProfileDetail = ({ user }) => {
         <p><FaUserCircle className="icon" /> <strong>Username:</strong> {user.username}</p>
         <p><FaEnvelope className="icon" /> <strong>Email:</strong> {user.email}</p>
         <p><FaGlobe className="icon" /> <strong>Country:</strong> {user.country}</p>
-        <p><FaGlobe className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
         <p><FaMapMarkerAlt className="icon" /> <strong>City:</strong> {user.city}</p>
+        <p><FaFileAlt className="icon" /> <strong>Role:</strong> {user.isSeller ? 'Guide' : 'Buyer'}</p>
+        <p><FaLanguage className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
         <p><FaPhone className="icon" /> <strong>Phone:</strong> {user.phone}</p>
         <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
         <p><FaCreditCard className="icon" /> <strong>Bank Card Number:</strong> {user.bankCardNumber}</p>
-        <p><FaMapMarkerAlt className="icon" /> <strong>Location:</strong> {user.location}</p>
+        <p><FaCreditCard className="icon" /> <strong>Paypal Card Number:</strong> {user.paypalCardNumber}</p>
+        <p><strong>Location:</strong> {user.location}</p>
       </div>
       <div className="images">
         <p><strong>Identity Images:</strong></p>
@@ -304,7 +306,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
         <Form.Group as={Col} md="6">
           {user.isSeller ? (
             <>
-              <Form.Label> PayPal Card Number</Form.Label>
+              <Form.Label> <FaCreditCard className="icon" />     PayPal Card Number</Form.Label>
               <Form.Control
                 type="text"
                 name="paypalCardNumber"

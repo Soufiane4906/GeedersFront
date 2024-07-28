@@ -4,6 +4,10 @@ import "./MyGigs.scss";
 import getCurrentUser from "../../utils/getCurrentUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// toast.configure();
 
 function MyGigs() {
   const currentUser = getCurrentUser();
@@ -18,15 +22,23 @@ function MyGigs() {
 
   const mutation = useMutation({
     mutationFn: (id) => newRequest.delete(`/gigs/${id}`),
-    onSuccess: () => queryClient.invalidateQueries(["myGigs"]),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["myGigs"]);
+      toast.success("Gig deleted successfully!");
+    },
+    onError: () => toast.error("Error deleting gig."),
   });
 
   const handleDelete = (id) => {
     mutation.mutate(id);
   };
 
+  const calculateTotalPrice = (gig) => {
+    return gig.price + (gig.hasCar ? gig.carPrice : 0) + (gig.hasScooter ? gig.scooterPrice : 0);
+  };
+
   return (
-    <div className="myGigs">
+    <div className="container myGigs">
       {isLoading ? (
         "Loading..."
       ) : error ? (
@@ -34,10 +46,10 @@ function MyGigs() {
       ) : (
         <div className="container">
           <div className="title">
-            <h1>My Gigs</h1>
-            { !currentUser.isSeller && (
+            <h1>My Posts</h1>
+            {currentUser.isSeller && (
               <Link to="/add">
-                <button>Add New Gig</button>
+                <button>Add New Post</button>
               </Link>
             )}
           </div>
@@ -47,8 +59,8 @@ function MyGigs() {
                 <th>Location</th>
                 <th>Stars</th>
                 <th>Availability</th>
-                <th>Vehicle</th>
                 <th>Prices</th>
+                <th>Total Price</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -61,39 +73,36 @@ function MyGigs() {
                     </div>
                   </td>
                   <td>
-                  <div className="stars">
-  {gig.totalStars > 0 && gig.totalStars <= 5 ? (
-    <>
-      {[...Array(gig.totalStars)].map((_, index) => (
-        <i key={index} className="fa fa-star" aria-hidden="true"></i>
-      ))}
-      {[...Array(5 - gig.totalStars)].map((_, index) => (
-        <i key={index + gig.totalStars} className="fa fa-star-o" aria-hidden="true"></i>
-      ))}
-    </>
-  ) : (
-    // Optional: Show a default state when no stars are available
-    <p>No ratings yet</p>
-  )}
-</div>
-
+                    <div className="stars">
+                      {gig.totalStars > 0 && gig.totalStars <= 5 ? (
+                        <>
+                          {[...Array(gig.totalStars)].map((_, index) => (
+                            <i key={index} className="fa fa-star" aria-hidden="true"></i>
+                          ))}
+                          {[...Array(5 - gig.totalStars)].map((_, index) => (
+                            <i key={index + gig.totalStars} className="fa fa-star-o" aria-hidden="true"></i>
+                          ))}
+                        </>
+                      ) : (
+                        <p>No ratings yet</p>
+                      )}
+                    </div>
                   </td>
                   <td>
                     {gig.availabilityTimes.map((time, index) => (
                       <div key={index}>{new Date(time).toLocaleDateString()}</div>
                     ))}
                   </td>
-                  <td>
-                    <div className="vehicle-info">
-                      {gig.hasScooter && <i className="fa fa-motorcycle" aria-hidden="true"></i>}
-                      {gig.hasCar && <i className="fa fa-car" aria-hidden="true"></i>}
-                    </div>
-                  </td>
+
                   <td>
                     <div>
                       {gig.hasCar && <div>Car: ${gig.carPrice}</div>}
                       {gig.hasScooter && <div>Scooter: ${gig.scooterPrice}</div>}
+                      <div>Tour: ${gig.price}</div>
                     </div>
+                  </td>
+                  <td>
+                    <div>Total Price: ${calculateTotalPrice(gig)}</div>
                   </td>
                   <td>
                     <img

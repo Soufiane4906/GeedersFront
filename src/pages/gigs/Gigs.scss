@@ -18,13 +18,24 @@
     }
 
     h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
     }
 
     .menu {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 20px; /* Optional, adjust as needed */
+      position: fixed; /* Fixes the menu in place */
+      top: 40vh; /* Positions the menu at the top */
+      left: 0; /* Aligns the menu to the left side */
+      right: 40vh; /* Extends the menu to the right side */
+      background-color: white; /* Optional, to ensure readability against background */
+      z-index: 1000; /* Ensures the menu stays above other content */
+      padding: 10px; /* Optional, for spacing within the menu */
+      margin-inline-start: 40%;
+
 
       .left {
         display: flex;
@@ -52,23 +63,6 @@
           font-weight: 500;
           border-radius: 5px;
           cursor: pointer;
-        }
-
-        .vehicle-filters {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-
-          label {
-            font-weight: 300;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-
-            input {
-              margin-right: 5px;
-            }
-          }
         }
       }
 
@@ -115,8 +109,9 @@
 
     .cards {
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      flex-direction: column; /* One item per row */
+      gap: 20px; /* Space between cards */
+      transition: all 0.3s ease; /* Smooth transition for animations */
     }
   }
 }

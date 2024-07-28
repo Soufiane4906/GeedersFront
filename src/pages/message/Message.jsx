@@ -17,6 +17,7 @@ const Message = () => {
     queryFn: () => newRequest.get(`/messages/${id}`).then(res => res.data),
   });
 
+
   const mutation = useMutation({
     mutationFn: (message) => newRequest.post(`/messages`, message),
     onSuccess: () => queryClient.invalidateQueries(["messages"]),

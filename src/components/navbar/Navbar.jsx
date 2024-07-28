@@ -48,8 +48,12 @@ function Navbar() {
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
               <span>{currentUser?.username}</span>
+
               {open && (
                 <div className="options">
+                         <Link className="link" to="/profile">
+                    <FaUserCircle /> Profile
+                  </Link>
                   {currentUser.isSeller && (
                     <>
                       <Link className="link" to="/mygigs">
@@ -60,9 +64,8 @@ function Navbar() {
                       </Link>
                     </>
                   )}
-                  <Link className="link" to="/profile">
-                    <FaUserCircle /> Profile
-                  </Link>
+
+
                   <Link className="link" to="/orders">
                     <FaMapMarkerAlt /> Orders
                   </Link>
