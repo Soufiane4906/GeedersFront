@@ -118,8 +118,8 @@ const ProfileDetail = ({ user }) => {
         <p><FaLanguage className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
         <p><FaPhone className="icon" /> <strong>Phone:</strong> {user.phone}</p>
         <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
-        <p><FaCreditCard className="icon" /> <strong>Bank Card Number:</strong> {user.bankCardNumber}</p>
-        <p><FaCreditCard className="icon" /> <strong>Paypal Card Number:</strong> {user.paypalCardNumber}</p>
+        <p><FaCreditCard className="icon" /> <strong>Bank Card Number:</strong> {user.paymentMethod}</p>
+        <p><FaCreditCard className="icon" /> <strong>Paypal Card Number:</strong> {user.accountNumber}</p>
         <p><strong>Location:</strong> {user.location}</p>
       </div>
       <div className="images">

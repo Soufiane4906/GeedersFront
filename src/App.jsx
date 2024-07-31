@@ -22,6 +22,9 @@ import Users from "./pages/users/Users";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+//botstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import SingleOrder from "./pages/singleorder/SingleOrder";
 
 function App() {
   const queryClient = new QueryClient();
@@ -58,6 +61,7 @@ function App() {
           path: "/users",
           element: <Users />,
         },
+
         {
           path: "/profile",
           element: <Profile />,
@@ -70,6 +74,11 @@ function App() {
           path: "/orders",
           element: <Orders />,
         },
+        //singleorder
+        {
+          path: "/singleOrder/:id",
+          element: <SingleOrder />,
+          },
         {
           path: "/messages",
           element: <Messages />,

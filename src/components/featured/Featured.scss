@@ -1,231 +1,191 @@
 .featured {
-  height: auto;
   display: flex;
-  justify-content: center;
-  background: linear-gradient(45deg, #1dbf73, #0d6efd);
-  color: white;
-  padding: 3%;
-  padding-bottom: 7%;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  position: relative;
 
   .container {
+    gap: 5%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     width: 100%;
-    max-width: 1400px;
-    display: flex;
-    align-items: center;
+  }
 
-    .left {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-right: 45px;
+  .left {
+    flex: 1;
+    transition: transform 0.5s ease;
 
-      h1 {
-        font-size: 50px;
-
-        span {
-          font-style: italic;
-          font-weight: 300;
-        }
-      }
-
-      .select {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        label {
-          color: white;
-          font-size: 18px;
-        }
-
-        select,
-        input {
-          width: 100%;
-          padding: 10px;
-          border-radius: 5px;
-          border: none;
-          outline: none;
-        }
-      }
-
-      .additional-fields {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-
-        label {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-right: 6%;
-
-          input[type="radio"] {
-            margin-right: 10px;
-          }
-        }
-
-        input[type="number"] {
-          width: 100px;
-        }
-      }
-    }
-
-    .right {
-      z-index: 3;
-      border-radius: 7px;
-      box-shadow: 1px 1px 20px 8px #4a85c0;
-
-      height: 59%;
-      width: 95%;
-      background: url('https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg') no-repeat center center/cover;
-
-      img {
-        height: 100%;
-        object-fit: contain;
-        display: none; /* Hide the img element to use background image instead */
-      }
+    &.hidden {
+      transform: translateX(-10%);
     }
   }
-}
 
-.additional-fields p {
-  font-size: 18px;
-  font-weight: 400;
-  font-style: normal;
-  margin-top: 13px;
-}
+  .right {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease, opacity 0.5s ease;
 
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  input {
-    margin-right: 10px;
-  }
-
-  &.active {
-    border-color: #007bff;
-    background-color: #007bff;
-    color: white;
-  }
-
-  &:hover {
-    border-color: #007bff;
-  }
-
-  &.active:hover {
-    background-color: #0a58ca;
-  }
-}
-
-input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-input[type="radio"] + span {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  background: white;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-input[type="radio"]:checked + span {
-  background: #1d1dbf;
-  border-color: #1d1dbf;
-}
-
-input[type="radio"]:checked + span::after {
-  content: "";
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-button {
-  background-color: #0d6efd;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 12px 24px; // Increase size for better visibility
-  font-size: 18px; // Increase font size for better readability
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-
-  &:hover {
-    background-color: #007bff;
-    transform: scale(1.05); // Slightly enlarge button on hover
-  }
-
-  &:disabled {
-    background-color: #ddd;
-    color: #aaa;
-    cursor: not-allowed;
-    transform: none;
-  }
-}
-
-.points-of-interest {
-  margin-top: 20px;
-}
-
-.poi-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  .poi-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    margin-right: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-
-    input[type="checkbox"] {
-      margin-right: 10px;
+    &.visible {
+      transform: translateX(0);
+      opacity: 1;
     }
 
     img {
-      margin-right: 10px;
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+  }
+
+  .select {
+    margin-bottom: 15px;
+
+    label {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 5px;
+
+      .fa {
+        margin-right: 8px;
+      }
     }
 
-    &.active {
-      background: linear-gradient(45deg, #1dbf73, #0d6efd);
-      color: white;
-      border-color: #007bff;
+    select {
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
+  }
+
+  .additional-fields {
+    margin-top: 20px;
+
+    p {
+      font-size: 16px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      input {
+        margin-right: 10px;
+      }
+
+      .fa {
+        margin-right: 5px;
+      }
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 10px;
+
+      &.active {
+        background-color: #e0ffe0;
+      }
+
+      input {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .points-of-interest {
+    margin-top: 20px;
+
+    .p-poi {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .poi-options {
+      display: flex;
+      flex-wrap: wrap;
+
+      .poi-container {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &.active {
+          background-color: #e0ffe0;
+        }
+
+        input {
+          margin-right: 10px;
+        }
+
+        img {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
     &:hover {
-      border-color: #007bff;
+      background-color: #0056b3;
+    }
+
+    &.show-less {
+      background-color: #dc3545;
+
+      &:hover {
+        background-color: #c82333;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+
+    .left, .right {
+      width: 100%;
+      transform: translateX(0);
+    }
+
+    .left.hidden {
+      display: none;
     }
   }
 }
 
-.p-poi {
-  font-size: 18px;
-  font-weight: 400;
-  font-style: normal;
-  margin-top: 13px;
+
+
+
+#root > div.app > main > div > div.featured > div > div.left > div:nth-child(2) > div:nth-child(2) > div > select{
+  color: black;
+}
+.css-1jqq78o-placeholder {
+  grid-area: 1 / 1 / 2 / 3;
+  color: #212529 !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  box-sizing: border-box;
 }

@@ -1,0 +1,87 @@
+.single-order {
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .contact-info {
+    p {
+      font-size: 1rem;
+      color: #333;
+      margin: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+
+      svg {
+        margin-right: 0.5rem;
+        color: #007bff;
+      }
+    }
+  }
+
+  .order-details {
+    .card {
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: scale(1.02);
+      }
+
+      .card-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 1rem;
+        border-bottom: 1px solid #007bff;
+      }
+
+      .card-body {
+        padding: 2rem;
+      }
+
+      .table {
+        margin-bottom: 0;
+        th {
+          background-color: #f1f1f1;
+        }
+        td, th {
+          text-align: left;
+        }
+      }
+    }
+
+    .card:nth-of-type(2) {
+      .card-header {
+        background-color: #28a745;
+      }
+    }
+
+    .text-center {
+      margin-top: 2rem;
+
+      .btn {
+        &.btn-primary {
+          background-color: #007bff;
+          border-color: #007bff;
+
+          &:hover {
+            background-color: #0056b3;
+            border-color: #004494;
+          }
+        }
+
+        &.btn-secondary {
+          background-color: #6c757d;
+          border-color: #6c757d;
+
+          &:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+          }
+        }
+      }
+    }
+  }
+}

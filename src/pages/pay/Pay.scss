@@ -1,5 +1,81 @@
-#submit{
-  margin-left: 42%;
-  margin-top: 10%;
-  background: blue;
+.pay {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
 }
+
+.pay-content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2rem;
+}
+
+.checkout-form {
+  flex: 2;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.order-summary {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.order-summary-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.order-summary-header h2 {
+  margin: 0;
+}
+
+.order-summary-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.summary-description {
+  font-weight: 500;
+}
+
+.summary-price {
+  font-weight: 500;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 2px solid #333;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #d9534f; // Change to your preferred total price color
+}
+
+// #button-text {
+//   background-color: #28a745; // Change to your preferred button color
+//   color: #fff;
+//   padding: 0.75rem 1.5rem;
+//   border: none;
+//   border-radius: 5px;
+//   cursor: pointer;
+//   font-size: 1rem;
+// }
+
+// #button-text:hover {
+//   background-color: #218838; // Darker shade for hover effect
+// }

@@ -239,22 +239,37 @@
 }
 
 
-.privacy-info {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #555;
+.payment-methods {
+  display: flex;
 
-  label {
+
+  gap: 10px;
+
+  .payment-button {
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-  input[type="checkbox"] {
-    margin-right: 10px;
-    accent-color: #0d6efd; /* Optional: style the checkbox color */
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    &.selected {
+      border-color: #007bff;
+      background-color: #e7f0ff;
+    }
+
+    svg {
+      margin-right: 5px;
+    }
   }
 }
+
 
 .buttons {
   display: flex;
@@ -290,4 +305,15 @@
       background-color: #007bff;
     }
   }
+}
+
+#root > div.app > main > div > div:nth-child(2) > form > button{
+  background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }

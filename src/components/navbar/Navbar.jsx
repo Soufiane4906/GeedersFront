@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Navbar.scss";
 import { FaUserCircle, FaCalendarAlt, FaPlus, FaEnvelope, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaMapMarkerAlt } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Navbar() {
   const [active, setActive] = useState(false);
@@ -81,7 +82,7 @@ function Navbar() {
           ) : (
             <>
               <Link to="/login" className="link">
-                <FaSignInAlt /> Sign in
+               <button className="login"><FaSignInAlt /> Sign in</button>
               </Link>
               <Link className="link" to="/register">
                 <button><FaUserPlus /> Join</button>
@@ -90,7 +91,7 @@ function Navbar() {
           )}
         </div>
       </div>
-      {(active || pathname !== "/" && pathname !== '/profile' && pathname !== '/mygigs') && (
+      {(active || pathname !== "/" && pathname !== '/profile' && pathname !== '/mygigs' && pathname !== '/add' && pathname !== '/messages' && pathname.startsWith("/message/") && pathname !== '/message' && pathname !== '/orders') && (
         <>
           <hr />
           <div className="menu">

@@ -1,10 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import {React , useEffect} from "react";
 import { Link, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import "./Message.scss";
 import { FaUserCircle } from 'react-icons/fa';
-import { BsFillTelephoneFill } from 'react-icons/bs';
 import { AiFillMessage } from 'react-icons/ai';
 
 const Message = () => {
@@ -13,15 +12,28 @@ const Message = () => {
   const queryClient = useQueryClient();
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["messages"],
+    queryKey: ["messages", id],
     queryFn: () => newRequest.get(`/messages/${id}`).then(res => res.data),
+    refetchInterval: 2000, // Refetch messages every 5 seconds
   });
-
 
   const mutation = useMutation({
     mutationFn: (message) => newRequest.post(`/messages`, message),
-    onSuccess: () => queryClient.invalidateQueries(["messages"]),
+    onSuccess: () => queryClient.invalidateQueries(["messages", id]),
   });
+  useEffect(() => {
+    const navbar = document.querySelector("#root > div.app > div.navbar");
+    if (navbar) {
+      const menu = navbar.querySelector("div.menu");
+      if (menu) {
+        if (location.pathname === "/messages") {
+          menu.style.display = "none";
+        } else {
+          menu.style.display = "block";
+        }
+      }
+    }
+  }, [location.pathname]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,21 +48,25 @@ const Message = () => {
     <div className="message">
       <div className="container">
         <span className="breadcrumbs">
-          <Link to="/messages">Messages</Link> &gt; John Doe
+          <Link to="/messages">Messages</Link>
         </span>
         {isLoading ? (
-          "Loading..."
+          <p>Loading...</p>
         ) : error ? (
-          "Error"
+          <p>Error fetching messages: {error.message}</p>
         ) : (
           <div className="messages">
             {data.map((m) => (
               <div className={m.userId === currentUser._id ? "owner item" : "item"} key={m._id}>
                 <img
-                  src="https://images.pexels.com/photos/270408/pexels-photo-270408.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                  src={m.userId.img || "https://via.placeholder.com/50"}
                   alt="User"
+                  className="user-img"
                 />
-                <p>{m.desc}</p>
+                <div className="message-content">
+                  <p className="username">{m.userId.username}</p>
+                  <p className="message-text">{m.desc}</p>
+                </div>
               </div>
             ))}
           </div>

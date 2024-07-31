@@ -4,7 +4,8 @@
   justify-content: center;
 
   .container {
-    width: 1400px;
+    width: 90%;
+    max-width: 1400px;
     padding: 30px 0px;
     display: flex;
     flex-direction: column;
@@ -26,16 +27,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px; /* Optional, adjust as needed */
-      position: fixed; /* Fixes the menu in place */
-      top: 40vh; /* Positions the menu at the top */
-      left: 0; /* Aligns the menu to the left side */
-      right: 40vh; /* Extends the menu to the right side */
-      background-color: white; /* Optional, to ensure readability against background */
-      z-index: 1000; /* Ensures the menu stays above other content */
-      padding: 10px; /* Optional, for spacing within the menu */
-      margin-inline-start: 40%;
-
+      margin-bottom: 20px;
+      background-color: white;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
 
       .left {
         display: flex;
@@ -109,9 +109,24 @@
 
     .cards {
       display: flex;
-      flex-direction: column; /* One item per row */
-      gap: 20px; /* Space between cards */
-      transition: all 0.3s ease; /* Smooth transition for animations */
+      flex-wrap: wrap; // Allows cards to wrap onto multiple lines
+      gap: 20px; // Space between cards
+      justify-content: center; // Center cards horizontally
+      transition: all 0.3s ease; // Smooth transition for animations
+    }
+
+    .map-container {
+      margin-top: 30px;
+      height: 400px; // Adjust height as needed
+      position: relative;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+
+      .map {
+        height: 100%;
+        width: 100%;
+        border: none;
+      }
     }
   }
 }

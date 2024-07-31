@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaApple, FaGoogle, FaPaypal } from "react-icons/fa";
 
 // toast.configure();
 
@@ -38,7 +39,11 @@ function Register() {
     isSeller: false,
     phone: "",
     desc: "",
+    //accountNumber and paymentmethod
+    accountNumber: "",
+    paymentMethod: "",
   });
+  debugger;
 
   const [cities, setCities] = useState([]);
   const [showCity, setShowCity] = useState(false);
@@ -80,6 +85,14 @@ function Register() {
   const handleIdentityChange = (e) => {
     setIdentityType(e.target.value);
   };
+  const [paymentMethod, setPaymentMethod] = useState('');
+
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+    setUser((prev) => ({ ...prev, paymentMethod: method }));
+  };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,6 +101,7 @@ function Register() {
     const versoImgUrl = files.verso ? await upload(files.verso) : "";
     const passportImgUrl = files.passport ? await upload(files.passport) : "";
 
+
     try {
       await newRequest.post("/auth/register", {
         ...user,
@@ -95,9 +109,16 @@ function Register() {
         imgRecto: rectoImgUrl,
         imgVerso: versoImgUrl,
         imgPassport: passportImgUrl,
+        accountNumber: user.accountNumber, // Include account number in the request
+        paymentMethod: user.paymentMethod, // Include payment method in the request
       });
       toast.success("Registration successful!");
-      navigate("/");
+       navigate("/login");
+
+      if (user.isSeller) {
+        toast.info("Your registration is complete. Your account will be verified soon. Meanwhile, you can access the platform to post your service.");
+
+      }
     } catch (err) {
       toast.error("There was an error during registration!");
       console.log(err);
@@ -278,18 +299,47 @@ function Register() {
 
             {user.isSeller && (
               <>
-                <label htmlFor="paypal">PayPal Account</label>
-                <input
-                  name="paypal"
-                  type="text"
-                  placeholder="PayPal Account"
-                  value={user.paypal}
-                  onChange={handleChange}
-                />
-              </>
-            )}
-            <div className="privacy-info">
-              <label>
+           <div className="payment-methods">
+            <label htmlFor="bank-transfer">Bank Transfer Method</label>
+        <button
+          type="button"
+          className={`payment-button ${paymentMethod === 'paypal' ? 'selected' : ''}`}
+          onClick={() => handlePaymentMethodChange('paypal')}
+        >
+          <FaPaypal /> PayPal
+        </button>
+        <button
+          type="button"
+          className={`payment-button ${paymentMethod === 'applepay' ? 'selected' : ''}`}
+          onClick={() => handlePaymentMethodChange('applepay')}
+        >
+          <FaApple /> Apple Pay
+        </button>
+        <button
+          type="button"
+          className={`payment-button ${paymentMethod === 'googlepay' ? 'selected' : ''}`}
+          onClick={() => handlePaymentMethodChange('googlepay')}
+        >
+          <FaGoogle /> Google Pay
+        </button>
+      </div>
+
+      {paymentMethod && (
+        <>
+          <label htmlFor="accountNumber">Account Number</label>
+          <input
+            id="accountNumber"
+            name="accountNumber"
+            type="text"
+            placeholder={`Enter your ${paymentMethod} account number`}
+            value={user.accountNumber}
+            onChange={(e) => setUser((prev) => ({ ...prev, accountNumber: e.target.value }))}
+          />
+        </>
+      )}    </>
+    )}
+            <div className="buttons">
+            <label>
                 <input
                   type="checkbox"
                   name="privacy"
@@ -298,10 +348,8 @@ function Register() {
                 />
                 I agree to the privacy policy and understand that my data will be handled responsibly.
               </label>
-            </div>
-            <div className="buttons">
               <button type="button" className="back-button" onClick={prevStep}>Back</button>
-              <button type="submit">Register</button>
+              <button type="submit"  disabled={!user.privacy}>Register</button>
             </div>
           </>
         );

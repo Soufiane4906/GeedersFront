@@ -1,70 +1,56 @@
 .footer {
-  display: flex;
-  justify-content: center;
-  color: #666;
-  margin: 50px 0px;
+  background-color: #f8f9fa;
+  color: #343a40;
+  margin-top: 8%;
 
-  img {
-    width: 24px;
-    height: 24px;
+  h5 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
   }
 
-  .container {
-    width: 1400px;
-    .top {
-      display: flex;
-      justify-content: space-between;
-      .item {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        h2 {
-          font-size: 16px;
-          color: #555;
-        }
-        span {
-          font-weight: 300;
-        }
+  .list-unstyled {
+    list-style: none;
+    padding: 0;
+
+    a {
+      color: #343a40;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
       }
     }
+  }
 
-    hr {
-      margin: 50px 0px;
-      height: 0;
-      border: 1px solid #ebe9e9;
+  .input-group {
+    max-width: 400px;
+    margin-top: 1rem;
+
+    .form-control {
+      border-radius: 0;
+      border: 1px solid #ced4da;
     }
-    .bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
 
-      .left {
-        width: max-content;
-        display: flex;
-        align-items: center;
-        gap: 20px;
+    .btn-primary {
+      border-radius: 0;
+      background-color: #007bff;
+      border: 1px solid #007bff;
 
-        span {
-          font-size: 13px;
-          white-space: nowrap;
-        }
+      &:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
       }
-      .right {
-        width: max-content;
-        display: flex;
-        align-items: center;
-        gap: 30px;
+    }
+  }
 
-        .social {
-          display: flex;
-          gap: 20px;
-        }
+  .social {
+    a {
+      color: #343a40;
+      font-size: 1.25rem;
+      transition: color 0.3s;
 
-        .link {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+      &:hover {
+        color: #007bff;
       }
     }
   }

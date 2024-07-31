@@ -58,10 +58,10 @@ function Home() {
             </p>
           </div>
 
-          <div className="item">
+          {/* <div className="item">
             <FaPlayCircle className="video-icon" />
             <video src="./img/video.mp4" controls />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="geeders-info">

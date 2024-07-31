@@ -1,20 +1,37 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "./Add.scss";
-import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDollarSign,
+  faInfoCircle,
+  faStarOfLife,
+  faClock,
+  faMapMarkerAlt,
+  faMapMarkedAlt,
+  faTachometerAlt,
+  faGlobe,
+  faCity,
+  faCar,
+  faMotorcycle,
+} from "@fortawesome/free-solid-svg-icons";
+import Slider from "react-slider";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faCity, faCar, faMotorcycle, faDollarSign, faGlobe, faInfoCircle, faStarOfLife, faClock, faMapPin } from '@fortawesome/free-solid-svg-icons';
-import Slider from 'react-slider';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-//select
-import Select from 'react-select';
+import "react-step-progress-bar/styles.css";
+import { ProgressBar, Step } from "react-step-progress-bar";
+import LocationMap from "./../../components/LocationMap";
+import "./Add.scss";
+import { ToastContainer, toast } from "react-toastify";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import { useNavigate } from "react-router-dom";
+
+import "react-toastify/dist/ReactToastify.css";
+//newrequest
+import axios from "axios";
+import newRequest from "../../utils/newRequest";
 
 const Add = () => {
-  const navigate = useNavigate();
+  const [step, setStep] = useState(1);
   const [selectedDates, setSelectedDates] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -29,21 +46,31 @@ const Add = () => {
     shortDesc: "",
     price: 0,
     features: [],
-    poi : [],
+    poi: [],
+    latitude: null,
+    longitude: null,
   });
   const [error, setError] = useState("");
   const [cities, setCities] = useState([]);
   const [showCity, setShowCity] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
+  const navigate = useNavigate();
 
   const handleCountryChange = async (e) => {
     const selectedCountry = e.target.value;
-    setFormData((prevData) => ({ ...prevData, country: selectedCountry, city: "" }));
+    setFormData((prevData) => ({
+      ...prevData,
+      country: selectedCountry,
+      city: "",
+    }));
     setShowCity(true);
     try {
-      const response = await axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
-        country: selectedCountry
-      });
+      const response = await axios.post(
+        "https://countriesnow.space/api/v0.1/countries/cities",
+        {
+          country: selectedCountry,
+        }
+      );
       setCities(response.data.data);
     } catch (error) {
       console.error("There was an error fetching the cities!", error);
@@ -75,12 +102,15 @@ const Add = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      const gigData = { ...formData, userId: currentUser._id, availabilityTimes: selectedDates };
+      const gigData = {
+        ...formData,
+        userId: currentUser._id,
+        availabilityTimes: selectedDates,
+      };
       await newRequest.post("/gigs", gigData);
       toast.success("Gig created successfully!");
       navigate("/myGigs");
@@ -88,17 +118,62 @@ const Add = () => {
       toast.error("Error creating gig: " + error.message);
     }
   };
-//handle poi
+
+  const nextStep = () => setStep(step + 1);
+  const prevStep = () => setStep(step - 1);
+
   return (
     <div className="add container">
-      <h1>Add New Post</h1>
+      <h1 style={{textAlign : 'center'}} >Add New Post</h1>
       <ToastContainer />
       {error && <div className="alert alert-danger">{error}</div>}
-      <div className="row">
-        <div className="col-md-6">
+      <ProgressBar percent={(step - 1) * 33}>
+        <Step>
+          {({ accomplished }) => (
+            <div
+              className={`indexedStep ${accomplished ? "accomplished" : ""}`}
+            >
+              1
+            </div>
+          )}
+        </Step>
+        <Step>
+          {({ accomplished }) => (
+            <div
+              className={`indexedStep ${accomplished ? "accomplished" : ""}`}
+            >
+              2
+            </div>
+          )}
+        </Step>
+        <Step>
+          {({ accomplished }) => (
+            <div
+              className={`indexedStep ${accomplished ? "accomplished" : ""}`}
+            >
+              3
+            </div>
+          )}
+        </Step>
+        <Step>
+          {({ accomplished }) => (
+            <div
+              className={`indexedStep ${accomplished ? "accomplished" : ""}`}
+            >
+              4
+            </div>
+          )}
+        </Step>
+      </ProgressBar>
+      {step === 1 && (
+        <div>
           <div className="form-group">
             <label htmlFor="title">
-              <FontAwesomeIcon icon={faTachometerAlt} style={{ marginInlineEnd: '2%' }} /> Title
+              <FontAwesomeIcon
+                icon={faTachometerAlt}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Title
             </label>
             <input
               type="text"
@@ -110,14 +185,42 @@ const Add = () => {
             />
           </div>
           <div className="form-group">
+            <label htmlFor="desc">
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Description
+            </label>
+            <textarea
+              name="desc"
+              className="form-control"
+              placeholder="Describe your service in detail"
+              rows="5"
+              onChange={handleChange}
+              required
+            ></textarea>
+          </div>
+          <button className="btn btn-primary"  style={{float :'right'}}  onClick={nextStep}>
+            Next
+          </button>
+        </div>
+      )}
+      {step === 2 && (
+        <div>
+          <div className="form-group">
             <label htmlFor="country">
-              <FontAwesomeIcon icon={faGlobe} style={{ marginInlineEnd: '2%' }} /> Country
+              <FontAwesomeIcon
+                icon={faGlobe}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Country
             </label>
             <select
               name="country"
               value={formData.country}
               onChange={handleCountryChange}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               className="country-city-selector"
             >
               <option value="">Select Country</option>
@@ -130,13 +233,17 @@ const Add = () => {
           </div>
           <div className="form-group">
             <label htmlFor="city">
-              <FontAwesomeIcon icon={faCity} style={{ marginInlineEnd: '2%' }} /> City
+              <FontAwesomeIcon
+                icon={faCity}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              City
             </label>
             <select
               name="city"
               value={formData.city}
               onChange={handleCityChange}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               disabled={!showCity}
               className="country-city-selector"
             >
@@ -149,8 +256,29 @@ const Add = () => {
             </select>
           </div>
           <div className="form-group">
+            <label htmlFor="location">
+              <FontAwesomeIcon
+                icon={faMapMarkerAlt}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Select Location
+            </label>
+            <LocationMap setFormData={setFormData} formData={formData} />
+          </div>
+          <button className="btn btn-secondary" onClick={prevStep}>
+            Back
+          </button>
+          <button className="btn btn-primary"  style={{float :'right'}}  onClick={nextStep}>
+            Next
+          </button>
+        </div>
+      )}
+      {step === 3 && (
+        <div>
+          <div className="form-group">
             <label htmlFor="hasCar">
-              <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: '2%' }} /> Will you have a car?
+              <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: "2%" }} />{" "}
+              Will you have a car?
             </label>
             <select
               name="hasCar"
@@ -163,25 +291,44 @@ const Add = () => {
               <option value="false">No</option>
             </select>
             {formData.hasCar === "true" && (
-              <div className="priceField mt-2" style={{ marginInlineEnd: '2%' }}>
-                <FontAwesomeIcon icon={faDollarSign} style={{ color: 'green' }} />
-                <label htmlFor="carPrice" style={{ color: 'green' }}>Car Price per Hour</label>
+              <div className="priceField mt-2">
+                <label htmlFor="carPrice">
+                  <FontAwesomeIcon
+                    icon={faDollarSign}
+                    style={{ color: "green", marginInlineEnd: "2%" }}
+                  />{" "}
+                  Car Price per Hour
+                </label>
                 <Slider
                   value={formData.carPrice}
-                  onChange={(value) => setFormData((prevData) => ({ ...prevData, carPrice: value }))}
+                  onChange={(value) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      carPrice: value,
+                    }))
+                  }
                   min={0}
                   max={30}
                   step={1}
-                  renderTrack={(props) => <div {...props} className="slider-track" />}
-                  renderThumb={(props, state) => <div {...props} className="slider-thumb">{state.valueNow}</div>}
+                  renderTrack={(props) => (
+                    <div {...props} className="slider-track" />
+                  )}
+                  renderThumb={(props, state) => (
+                    <div {...props} className="slider-thumb">
+                      {state.valueNow}
+                    </div>
+                  )}
                 />
               </div>
             )}
           </div>
-          <br />
           <div className="form-group">
             <label htmlFor="hasScooter">
-              <FontAwesomeIcon icon={faMotorcycle} style={{ marginInlineEnd: '2%' }} /> Will you have a scooter?
+              <FontAwesomeIcon
+                icon={faMotorcycle}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Will you have a scooter?
             </label>
             <select
               name="hasScooter"
@@ -194,35 +341,58 @@ const Add = () => {
               <option value="false">No</option>
             </select>
             {formData.hasScooter === "true" && (
-              <div className="priceField mt-2" style={{ color: 'green' }}>
-                <FontAwesomeIcon icon={faDollarSign} style={{ marginInlineEnd: '2%' }} />
-                <label htmlFor="scooterPrice" style={{ color: 'green' }}>Scooter Price per Hour</label>
+              <div className="priceField mt-2">
+                <label htmlFor="scooterPrice">
+                  <FontAwesomeIcon
+                    icon={faDollarSign}
+                    style={{ color: "green", marginInlineEnd: "2%" }}
+                  />{" "}
+                  Scooter Price per Hour
+                </label>
                 <Slider
                   value={formData.scooterPrice}
-                  onChange={(value) => setFormData((prevData) => ({ ...prevData, scooterPrice: value }))}
+                  onChange={(value) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      scooterPrice: value,
+                    }))
+                  }
                   min={0}
                   max={30}
                   step={1}
-                  renderTrack={(props) => <div {...props} className="slider-track" />}
-                  renderThumb={(props, state) => <div {...props} className="slider-thumb">{state.valueNow}</div>}
+                  renderTrack={(props) => (
+                    <div {...props} className="slider-track" />
+                  )}
+                  renderThumb={(props, state) => (
+                    <div {...props} className="slider-thumb">
+                      {state.valueNow}
+                    </div>
+                  )}
                 />
               </div>
             )}
           </div>
-          <br />
           <div className="form-group">
             <label htmlFor="availabilityTimes">
-              <FontAwesomeIcon icon={faClock} style={{ marginInlineEnd: '2%' }} /> Available Times
+              <FontAwesomeIcon
+                icon={faClock}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Available Times
             </label>
             <DatePicker
               selected={selectedDates[0]} // Display the first selected date
               onChange={(dates) => {
                 if (Array.isArray(dates)) {
                   setSelectedDates(dates);
-                  handleChange({ target: { name: "availabilityTimes", value: dates } });
+                  handleChange({
+                    target: { name: "availabilityTimes", value: dates },
+                  });
                 } else {
                   setSelectedDates([dates]);
-                  handleChange({ target: { name: "availabilityTimes", value: [dates] } });
+                  handleChange({
+                    target: { name: "availabilityTimes", value: [dates] },
+                  });
                 }
               }}
               onSelect={(date) => setSelectedDates([...selectedDates, date])}
@@ -235,14 +405,23 @@ const Add = () => {
               required
             />
           </div>
-          <button className="btn btn-success mt-3" onClick={handleSubmit}>
-            Create
+          <button className="btn btn-secondary" onClick={prevStep}>
+            Back
+          </button>
+          <button className="btn btn-primary"  style={{float :'right'}}  onClick={nextStep}>
+            Next
           </button>
         </div>
-        <div className="col-md-6">
+      )}
+      {step === 4 && (
+        <div>
           <div className="form-group">
             <label htmlFor="shortDesc">
-              <FontAwesomeIcon icon={faInfoCircle} style={{ marginInlineEnd: '2%' }} /> Short Description about yourself
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Short Description about yourself
             </label>
             <textarea
               name="shortDesc"
@@ -254,27 +433,40 @@ const Add = () => {
             ></textarea>
           </div>
           <div className="form-group">
-            <label htmlFor="price" style={{ color: 'green' }}>
-              <FontAwesomeIcon icon={faDollarSign} style={{ marginInlineEnd: '2%' }} /> Price / hour
+            <label htmlFor="price" style={{ color: "green" }}>
+              <FontAwesomeIcon
+                icon={faDollarSign}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Price / hour
             </label>
             <Slider
               value={formData.price}
-              onChange={(value) => setFormData((prevData) => ({ ...prevData, price: value }))}
+              onChange={(value) =>
+                setFormData((prevData) => ({ ...prevData, price: value }))
+              }
               min={0}
               max={30}
               step={1}
-              renderTrack={(props) => <div {...props} className="slider-track" />}
-              renderThumb={(props, state) => <div {...props} className="slider-thumb">{state.valueNow}</div>}
+              renderTrack={(props) => (
+                <div {...props} className="slider-track" />
+              )}
+              renderThumb={(props, state) => (
+                <div {...props} className="slider-thumb">
+                  {state.valueNow}
+                </div>
+              )}
             />
           </div>
-          <br />
           <div className="form-group">
             <label htmlFor="addFeature">
               <FontAwesomeIcon icon={faStarOfLife} /> Add Features
             </label>
             <form className="addFeatureForm" onSubmit={handleFeature}>
               <input type="text" className="form-control" placeholder=" " />
-              <button type="submit" className="btn btn-primary mt-2">Add</button>
+              <button type="submit" className="btn btn-primary mt-2">
+                Add
+              </button>
             </form>
             <div className="addedFeatures mt-2">
               {formData.features.map((feature, index) => (
@@ -284,7 +476,9 @@ const Add = () => {
                     onClick={() =>
                       setFormData((prevData) => ({
                         ...prevData,
-                        features: prevData.features.filter((f) => f !== feature),
+                        features: prevData.features.filter(
+                          (f) => f !== feature
+                        ),
                       }))
                     }
                   >
@@ -294,72 +488,102 @@ const Add = () => {
               ))}
             </div>
           </div>
-
           <div className="form-group">
-          <div className="points-of-interest">
-              <p className="p-poi">
-                <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
-              </p>{" "}
-              <div className="poi-options">
-                {pointsOfInterestOptions.map((poi) => (
-                  <label
-                    key={poi.name}
-                    className={`poi-container ${
-                      selectedPointsOfInterest.includes(poi.name)
-                        ? "active"
-                        : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={poi.name}
-                      checked={selectedPointsOfInterest.includes(poi.name)}
-                      onChange={(e) => {
-                        const { value, checked } = e.target;
-                        setSelectedPointsOfInterest((prev) =>
-                          checked
-                            ? [...prev, value]
-                            : prev.filter((poi) => poi !== value)
-                        );
-                      }}
-                    />
-                    <img
-                      src={poi.icon}
-                      alt={poi.name}
-                      style={{ width: 30, height: 30, marginRight: 10 }}
-                    />
-                    {poi.name}
-                  </label>
-                ))}
-              </div>
+            <label htmlFor="pointsOfInterest">
+              <FontAwesomeIcon
+                icon={faMapMarkedAlt}
+                style={{ marginInlineEnd: "2%" }}
+              />{" "}
+              Points of Interest
+            </label>
+            <div className="points-of-interest">
+              {pointsOfInterestOptions.map((poi) => (
+                <label
+                  key={poi.name}
+                  className={`poi-container ${
+                    selectedPointsOfInterest.includes(poi.name) ? "active" : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    value={poi.name}
+                    checked={selectedPointsOfInterest.includes(poi.name)}
+                    onChange={(e) => {
+                      const { value, checked } = e.target;
+                      setSelectedPointsOfInterest((prev) =>
+                        checked
+                          ? [...prev, value]
+                          : prev.filter((poi) => poi !== value)
+                      );
+                    }}
+                  />
+                  <img
+                    src={poi.icon}
+                    alt={poi.name}
+                    style={{ width: 30, height: 30, marginRight: 10 }}
+                  />
+                  {poi.name}
+                </label>
+              ))}
             </div>
+          </div>
+          <button className="btn btn-secondary" onClick={prevStep}>
+            Back
+          </button>
+          <button className="btn btn-success" style={{float :'right'}} onClick={handleSubmit}>
+            Create
+          </button>
         </div>
-
-
-
-        </div>
-      </div>
+      )}
     </div>
   );
 };
 
 export default Add;
 const CustomOption = (props) => (
-  <div {...props.innerProps} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-    <img src={props.data.icon} alt={props.data.name} style={{ width: 20, height: 20, marginRight: 10 }} />
+  <div
+    {...props.innerProps}
+    style={{ display: "flex", alignItems: "center", padding: "10px" }}
+  >
+    <img
+      src={props.data.icon}
+      alt={props.data.name}
+      style={{ width: 20, height: 20, marginRight: 10 }}
+    />
     {props.data.label}
   </div>
 );
-const pointsOfInterestOptions  = [
+const pointsOfInterestOptions = [
   { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
   { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
-  { name: "Night Club", icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000" },
-  { name: "Park", icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000" },
-  { name: "Shopping Mall", icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png" },
-  { name: "Theatre", icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000" },
-  { name: "Amusement Park", icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000" },
-  { name: "Restaurant", icon: "https://img.icons8.com/ios/50/000000/restaurant.png" },
-  { name: "Hiking", icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000" },
+  {
+    name: "Night Club",
+    icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000",
+  },
+  {
+    name: "Park",
+    icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000",
+  },
+  {
+    name: "Shopping Mall",
+    icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png",
+  },
+  {
+    name: "Theatre",
+    icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000",
+  },
+  {
+    name: "Amusement Park",
+    icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000",
+  },
+  {
+    name: "Restaurant",
+    icon: "https://img.icons8.com/ios/50/000000/restaurant.png",
+  },
+  {
+    name: "Hiking",
+    icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000",
+  },
 ];
 const countriesData = [
   { name: "France", flag: "🇫🇷" },
@@ -469,7 +693,7 @@ const countriesData = [
   { name: "Lesotho", flag: "🇱🇸" },
   { name: "Swaziland", flag: "🇸🇿" },
   { name: "Burundi", flag: "🇧🇮" },
-  { name: "Rwanda", flag: "🇷🇼"},
+  { name: "Rwanda", flag: "🇷🇼" },
   //come on for the last time
   { name: "Antarctica", flag: "🇦🇶" },
   { name: "Greenland", flag: "🇬🇱" },
@@ -479,6 +703,5 @@ const countriesData = [
   { name: "United Kingdom", flag: "🇬🇧" },
   { name: "Ireland", flag: "🇮🇪" },
   //you understand me ?
-
 ];
 countriesData.sort((a, b) => a.name.localeCompare(b.name));

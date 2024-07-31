@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@stripe/react-stripe-js": "^1.16.4",
@@ -18,7 +19,10 @@
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.18",
+    "html2canvas": "^1.4.1",
     "infinite-react-carousel": "^1.2.11",
+    "jspdf": "^2.5.1",
+    "leaflet": "^1.9.4",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.4",
@@ -26,9 +30,11 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
-    "react-router-dom": "^6.8.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.25.1",
     "react-select": "^5.8.0",
     "react-slider": "^2.0.6",
+    "react-step-progress-bar": "^1.0.3",
     "react-toastify": "^10.0.5",
     "react-world-flags": "^1.6.0",
     "sass": "^1.58.0"

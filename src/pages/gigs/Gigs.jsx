@@ -6,6 +6,7 @@ import newRequest from "../../utils/newRequest";
 import { useLocation } from "react-router-dom";
 import { format, parseISO } from 'date-fns';
 import Loading from "../../components/loading/Loading";
+import InteractiveMap from "../../components/InteractiveMap";
 
 const formatDate = (dateString) => {
   const parsedDate = parseISO(dateString);
@@ -29,6 +30,14 @@ function Gigs() {
         )
         .then((res) => res.data),
   });
+
+  const locations = data ? data.map(gig => ({
+    _id: gig._id,
+    title: gig.title,
+    latitude: gig.latitude,
+    longitude: gig.longitude,
+    description: gig.desc,
+  })) : [];
 
   const reSort = (type) => {
     setSort(type);
@@ -60,13 +69,6 @@ function Gigs() {
         <h1>Available Guides</h1>
         <div className="menu">
           <div className="left">
-            <span>City</span>
-            <input
-              type="text"
-              placeholder="City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            />
             <span>Country</span>
             <input
               type="text"
@@ -74,22 +76,26 @@ function Gigs() {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             />
+            <span>City</span>
+            <input
+              type="text"
+              placeholder="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
             <button onClick={apply}>Apply</button>
           </div>
           <div className="right">
+            <br />
             <span className="sortBy">Sort by</span>
             <span className="sortType">
-              {sort === "sales"
-                ? "Best Selling"
-                : sort === "popularity"
-                ? "Popular"
-                : "Newest"}
+              {sort === "sales" ? "Best Selling" : sort === "popularity" ? "Popular" : "Newest"}
             </span>
             <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
             {open && (
               <div className="rightMenu">
                 <span onClick={() => reSort("createdAt")}>Newest</span>
-                <span onClick={() => reSort("sales")}>Best Selling</span>
+                <span onClick={() => reSort("sales")}>Best</span>
                 <span onClick={() => reSort("popularity")}>Popular</span>
               </div>
             )}
@@ -102,6 +108,7 @@ function Gigs() {
             ? "Something went wrong!"
             : data.map((gig) => <GigCard key={gig._id} item={gig} />)}
         </div>
+        <InteractiveMap locations={locations} />
       </div>
     </div>
   );

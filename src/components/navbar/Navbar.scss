@@ -43,7 +43,7 @@
       display: flex;
       align-items: center;
       gap: 24px;
-      font-family: "Montserrat", sans-serif;
+      font-family: "Nunito", sans-serif;
       font-weight: 500;
 
       span {
@@ -110,7 +110,10 @@
       }
 
       button {
-        color: white;
+
+      }
+      .login {
+          color: white;
         padding: 10px 20px;
         border-radius: 5px;
         border: 1px solid white;
@@ -118,10 +121,10 @@
         cursor: pointer;
 
         &:hover {
-          background-color: #1dbf73;
+          background-color: #fff;
+          color: #1dbf73;
           border-color: #1dbf73;
-        }
-      }
+        }}
     }
   }
 
@@ -139,7 +142,7 @@
     justify-content: space-between;
     color: gray;
     font-weight: 300;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Nunito", sans-serif;
 
     .menuLink {
       position: relative;

@@ -14,13 +14,293 @@ import {
   faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Featured.scss";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaSearchPlus } from "react-icons/fa";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons/faChevronUp";
 import { FaRoadCircleCheck } from "react-icons/fa6";
 import { faRoad } from "@fortawesome/free-solid-svg-icons/faRoad";
 import { faMapMarkedAlt } from "@fortawesome/free-solid-svg-icons/faMapMarkedAlt";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 
+
+function Featured() {
+  const [input, setInput] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [showCity, setShowCity] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [showVehicleOptions, setShowVehicleOptions] = useState(false);
+  const [selectedVehicles, setSelectedVehicles] = useState([]);
+  const [hasVehicle, setHasVehicle] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const navigate = useNavigate();
+  const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
+  const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
+  const [backgroundImage, setBackgroundImage] = useState(
+    "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+  );
+
+  const handleCountryChange = async (e) => {
+    const selectedCountry = e.target.value;
+    setCountry(selectedCountry);
+    setShowCity(true);
+    setCity("");
+    try {
+      const response = await axios.post(
+        "https://countriesnow.space/api/v0.1/countries/cities",
+        {
+          country: selectedCountry,
+        }
+      );
+      setCities(response.data.data);
+    } catch (error) {
+      console.error("There was an error fetching the cities!", error);
+    }
+  };
+  const handleMoreDetailsClick = () => {
+    setShowPointsOfInterest((prev) => !prev);
+    setBackgroundImage((prev) =>
+      prev ===
+      "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+        ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
+        : "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+    );
+  };
+
+  const handleCityChange = (e) => {
+    const selectedCity = e.target.value;
+    setCity(selectedCity);
+  };
+
+  const handleLanguageChange = (selectedOptions) => {
+    setSelectedLanguages(selectedOptions.map((option) => option.value));
+  };
+
+  const handleVehicleChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedVehicles((prevVehicles) =>
+      checked
+        ? [...prevVehicles, value]
+        : prevVehicles.filter((vehicle) => vehicle !== value)
+    );
+  };
+
+  const handleVehicleMenuChange = (e) => {
+    setShowVehicleOptions(e.target.value === "yes");
+  };
+
+  const handleSubmit = () => {
+    if (!country) {
+      alert("Please select both country and city.");
+      return;
+    }
+
+    // Create a query string for vehicles if selected
+    const vehicleParam =
+      selectedVehicles.length > 0
+        ? `vehicles=${selectedVehicles.join(",")}`
+        : "";
+
+    // Build the query string for the URL
+    const queryParams = new URLSearchParams({
+      country,
+      city,
+      languages: selectedLanguages.join(","),
+      // ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
+    });
+
+    // Navigate to the new URL
+    navigate(`/gigs?${queryParams.toString()}`);
+  };
+  const [isSwapped, setIsSwapped] = useState(false);
+
+  return (
+    <div className={`featured ${isSwapped ? 'swapped' : ''}`}>
+    <div className="container">
+      <div className={`left ${isSwapped ? 'hidden' : ''}`}>
+        <h1>
+          Discover the perfect <span>guide</span> for your adventure
+        </h1>
+        <div className="row">
+          <div className="col-md-4">
+            <div className="select">
+              <label>
+                <FontAwesomeIcon icon={faGlobe} /> Country:
+              </label>
+              <select
+                required
+                onChange={handleCountryChange}
+                style={{ width: '100%' }}
+              >
+                <option value="">Select Country</option>
+                {countriesData.map((country) => (
+                  <option key={country.name} value={country.name}>
+                    {country.flag} {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="select">
+              <label>
+                <FontAwesomeIcon icon={faCity} /> City:
+              </label>
+              <select
+                required
+                onChange={handleCityChange}
+                style={{ width: '100%' }}
+                disabled={!showCity}
+              >
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="select">
+              <label>
+                <FontAwesomeIcon icon={faLanguage} /> Languages:
+              </label>
+              <Select
+                name="languages"
+                options={languageOptions}
+                isMulti
+                value={languageOptions.filter((option) =>
+                  selectedLanguages.includes(option.value)
+                )}
+                onChange={handleLanguageChange}
+                styles={{ container: (base) => ({ ...base, width: '100%' }) }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-9">
+            <div className="additional-fields">
+              <p>
+                <FontAwesomeIcon icon={faRoad} style={{ marginRight: '5px' }} />
+                With Car Options?
+              </p>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="vehicleMenu"
+                    value="yes"
+                    onChange={handleVehicleMenuChange}
+                  />
+                  Yes
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="vehicleMenu"
+                    value="no"
+                    onChange={handleVehicleMenuChange}
+                  />
+                  No
+                </label>
+              </div>
+              {showVehicleOptions && (
+                <div>
+                  <label
+                    className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value="scooter"
+                      checked={selectedVehicles.includes('scooter')}
+                      onChange={handleVehicleChange}
+                    />
+                    <FontAwesomeIcon icon={faMotorcycle} /> Scooter
+                  </label>
+                  <label
+                    className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value="car"
+                      checked={selectedVehicles.includes('car')}
+                      onChange={handleVehicleChange}
+                    />
+                    <FontAwesomeIcon icon={faCar} /> Car
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <button
+        style={{background :'#ffc107' , marginRight: '4%'} }
+        onClick={() => {
+
+          handleMoreDetailsClick();
+          setIsSwapped(!isSwapped);
+        }}>
+          {showPointsOfInterest ? (
+            <>
+              <FontAwesomeIcon icon={faChevronUp} />
+              Show Less
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faChevronDown} />
+              Would you like a guide with specific places or volunteers?
+            </>
+          )}
+        </button>
+
+        {showPointsOfInterest && (
+          <div className="points-of-interest">
+            <p className="p-poi">
+              <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
+            </p>
+            <div className="poi-options">
+              {pointsOfInterestOptions.map((poi) => (
+                <label
+                  key={poi.name}
+                  className={`poi-container ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}
+                >
+                  <input
+                    type="checkbox"
+                    value={poi.name}
+                    checked={selectedPointsOfInterest.includes(poi.name)}
+                    onChange={(e) => {
+                      const { value, checked } = e.target;
+                      setSelectedPointsOfInterest((prev) =>
+                        checked
+                          ? [...prev, value]
+                          : prev.filter((poi) => poi !== value)
+                      );
+                    }}
+                  />
+                  <img
+                    src={poi.icon}
+                    alt={poi.name}
+                    style={{ width: 30, height: 30, marginRight: 10 }}
+                  />
+                  {poi.name}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+        <button onClick={handleSubmit}>Search <FaSearchPlus></FaSearchPlus></button>
+      </div>
+      <div className={`right ${isSwapped ? 'visible' : ''}`}
+           style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <img src="./img/man.png" alt="" />
+      </div>
+    </div>
+  </div>
+);
+};
+
+export default Featured;
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
@@ -238,293 +518,3 @@ const countriesData = [
   //you understand me ?
 ];
 countriesData.sort((a, b) => a.name.localeCompare(b.name));
-
-function Featured() {
-  const [input, setInput] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [showCity, setShowCity] = useState(false);
-  const [cities, setCities] = useState([]);
-  const [showVehicleOptions, setShowVehicleOptions] = useState(false);
-  const [selectedVehicles, setSelectedVehicles] = useState([]);
-  const [hasVehicle, setHasVehicle] = useState("");
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const navigate = useNavigate();
-  const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
-  const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
-  const [backgroundImage, setBackgroundImage] = useState(
-    "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
-  );
-
-  const handleCountryChange = async (e) => {
-    const selectedCountry = e.target.value;
-    setCountry(selectedCountry);
-    setShowCity(true);
-    setCity("");
-    try {
-      const response = await axios.post(
-        "https://countriesnow.space/api/v0.1/countries/cities",
-        {
-          country: selectedCountry,
-        }
-      );
-      setCities(response.data.data);
-    } catch (error) {
-      console.error("There was an error fetching the cities!", error);
-    }
-  };
-  const handleMoreDetailsClick = () => {
-    setShowPointsOfInterest((prev) => !prev);
-    setBackgroundImage((prev) =>
-      prev ===
-      "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
-        ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
-        : "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
-    );
-  };
-
-  const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    setCity(selectedCity);
-  };
-
-  const handleLanguageChange = (selectedOptions) => {
-    setSelectedLanguages(selectedOptions.map((option) => option.value));
-  };
-
-  const handleVehicleChange = (e) => {
-    const { value, checked } = e.target;
-    setSelectedVehicles((prevVehicles) =>
-      checked
-        ? [...prevVehicles, value]
-        : prevVehicles.filter((vehicle) => vehicle !== value)
-    );
-  };
-
-  const handleVehicleMenuChange = (e) => {
-    setShowVehicleOptions(e.target.value === "yes");
-  };
-
-  const handleSubmit = () => {
-    if (!country) {
-      alert("Please select both country and city.");
-      return;
-    }
-
-    // Create a query string for vehicles if selected
-    const vehicleParam =
-      selectedVehicles.length > 0
-        ? `vehicles=${selectedVehicles.join(",")}`
-        : "";
-
-    // Build the query string for the URL
-    const queryParams = new URLSearchParams({
-      country,
-      city,
-      languages: selectedLanguages.join(","),
-      // ...(vehicleParam && { vehicles: vehicleParam }) // Include the vehicles parameter only if it's not empty
-    });
-
-    // Navigate to the new URL
-    navigate(`/gigs?${queryParams.toString()}`);
-  };
-
-  return (
-    <div className="featured">
-      <div className="container">
-        <div className="left">
-          <h1>
-            Discover the perfect <span>guide</span> for your adventure
-          </h1>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="select">
-                <label>
-                  <FontAwesomeIcon icon={faGlobe} /> Country:
-                </label>
-                <select
-                  required
-                  onChange={handleCountryChange}
-                  style={{ width: "100%" }}
-                >
-                  <option value="">Select Country</option>
-                  {countriesData.map((country) => (
-                    <option key={country.name} value={country.name}>
-                      {country.flag} {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="select">
-                <label>
-                  <FontAwesomeIcon icon={faCity} /> City:
-                </label>
-                <select
-                  required
-                  onChange={handleCityChange}
-                  style={{ width: "100%" }}
-                  disabled={!showCity}
-                >
-                  <option value="">Select City</option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="select">
-                <label>
-                  <FontAwesomeIcon icon={faLanguage} /> Languages:
-                </label>
-                <Select
-                  r
-                  name="languages"
-                  options={languageOptions}
-                  isMulti
-                  value={languageOptions.filter((option) =>
-                    selectedLanguages.includes(option.value)
-                  )}
-                  onChange={handleLanguageChange}
-                  styles={{ container: (base) => ({ ...base, width: "100%" }) }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-9">
-              <div className="additional-fields">
-                <p>
-                  {" "}
-                  <FontAwesomeIcon
-                    icon={faRoad}
-                    style={{ marginRight: "5px" }}
-                  />
-                  With Car Options ?
-                </p>
-                <div>
-                  <label>
-                    <input
-                      type="radio"
-                      name="vehicleMenu"
-                      value="yes"
-                      onChange={handleVehicleMenuChange}
-                    />
-                    <span></span> Yes
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="vehicleMenu"
-                      value="no"
-                      onChange={handleVehicleMenuChange}
-                    />
-                    <span></span> No
-                  </label>
-                </div>
-                {showVehicleOptions && (
-                  <div>
-                    <label
-                      className={`checkbox-container ${
-                        selectedVehicles.includes("scooter") ? "active" : ""
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        value="scooter"
-                        checked={selectedVehicles.includes("scooter")}
-                        onChange={handleVehicleChange}
-                      />
-                      <FontAwesomeIcon icon={faMotorcycle} /> Scooter
-                    </label>
-                    <label
-                      className={`checkbox-container ${
-                        selectedVehicles.includes("car") ? "active" : ""
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        value="car"
-                        checked={selectedVehicles.includes("car")}
-                        onChange={handleVehicleChange}
-                      />
-                      <FontAwesomeIcon icon={faCar} /> Car
-                    </label>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <button onClick={handleMoreDetailsClick}>
-            {showPointsOfInterest ? (
-              <>
-                <FontAwesomeIcon icon={faChevronUp} />
-                {" Show Less"}
-              </>
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faChevronDown} />
-                {
-                  "     Would you like a guide with specific places or volunteers ?"
-                }
-              </>
-            )}
-          </button>
-
-          {showPointsOfInterest && (
-            <div className="points-of-interest">
-              <p className="p-poi">
-                <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
-              </p>{" "}
-              <div className="poi-options">
-                {pointsOfInterestOptions.map((poi) => (
-                  <label
-                    key={poi.name}
-                    className={`poi-container ${
-                      selectedPointsOfInterest.includes(poi.name)
-                        ? "active"
-                        : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      value={poi.name}
-                      checked={selectedPointsOfInterest.includes(poi.name)}
-                      onChange={(e) => {
-                        const { value, checked } = e.target;
-                        setSelectedPointsOfInterest((prev) =>
-                          checked
-                            ? [...prev, value]
-                            : prev.filter((poi) => poi !== value)
-                        );
-                      }}
-                    />
-                    <img
-                      src={poi.icon}
-                      alt={poi.name}
-                      style={{ width: 30, height: 30, marginRight: 10 }}
-                    />
-                    {poi.name}
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-          <button onClick={handleSubmit}>Search</button>
-        </div>
-        <div
-          className="right"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        >
-          <img src="./img/man.png" alt="" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default Featured;

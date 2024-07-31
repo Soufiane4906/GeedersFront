@@ -1,39 +1,32 @@
-import React, { useState , useEffect} from "react";
-import "./Gig.scss";
-import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import newRequest from "../../utils/newRequest";
-import Reviews from "../../components/reviews/Reviews";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaMapMarkerAlt, FaCheck, FaStar, FaRegCalendarAlt, FaRegClock, FaRegFlag } from "react-icons/fa";
-import { format, parseISO } from 'date-fns';
-import { faCar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const formatDate = (dateString) => {
-  const parsedDate = parseISO(dateString);
-  return format(parsedDate, 'dd/MM/yyyy ');
-};
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // Updated import
+import { useQuery } from '@tanstack/react-query';
+import newRequest from '../../utils/newRequest';
+import { FaMapMarkerAlt, FaStar, FaRegFlag, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar } from '@fortawesome/free-solid-svg-icons';
+import Reviews from '../../components/reviews/Reviews';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Gig.scss';
 
 function Gig() {
   const { id } = useParams();
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const [selectedVehicle, setSelectedVehicle] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
-  const [hours, setHours] = useState(1); // Default to 1 hour
+  const [hours, setHours] = useState(1);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ["gig"],
-    queryFn: () =>
-      newRequest.get(`/gigs/single/${id}`).then((res) => res.data),
+    queryKey: ["gig", id],
+    queryFn: () => newRequest.get(`/gigs/single/${id}`).then((res) => res.data),
   });
 
   const userId = data?.userId;
-
   const { isLoading: isLoadingUser, error: errorUser, data: dataUser } = useQuery({
-    queryKey: ["user"],
-    queryFn: () =>
-      newRequest.get(`/users/${userId}`).then((res) => res.data),
+    queryKey: ["user", userId],
+    queryFn: () => newRequest.get(`/users/${userId}`).then((res) => res.data),
     enabled: !!userId,
   });
 
@@ -50,48 +43,53 @@ function Gig() {
   };
 
   const calculateTotalPrice = (hours, vehicle) => {
-    const pricePerHour = data?.price || 10; // Default price if not provided
     let additionalPrice = 0;
-
-    // Calculate base price based on hours
-    let basePrice = pricePerHour * hours;
-
-    // Apply discount logic
-    if (hours > 7) {
-      basePrice -= pricePerHour * 2; // Discount for more than 7 hours
-    } else if (hours > 5) {
-      basePrice -= pricePerHour; // Discount for 6-7 hours
+    if (vehicle === 'car' && data?.carPrice) {
+      additionalPrice = data.carPrice;
+    } else if (vehicle === 'moto' && data?.scooterPrice) {
+      additionalPrice = data.scooterPrice;
     }
-
-    // Add vehicle-specific costs
-    let vehiclePricePerHour = 0;
-    if (vehicle === "car") {
-      vehiclePricePerHour = data.carPrice || 10;
-    } else if (vehicle === "moto") {
-      vehiclePricePerHour = data.scooterPrice || 10;
-    }
-    additionalPrice = vehiclePricePerHour * hours;
-
-    // Set the total price
-    setTotalPrice(basePrice + additionalPrice);
+    const newTotalPrice = data?.price * hours + additionalPrice;
+    setTotalPrice(newTotalPrice);
   };
 
   useEffect(() => {
-    // Initialize totalPrice with data?.price if data is available
     if (data?.price) {
       calculateTotalPrice(hours, selectedVehicle);
     }
   }, [data, selectedVehicle, hours]);
 
+  const handleConfirmBooking = () => {
+    if (!privacyAccepted) {
+      toast.error("Please accept the privacy conditions.");
+      return;
+    }
+
+    // Store booking details in sessionStorage
+    sessionStorage.setItem('bookingDetails', JSON.stringify({
+      id,
+      totalPrice,
+      price : data?.price,
+      city: data?.city,
+      country: data?.country,
+      carPrice: data?.carPrice || 0,
+      scooterPrice: data?.scooterPrice || 0,
+      hours,
+      selectedVehicle, // Add selected vehicle
+    }));
+
+    toast.success("Redirecting to payment...");
+    navigate(`/pay/${id}`); // Use navigate instead of history.push
+  };
+
   if (isLoading || isLoadingUser) return <div>Loading...</div>;
   if (error || errorUser) return <div>Something went wrong!</div>;
-
   return (
     <div className="gig container">
       <div className="container">
         <div className="left">
           <span className="breadcrumbs">
-            <FaMapMarkerAlt /> {data.country} {">"} {data.city}
+            <FaMapMarkerAlt /> {data?.country} {">"} {data?.city}
           </span>
           {isLoadingUser ? (
             "Loading..."
@@ -101,15 +99,15 @@ function Gig() {
             <div className="user">
               <img
                 className="pp"
-                src={dataUser.img || "/img/noavatar.jpg"}
-                alt=""
+                src={dataUser?.img || "/img/noavatar.jpg"}
+                alt={dataUser?.username || "User Avatar"}
               />
-              <span className="ml-3">{dataUser.username}</span>
-              {!isNaN(data.totalStars / data.starNumber) && (
+              <span className="ml-3">{dataUser?.username}</span>
+              {!isNaN(data?.totalStars / data?.starNumber) && (
                 <div className="stars">
                   {Array(Math.round(data.totalStars / data.starNumber))
                     .fill()
-                    .map((item, i) => (
+                    .map((_, i) => (
                       <FaStar key={i} />
                     ))}
                   <span>{Math.round(data.totalStars / data.starNumber)}</span>
@@ -118,7 +116,7 @@ function Gig() {
             </div>
           )}
           <h2>About This Post</h2>
-          <p>{data.shortDesc}</p>
+          <p>{data?.shortDesc}</p>
           {isLoadingUser ? (
             "Loading..."
           ) : errorUser ? (
@@ -128,17 +126,15 @@ function Gig() {
               <h2>About The Guide</h2>
               <div className="user">
                 <div className="info">
-                  <span>{dataUser.username}</span>
-                  {!isNaN(data.totalStars / data.starNumber) && (
+                  <span>{dataUser?.username}</span>
+                  {!isNaN(data?.totalStars / data?.starNumber) && (
                     <div className="stars">
                       {Array(Math.round(data.totalStars / data.starNumber))
                         .fill()
-                        .map((item, i) => (
+                        .map((_, i) => (
                           <FaStar key={i} />
                         ))}
-                      <span>
-                        {Math.round(data.totalStars / data.starNumber)}
-                      </span>
+                      <span>{Math.round(data.totalStars / data.starNumber)}</span>
                     </div>
                   )}
                 </div>
@@ -148,7 +144,7 @@ function Gig() {
                   <div className="item">
                     <span className="title">From</span>
                     <span className="desc">
-                      <FaRegFlag /> {dataUser.country}
+                      <FaRegFlag /> {dataUser?.country}
                     </span>
                   </div>
                   <div className="item">
@@ -172,51 +168,36 @@ function Gig() {
                   <div className="item">
                     <span className="title">Languages</span>
                     <span className="desc">
-                      {dataUser.languages?.join(", ")}
+                      {dataUser?.languages?.join(", ")}
                     </span>
                   </div>
                 </div>
                 <hr />
-                <p>{dataUser.desc}</p>
+                <p>{dataUser?.desc}</p>
               </div>
             </div>
           )}
           <Reviews gigId={id} />
         </div>
         <div className="right">
+          <h2>Booking Information</h2>
           <div className="price">
             <h3>Total Price:</h3>
             <h2>$ {totalPrice.toFixed(2)}</h2>
           </div>
-          <div className="details">
-            <div className="item">
-              <FaRegClock style={{ color: 'green', fontSize: '1rem' }} />
-              <span>Available At:</span>
-              <ul>
-                {data.availabilityTimes.map((time, index) => (
-                  <li key={index}>{formatDate(time)}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="features">
-            <h3>Features:</h3>
-            {data.features.map((feature) => (
-              <div className="item" key={feature}>
-                <FaCheck />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
           <div className="vehicle-select">
-          <h3>
-  <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: '10px' }} />
-  With Transport Option:
-</h3>
+            <h3>
+              <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: '10px' }} />
+              With Transport Option:
+            </h3>
             <select onChange={handleVehicleChange}>
               <option value="">None</option>
-              <option value="car">Car (+${data.carPrice || "not availabale"})</option>
-              <option value="moto">Moto (+${data.scooterPrice || "not availabale"})</option>
+              <option value="car" disabled={!data?.carPrice}>
+                Car (+${data?.carPrice || "not available"})
+              </option>
+              <option value="moto" disabled={!data?.scooterPrice}>
+                Moto (+${data?.scooterPrice || "not available"})
+              </option>
             </select>
           </div>
           <div className="hours-select">
@@ -224,6 +205,7 @@ function Gig() {
             <input
               type="number"
               min="1"
+              max="7"
               value={hours}
               onChange={handleHoursChange}
               style={{ fontSize: '1rem', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', width: '100%', maxWidth: '300px' }}
@@ -237,11 +219,23 @@ function Gig() {
             />
             <label>I accept all privacy conditions</label>
           </div>
-          <Link to={`/pay/${id}`}>
-            <button className="btn btn-success" disabled={!privacyAccepted}>Continue</button>
-          </Link>
+           <div className="booking-info">
+            <h3>Booking Details</h3>
+            <p>
+              Payment will be made directly to the guide. If the tour is canceled
+              by the guide, please contact the platform for a refund.
+            </p>
+            <button
+          className="btn btn-success"
+          disabled={!privacyAccepted}
+          onClick={handleConfirmBooking}
+        >
+          Confirm Booking
+        </button>
+          </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
