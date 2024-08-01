@@ -116,10 +116,12 @@
     }
 
     .map-container {
+      align-self: center;
       margin-top: 30px;
-      height: 400px; // Adjust height as needed
+      height: 305px;
+      width: 550px;
       position: relative;
-      border: 1px solid lightgrey;
+      border: 1px solid #ffc107;
       border-radius: 5px;
 
       .map {

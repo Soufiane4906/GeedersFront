@@ -66,16 +66,13 @@
   color: #d9534f; // Change to your preferred total price color
 }
 
-// #button-text {
-//   background-color: #28a745; // Change to your preferred button color
-//   color: #fff;
-//   padding: 0.75rem 1.5rem;
-//   border: none;
-//   border-radius: 5px;
-//   cursor: pointer;
-//   font-size: 1rem;
-// }
 
-// #button-text:hover {
-//   background-color: #218838; // Darker shade for hover effect
-// }
+#submit{
+  background-color: #218838; // Darker shade for hover effect
+color: #f9f9f9;
+border-color: #ddd;
+width: 100%;
+margin-top: 5px;
+height: 4rem;
+
+}

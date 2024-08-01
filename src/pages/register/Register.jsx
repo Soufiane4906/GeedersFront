@@ -175,9 +175,9 @@ function Register() {
       case 2:
         return (
           <>
-            <h1>Do you want to be a guide?</h1>
+            <h1></h1>
             <div className="toggle">
-              <label htmlFor="isSeller">Activate the guide account</label>
+              <label htmlFor="isSeller">Do you want to be a guide?</label>
               <label className="switch">
                 <input type="checkbox" checked={user.isSeller} onChange={handleSeller} />
                 <span className="slider round"></span>
@@ -237,6 +237,8 @@ function Register() {
                 </option>
               ))}
             </select>
+            {user.isSeller && (
+              <>
             <div className="identity-type" style={{textAlign :'center'}}>
               <h2>Select Identity Type</h2>
               <div className="radio-group" >
@@ -287,6 +289,7 @@ function Register() {
                 />
               </>
             )}
+            </>)}
             <div className="buttons">
               <button type="button" className="back-button" onClick={prevStep}>Back</button>
               <button type="button" onClick={nextStep}>Next</button>

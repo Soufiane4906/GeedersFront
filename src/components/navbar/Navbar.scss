@@ -136,16 +136,31 @@
   }
 
   .menu {
-    width: 1400px;
+    width: 100%; /* Make the menu width 100% to fit the container */
     padding: 10px 0px;
     display: flex;
-    justify-content: space-between;
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Keep menu items on a single line */
     color: gray;
     font-weight: 300;
     font-family: "Nunito", sans-serif;
 
+    /* Optional styling for scrollbar */
+    &::-webkit-scrollbar {
+      height: 8px; /* Height of horizontal scrollbar */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2); /* Color of scrollbar thumb */
+      border-radius: 10px; /* Rounded corners for scrollbar thumb */
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: rgba(0, 0, 0, 0.1); /* Color of scrollbar track */
+    }
+
     .menuLink {
-      position: relative;
+      display: inline-block; /* Make menu items inline-block for horizontal alignment */
       transition: color 0.3s ease;
       padding: 10px 15px;
       border-radius: 5px;
@@ -173,4 +188,5 @@
       }
     }
   }
+
 }

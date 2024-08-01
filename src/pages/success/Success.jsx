@@ -16,10 +16,10 @@ const Success = () => {
     const makeRequest = async () => {
       try {
         await newRequest.put("/orders", { payment_intent });
-        toast.success("Payment successful! Redirecting to orders...");
+        // toast.success("Payment successful! Redirecting to orders...");
         setTimeout(() => {
           navigate("/orders");
-        }, 5000);
+        }, 2000);
       } catch (err) {
         console.log(err);
         toast.error("Something went wrong. Please try again.");

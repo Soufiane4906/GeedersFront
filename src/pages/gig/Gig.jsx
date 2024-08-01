@@ -180,7 +180,7 @@ function Gig() {
           <Reviews gigId={id} />
         </div>
         <div className="right">
-          <h2>Booking Information</h2>
+          <h2 className='headerTitle'>Booking Information</h2>
           <div className="price">
             <h3>Total Price:</h3>
             <h2>$ {totalPrice.toFixed(2)}</h2>
@@ -223,7 +223,7 @@ function Gig() {
             <h3>Booking Details</h3>
             <p>
               Payment will be made directly to the guide. If the tour is canceled
-              by the guide, please contact the platform for a refund.
+              by the guide, please contact us for a refund.
             </p>
             <button
           className="btn btn-success"

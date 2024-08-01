@@ -14,6 +14,9 @@ import { FaUserCircle } from 'react-icons/fa';
 import {   FaIdCard } from 'react-icons/fa';
 import { AiFillMessage } from 'react-icons/ai';
 import { Form, Button, Col, Row } from 'react-bootstrap';
+//toast
+import { ToastContainer  } from 'react-toastify';
+
 
 const Profile = () => {
   const { id } = useParams();
@@ -110,24 +113,32 @@ const ProfileDetail = ({ user }) => {
     <div className="profile-detail">
       <h2>Profile Details</h2>
       <div className="profile-info">
-        <p><FaUserCircle className="icon" /> <strong>Username:</strong> {user.username}</p>
-        <p><FaEnvelope className="icon" /> <strong>Email:</strong> {user.email}</p>
-        <p><FaGlobe className="icon" /> <strong>Country:</strong> {user.country}</p>
-        <p><FaMapMarkerAlt className="icon" /> <strong>City:</strong> {user.city}</p>
-        <p><FaFileAlt className="icon" /> <strong>Role:</strong> {user.isSeller ? 'Guide' : 'Buyer'}</p>
+        <p><FaUserCircle className="icon" /> <strong>Username :</strong> {user.username}</p>
+        <p><FaEnvelope className="icon" /> <strong>Email :</strong> {user.email}</p>
+        <p><FaGlobe className="icon" /> <strong>Country :</strong> {user.country}</p>
+        <p><FaMapMarkerAlt className="icon" /> <strong>City :</strong> {user.city}</p>
+        <p><FaFileAlt className="icon" /> <strong>Role :</strong> {user.isSeller ? 'Guide' : 'Buyer'}</p>
         <p><FaLanguage className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
-        <p><FaPhone className="icon" /> <strong>Phone:</strong> {user.phone}</p>
+        <p><FaPhone className="icon" /> <strong>Phone :</strong> {user.phone}</p>
         <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
-        <p><FaCreditCard className="icon" /> <strong>Bank Card Number:</strong> {user.paymentMethod}</p>
-        <p><FaCreditCard className="icon" /> <strong>Paypal Card Number:</strong> {user.accountNumber}</p>
-        <p><strong>Location:</strong> {user.location}</p>
+        <p><FaCreditCard className="icon" /> <strong>Payment Method :</strong>  {user.paymentMethod}</p>
+        <p><FaCreditCard className="icon" /> <strong>Account Number :</strong> {user.accountNumber}</p>
       </div>
       <div className="images">
-        <p><strong>Identity Images:</strong></p>
-        {user.imgRecto ? <img src={user.imgRecto} alt="Identity Front" /> : <p>No front image available.</p>}
-        {user.imgVerso ? <img src={user.imgVerso} alt="Identity Back" /> : <p>No back image available.</p>}
-        {user.imgPassport ? <img src={user.imgPassport} alt="Passport" /> : <p>No passport image available.</p>}
-      </div>
+  <p><strong>Identity Images:</strong></p>
+  {user.imgRecto || user.imgVerso || user.imgPassport ? (
+    <>
+      {user.imgRecto ? <img src={user.imgRecto} alt="Identity Front" /> : <p>Identity front image not available.</p>}
+      {user.imgVerso ? <img src={user.imgVerso} alt="Identity Back" /> : <p>Identity back image not available.</p>}
+      {user.imgPassport ? <img src={user.imgPassport} alt="Passport" /> : <p>Passport image not available.</p>}
+    </>
+  ) : (
+    <div className="warning">
+      <p>No identity images available. Your account will not be verified without valid identity images. Please upload a front, back, or passport image.</p>
+    </div>
+  )}
+</div>
+
     </div>
   );
 };
@@ -143,8 +154,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
     city: user.city || '',
     phone: user.phone || '',
     desc: user.desc || '',
-    bankCardNumber: user.bankCardNumber || '',
-    paypalCardNumber: user.paypalCardNumber || '',
+    accountNumber: user.accountNumber || '',
     location: user.location || '',
     imgRecto: user.imgRecto || '',
     imgVerso: user.imgVerso || '',
@@ -309,8 +319,8 @@ const ProfileEdit = ({ user, onUpdate }) => {
               <Form.Label> <FaCreditCard className="icon" />     PayPal Card Number</Form.Label>
               <Form.Control
                 type="text"
-                name="paypalCardNumber"
-                value={formData.paypalCardNumber}
+                name="accountNumber"
+                value={formData.accountNumber}
                 onChange={handleChange}
                 placeholder="PayPal Card Number"
                 required
@@ -321,8 +331,8 @@ const ProfileEdit = ({ user, onUpdate }) => {
               <Form.Label><FaCreditCard /> Bank Card Number</Form.Label>
               <Form.Control
                 type="text"
-                name="bankCardNumber"
-                value={formData.bankCardNumber}
+                name="accountNumber"
+                value={formData.accountNumber}
                 onChange={handleChange}
                 placeholder="Bank Card Number"
                 required
@@ -331,21 +341,12 @@ const ProfileEdit = ({ user, onUpdate }) => {
           )}
         </Form.Group>
 
-        <Form.Group as={Col} md="6">
-          <Form.Label><FaMapMarkerAlt /> Location</Form.Label>
-          <Form.Control
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="Location"
-          />
-        </Form.Group>
+
       </Row>
 
       <Row className="mb-3">
         <Form.Group as={Col} md="4">
-          <Form.Label><FaImage /> Upload Recto Image</Form.Label>
+          <Form.Label><FaImage /> Upload Identity Front Image</Form.Label>
           <Form.Control
             type="file"
             name="imgRecto"
@@ -354,7 +355,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
         </Form.Group>
 
         <Form.Group as={Col} md="4">
-          <Form.Label><FaImage /> Upload Verso Image</Form.Label>
+          <Form.Label><FaImage />Upload Identity Back Image</Form.Label>
           <Form.Control
             type="file"
             name="imgVerso"

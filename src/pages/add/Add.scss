@@ -5,18 +5,23 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 800px;
   margin: 0 auto;
+  text-align: center;
   .form-group {
     margin-bottom: 20px;
     label {
       font-weight: bold;
       color: #2c3e50;
+      width: 100%;
+      margin-block: 3%;
     }
     input,
     select,
     textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #00ff62;
+      width: 50%;
+
       border-radius: 4px;
       margin-top: 5px;
       &:focus {
@@ -29,16 +34,23 @@
     }
   }
   .slider-track {
-    background: linear-gradient(to right, #2ecc71, #3498db);
+    background: linear-gradient(to right,#1b63e8, #a5aacf);
     height: 8px;
     border-radius: 4px;
+    align-content: center;
+    height: 14px;
+    vertical-align: middle;
+    border: 2px solid rgb(10, 75, 228);
   }
   .slider-thumb {
-    background-color: #3498db;
-    border: 2px solid #2ecc71;
-    width: 20px;
-    height: 20px;
+    place-content: center;
+    text-align: center;
+    background-color: #ffc107;
+    border: 2px solid #ffc107;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
+    cursor: pointer;
   }
   .points-of-interest {
     display: flex;
@@ -75,6 +87,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    float: inline-start;
     transition: background 0.3s ease;
     &:hover {
       background-color: #27ae60;
@@ -86,8 +99,8 @@
       }
     }
     &-danger {
-      background-color: #e74c3c;
-      &:hover {
+      background-color: #ffc107;
+            &:hover {
         background-color: #c0392b;
       }
     }
@@ -117,4 +130,25 @@
       }
     }
   }
+}
+
+.addFeatureForm{
+  display: flex;
+  gap: 5%;
+  button{
+    height: fit-content;
+    margin: 29px;
+  }
+}
+
+.addedFeatures mt-2{
+  display: flex;
+  gap: 3%;
+}
+
+#root > div.app > main > div > div.RSPBprogressBar > div > div {
+  font-size: x-large;
+  background: #e7d5a1;
+  border-radius: 50%;
+  width: 39px;
 }

@@ -1,36 +1,38 @@
-import {React , useEffect} from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import "./Message.scss";
-import { FaUserCircle } from 'react-icons/fa';
 import { AiFillMessage } from 'react-icons/ai';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa'; // Icons for envelope, phone, city, and country
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Message = () => {
   const { id } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const queryClient = useQueryClient();
+  const messagesEndRef = useRef(null);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["messages", id],
     queryFn: () => newRequest.get(`/messages/${id}`).then(res => res.data),
-    refetchInterval: 2000, // Refetch messages every 5 seconds
+    refetchInterval: 5000, // Refetch messages every 5 seconds
   });
 
   const mutation = useMutation({
     mutationFn: (message) => newRequest.post(`/messages`, message),
-    onSuccess: () => queryClient.invalidateQueries(["messages", id]),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["messages", id]);
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    },
   });
+
   useEffect(() => {
     const navbar = document.querySelector("#root > div.app > div.navbar");
     if (navbar) {
       const menu = navbar.querySelector("div.menu");
       if (menu) {
-        if (location.pathname === "/messages") {
-          menu.style.display = "none";
-        } else {
-          menu.style.display = "block";
-        }
+        menu.style.display = location.pathname === "/messages" ? "none" : "block";
       }
     }
   }, [location.pathname]);
@@ -44,40 +46,96 @@ const Message = () => {
     e.target[0].value = "";
   };
 
+  if (isLoading) return <div className="alert alert-info" role="alert">Loading...</div>;
+  if (error) return <div className="alert alert-danger" role="alert">Error fetching messages: {error.message}</div>;
+
   return (
     <div className="message">
       <div className="container">
-        <span className="breadcrumbs">
-          <Link to="/messages">Messages</Link>
-        </span>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>Error fetching messages: {error.message}</p>
-        ) : (
-          <div className="messages">
-            {data.map((m) => (
-              <div className={m.userId === currentUser._id ? "owner item" : "item"} key={m._id}>
+        <div className="row">
+          {/* Buyer Details Section */}
+          {/* <div className="col-md-4">
+            <div className="card">
+              <div className="card-header">Guide Details</div>
+              <div className="card-body">
                 <img
-                  src={m.userId.img || "https://via.placeholder.com/50"}
-                  alt="User"
-                  className="user-img"
+                  src={data.buyer.img || "https://via.placeholder.com/100"}
+                  alt="Buyer"
+                  className="img-fluid rounded-circle mb-3"
                 />
-                <div className="message-content">
-                  <p className="username">{m.userId.username}</p>
-                  <p className="message-text">{m.desc}</p>
-                </div>
+                <h5 className="card-title">{data.buyer.username}</h5>
+                <p className="card-text">
+                  <FaEnvelope /> {data.buyer.email}
+                </p>
+                <p className="card-text">
+                  <FaPhone /> {data.buyer.phone}
+                </p>
+                <p className="card-text">
+                  <FaMapMarkerAlt /> {data.buyer.city || "Unknown City"}
+                </p>
+                <p className="card-text">
+                  <FaGlobe /> {data.buyer.country || "Unknown Country"}
+                </p>
               </div>
-            ))}
+            </div>
+          </div> */}
+
+          {/* Conversation Section */}
+          <div className="col-md-8">
+            <div className="messages-container">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item">
+                    <Link to="/messages">Messages</Link>
+                  </li>
+                </ol>
+              </nav>
+              <div className="messages list-group">
+                {data.messages.map((m) => (
+                  <div
+                    className={`list-group-item d-flex ${
+                      m.userId === currentUser._id ? "owner item justify-content-end" : "item"
+                    }`}
+                    key={m._id}
+                  >
+                    {m.user._id !== currentUser._id && (
+                      <img
+                        src={m.user.img || "https://via.placeholder.com/50"}
+                        alt="User"
+                        className="rounded-circle me-3"
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    )}
+                    <div className={`message-content ${m.userId === currentUser._id ? "text-end" : ""}`}>
+                      <p className="username mb-1 font-weight-bold">{m.user.username}</p>
+                      <p className={`message-text p-2 rounded ${m.userId === currentUser._id ? "current-user" : "other-user"}`}>{m.desc}</p>
+                    </div>
+                    {m.userId === currentUser._id && (
+                      <img
+                        src={m.user.img || "https://via.placeholder.com/50"}
+                        alt="User"
+                        className="rounded-circle ms-3"
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    )}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+              <hr />
+              <form className="write d-flex align-items-center" onSubmit={handleSubmit}>
+                <textarea
+                  className="form-control me-2"
+                  placeholder="Write a message"
+                  style={{ flexGrow: 1 }}
+                />
+                <button type="submit" className="btn btn-success">
+                  <AiFillMessage size={20} />
+                </button>
+              </form>
+            </div>
           </div>
-        )}
-        <hr />
-        <form className="write" onSubmit={handleSubmit}>
-          <textarea type="text" placeholder="Write a message" />
-          <button type="submit">
-            <AiFillMessage size={20} />
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

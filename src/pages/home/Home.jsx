@@ -164,11 +164,11 @@ function Home() {
               <img src="./img/check.png" alt="" />
               Manage your trips and boost your travel experience with our powerful platform
             </div>
-            <button>Explore Guideers Travel</button>
+            {/* <button>Explore Guideers Travel</button> */}
           </div>
           <div className="item">
             <img
-              src="https://fiverr-res.cloudinary.com/q_auto,f_auto,w_870,dpr_2.0/v1/attachments/generic_asset/asset/d9c17ceebda44764b591a8074a898e63-1599597624768/business-desktop-870-x2.png"
+              src="https://travelerwp.com/wp-content/uploads/2023/05/Why-Tour-Photos-Make-the-Best-Souvenirs-Image-6.jpg"
               alt="Travel platform"
             />
           </div>

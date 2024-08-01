@@ -255,7 +255,7 @@ const Add = () => {
               ))}
             </select>
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{textAlign :'-webkit-center'}}>
             <label htmlFor="location">
               <FontAwesomeIcon
                 icon={faMapMarkerAlt}
@@ -263,7 +263,7 @@ const Add = () => {
               />{" "}
               Select Location
             </label>
-            <LocationMap setFormData={setFormData} formData={formData} />
+            <LocationMap  setFormData={setFormData} formData={formData} />
           </div>
           <button className="btn btn-secondary" onClick={prevStep}>
             Back
@@ -308,7 +308,7 @@ const Add = () => {
                     }))
                   }
                   min={0}
-                  max={30}
+                  max={50}
                   step={1}
                   renderTrack={(props) => (
                     <div {...props} className="slider-track" />
@@ -358,7 +358,7 @@ const Add = () => {
                     }))
                   }
                   min={0}
-                  max={30}
+                  max={50}
                   step={1}
                   renderTrack={(props) => (
                     <div {...props} className="slider-track" />
@@ -446,7 +446,7 @@ const Add = () => {
                 setFormData((prevData) => ({ ...prevData, price: value }))
               }
               min={0}
-              max={30}
+              max={50}
               step={1}
               renderTrack={(props) => (
                 <div {...props} className="slider-track" />
@@ -458,7 +458,7 @@ const Add = () => {
               )}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group" >
             <label htmlFor="addFeature">
               <FontAwesomeIcon icon={faStarOfLife} /> Add Features
             </label>

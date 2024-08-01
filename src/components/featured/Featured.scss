@@ -4,6 +4,8 @@
   align-items: center;
   padding: 20px;
   position: relative;
+  background: linear-gradient(45deg, #007bff, transparent);
+
 
   .container {
     gap: 5%;
@@ -27,10 +29,15 @@
     background-size: cover;
     background-position: center;
     transition: transform 0.5s ease, opacity 0.5s ease;
+    box-shadow: 0px 0px 20px 20px #79bcff;
+    width: 40vh;
+    height: 60vh;
 
     &.visible {
       transform: translateX(0);
       opacity: 1;
+      width: 40rem;
+    height: 40rem;
     }
 
     img {
@@ -88,11 +95,16 @@
       align-items: center;
       cursor: pointer;
       margin-bottom: 10px;
+      background-color: #f0f0f0;
+    border-radius: 9px;
+    padding-inline: 9px;
+    width: 50%;
 
       &.active {
-        background-color: #e0ffe0;
-      }
-
+        background-color: #f0f0f0;
+        border-radius: 9px;
+        text-align: center;
+}
       input {
         margin-right: 10px;
       }
@@ -120,8 +132,9 @@
         transition: background-color 0.3s ease;
 
         &.active {
-          background-color: #e0ffe0;
-        }
+          background-color: #f0f0f0;
+          border-radius: 9px;
+          padding-inline: 9px;        }
 
         input {
           margin-right: 10px;
@@ -141,14 +154,15 @@
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #0a58ca;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #0056b3;
+      background-color: #fff !important;
+      color: #0056b3;
     }
 
     &.show-less {
@@ -158,6 +172,15 @@
         background-color: #c82333;
       }
     }
+  }
+  .showpoi{
+
+    &:hover {
+      background-color: #fff !important;
+      color: #0056b3;
+    }
+
+
   }
 
   @media (max-width: 768px) {
@@ -188,4 +211,13 @@
   margin-left: 2px;
   margin-right: 2px;
   box-sizing: border-box;
+}
+
+
+.css-d7l1ni-option {
+  background-color: #f0f0f0 !important;
+  color: blue !important;
+}
+.css-10wo9uf-option {
+  background-color: #f0f0f0 !important;
 }

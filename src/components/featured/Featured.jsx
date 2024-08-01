@@ -23,20 +23,18 @@ import { faMapPin } from "@fortawesome/free-solid-svg-icons/faMapPin";
 
 
 function Featured() {
-  const [input, setInput] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [showCity, setShowCity] = useState(false);
   const [cities, setCities] = useState([]);
   const [showVehicleOptions, setShowVehicleOptions] = useState(false);
   const [selectedVehicles, setSelectedVehicles] = useState([]);
-  const [hasVehicle, setHasVehicle] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const navigate = useNavigate();
   const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
   const [backgroundImage, setBackgroundImage] = useState(
-    "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+    "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
   );
 
   const handleCountryChange = async (e) => {
@@ -60,9 +58,9 @@ function Featured() {
     setShowPointsOfInterest((prev) => !prev);
     setBackgroundImage((prev) =>
       prev ===
-      "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+      "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
         ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
-        : "https://civilisable.com/wp-content/uploads/2024/06/Famous-Buildings-of-41-Countries-6.6.2024.jpg"
+        : "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
     );
   };
 
@@ -124,7 +122,7 @@ function Featured() {
           <div className="col-md-4">
             <div className="select">
               <label>
-                <FontAwesomeIcon icon={faGlobe} /> Country:
+                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faGlobe} /> Country:
               </label>
               <select
                 required
@@ -143,7 +141,7 @@ function Featured() {
           <div className="col-md-4">
             <div className="select">
               <label>
-                <FontAwesomeIcon icon={faCity} /> City:
+                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faCity} /> City:
               </label>
               <select
                 required
@@ -160,10 +158,13 @@ function Featured() {
               </select>
             </div>
           </div>
-          <div className="col-md-4">
+
+        </div>
+        <div className="row">
+        <div className="col-md-9">
             <div className="select">
               <label>
-                <FontAwesomeIcon icon={faLanguage} /> Languages:
+                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faLanguage} /> Languages:
               </label>
               <Select
                 name="languages"
@@ -177,33 +178,33 @@ function Featured() {
               />
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-9">
+          <div className="col-md-8">
             <div className="additional-fields">
               <p>
                 <FontAwesomeIcon icon={faRoad} style={{ marginRight: '5px' }} />
                 With Car Options?
               </p>
               <div>
-                <label>
-                  <input
-                    type="radio"
-                    name="vehicleMenu"
-                    value="yes"
-                    onChange={handleVehicleMenuChange}
-                  />
-                  Yes
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="vehicleMenu"
-                    value="no"
-                    onChange={handleVehicleMenuChange}
-                  />
-                  No
-                </label>
+              <label>
+                    <input
+                      type="radio"
+                      name="vehicleMenu"
+                      value="yes"
+                      onChange={handleVehicleMenuChange}
+                      checked={showVehicleOptions === true}
+                    />
+                    Yes
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="vehicleMenu"
+                      value="no"
+                      onChange={handleVehicleMenuChange}
+                      checked={showVehicleOptions === false}
+                    />
+                    No
+                  </label>
               </div>
               {showVehicleOptions && (
                 <div>
@@ -235,6 +236,7 @@ function Featured() {
           </div>
         </div>
         <button
+        className="showpoi"
         style={{background :'#ffc107' , marginRight: '4%'} }
         onClick={() => {
 
