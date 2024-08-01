@@ -20,7 +20,6 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.18",
     "html2canvas": "^1.4.1",
-    "infinite-react-carousel": "^1.2.11",
     "jspdf": "^2.5.1",
     "leaflet": "^1.9.4",
     "moment": "^2.29.4",
