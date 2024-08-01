@@ -149,7 +149,7 @@ function Home() {
       <div className="features dark">
         <div className="container">
           <div className="item">
-            <h1>guide<span>ers</span> <i>travel</i></h1>
+            <h1>geed<span>ers</span> <i>travel</i></h1>
             <h1>Your ultimate solution for <i>exploring</i></h1>
             <p>Upgrade to a curated travel experience with tools and benefits, dedicated to explorers</p>
             <div className="title">
