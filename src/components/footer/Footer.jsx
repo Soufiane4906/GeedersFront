@@ -32,7 +32,7 @@ function Footer() {
               <a href="#pinterest" aria-label="Pinterest"><FontAwesomeIcon icon={faPinterest} className="me-2" size="lg" /></a>
               <a href="#instagram" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} className="me-2" size="lg" /></a>
             </div>
-            <p className="mb-1">© guideers International Ltd. 2023</p>
+            <p className="mb-1">© geeders International Ltd. 2023</p>
           </div>
         </div>
       </div>

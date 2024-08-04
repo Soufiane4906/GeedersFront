@@ -22,7 +22,7 @@ const Pay = () => {
 
   useEffect(() => {
     const makeRequest = async () => {
-      if (!bookingDetails.id) return;
+      if (!bookingDetails.id || !currentUser?.id) return;
 
       try {
         const res = await newRequest.post(`/orders/create-payment-intent/${bookingDetails.id}`, {
@@ -35,6 +35,7 @@ const Pay = () => {
             scooterPrice: bookingDetails.scooterPrice
           },
           hours: bookingDetails.hours,
+          buyerId: currentUser.id, // Include buyerId in the request payload
         });
 
         setClientSecret(res.data.clientSecret);
@@ -44,7 +45,8 @@ const Pay = () => {
     };
 
     makeRequest();
-  }, [bookingDetails]);
+  }, [bookingDetails, currentUser]); // Add currentUser as a dependency
+
 
   const appearance = {
     theme: 'stripe',
