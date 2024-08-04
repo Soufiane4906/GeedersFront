@@ -60,6 +60,21 @@ function Gig() {
   }, [data, selectedVehicle, hours]);
 
   const handleConfirmBooking = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!currentUser) {
+      toast.error(
+        <div>
+          You need to have an account to book.
+          <br />
+          <a href="/login" style={{ color: '#3498db', textDecoration: 'underline' }}>Login</a> or
+          <a href="/register" style={{ color: '#3498db', textDecoration: 'underline' }}> Register</a>
+        </div>,
+        { autoClose: false }
+      );
+      return;
+    }
+
     if (!privacyAccepted) {
       toast.error("Please accept the privacy conditions.");
       return;
@@ -69,7 +84,7 @@ function Gig() {
     sessionStorage.setItem('bookingDetails', JSON.stringify({
       id,
       totalPrice,
-      price : data?.price,
+      price: data?.price,
       city: data?.city,
       country: data?.country,
       carPrice: data?.carPrice || 0,
@@ -81,6 +96,7 @@ function Gig() {
     toast.success("Redirecting to payment...");
     navigate(`/pay/${id}`); // Use navigate instead of history.push
   };
+
 
   if (isLoading || isLoadingUser) return <div>Loading...</div>;
   if (error || errorUser) return <div>Something went wrong!</div>;
