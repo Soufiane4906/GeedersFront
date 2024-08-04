@@ -12,6 +12,9 @@ const Pay = () => {
   const [clientSecret, setClientSecret] = useState("");
   const [bookingDetails, setBookingDetails] = useState({});
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+
   useEffect(() => {
     const fetchBookingDetails = () => {
       const details = JSON.parse(sessionStorage.getItem('bookingDetails'));
