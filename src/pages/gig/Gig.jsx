@@ -180,7 +180,7 @@ function Gig() {
           <Reviews gigId={id} />
         </div>
         <div className="right">
-          <h2 className='headerTitle'>Booking Information</h2>
+          <h2 className='headerTitle'>Booking Informations</h2>
           <div className="price">
             <h3>Total Price:</h3>
             <h2>$ {totalPrice.toFixed(2)}</h2>

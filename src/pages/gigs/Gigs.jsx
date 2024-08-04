@@ -16,18 +16,18 @@ const formatDate = (dateString) => {
 function Gigs() {
   const [sort, setSort] = useState("sales");
   const [open, setOpen] = useState(false);
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
 
   const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const country = queryParams.get('country') || "";
+  const city = queryParams.get('city') || "";
 
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["gigs", sort, country, city],
     queryFn: () =>
       newRequest
-        .get(
-          `/gigs${search}&country=${country}&city=${city}&sort=${sort}`
-        )
+        .get(`/gigs?country=${country}&city=${city}&sort=${sort}`)
         .then((res) => res.data),
   });
 
@@ -58,15 +58,18 @@ function Gigs() {
       setLoading(false);
     }, 1000);
   }, []);
+
   if (loading) {
     return <Loading />;
   }
+
+  const noResultsMessage = "No matching guides found in these areas.";
 
   return (
     <div className="gigs">
       <div className="container">
         <span className="breadcrumbs">Search Results</span>
-        <h1>Available Guides</h1>
+        <h1>Available Geeders</h1>
         <div className="menu">
           <div className="left">
             <span>Country</span>
@@ -102,13 +105,17 @@ function Gigs() {
           </div>
         </div>
         <div className="cards">
-          {isLoading
-            ? "loading"
-            : error
-            ? "Something went wrong!"
-            : data.map((gig) => <GigCard key={gig._id} item={gig} />)}
+          {isLoading ? (
+            "Loading..."
+          ) : error ? (
+            "Something went wrong!"
+          ) : data && data.length > 0 ? (
+            data.map((gig) => <GigCard key={gig._id} item={gig} />)
+          ) : (
+            <p>{noResultsMessage}</p>
+          )}
         </div>
-        <InteractiveMap locations={locations} />
+        {data && data.length > 0 && <InteractiveMap locations={locations} />}
       </div>
     </div>
   );

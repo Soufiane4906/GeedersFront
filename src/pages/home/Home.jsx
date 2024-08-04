@@ -25,45 +25,46 @@ function Home() {
       <Featured />
       <TrustedBy />
       <div className="features">
-        <div className="container">
-          <div className="item">
-            <h1>Discover Expert Guides from Around the World</h1>
-            <div className="title">
-              <FaCheckCircle className="check-icon" />
-              Guides for Every Destination
-            </div>
-            <p>
-              Access knowledgeable and experienced guides for any location. Whether you're exploring a city or a remote area, we've got you covered.
-            </p>
-            <div className="title">
-              <FaCheckCircle className="check-icon" />
-              Tailored Experiences
-            </div>
-            <p>
-              Find guides who can offer personalized tours and experiences based on your interests and needs.
-            </p>
-            <div className="title">
-              <FaCheckCircle className="check-icon" />
-              Secure Booking and Payments
-            </div>
-            <p>
-              Book your guide with confidence. Payments are processed securely, and you only pay once you're satisfied with the service.
-            </p>
-            <div className="title">
-              <FaCheckCircle className="check-icon" />
-              24/7 Customer Support
-            </div>
-            <p>
-              Get assistance anytime you need it. Our support team is available around the clock to help with any issues or questions.
-            </p>
-          </div>
-
-          {/* <div className="item">
-            <FaPlayCircle className="video-icon" />
-            <video src="./img/video.mp4" controls />
-          </div> */}
-        </div>
+  <div className="container">
+    <div className="item">
+      <h1 style={{textAlign:'center'}} > Discover Geeders Like You and Me</h1>
+      <div className="title">
+        <FaCheckCircle className="check-icon" />
+        Connect with local Geeders who share your interests
       </div>
+      <p>
+        Our Geeders are passionate individuals who want to share their love for their country with you. They offer personalized experiences and local insights, so you can explore destinations like never before.
+      </p>
+      <div className="title">
+        <FaCheckCircle className="check-icon" />
+        Multilingual Geeders
+      </div>
+      <p>
+        Thanks to our platform, you'll be connected with Geeders who speak your language and understand your culture, ensuring a seamless and enriching experience.
+      </p>
+      <div className="title">
+        <FaCheckCircle className="check-icon" />
+        Vehicles for Every Need
+      </div>
+      <p>
+        Whether you need a car or a scooter, our Geeders offer a range of transportation options to make your journey comfortable and convenient.
+      </p>
+      <div className="title">
+        <FaCheckCircle className="check-icon" />
+        Personalized and Secure
+      </div>
+      <p>
+        Our platform ensures that your booking and payment are handled securely. You can book with confidence, knowing that you're getting a guide who meets your needs and preferences.
+      </p>
+    </div>
+    {/* Uncomment if you have video content */}
+    {/* <div className="item">
+      <FaPlayCircle className="video-icon" />
+      <video src="./img/video.mp4" controls />
+    </div> */}
+  </div>
+</div>
+
       <div className="geeders-info">
       <div className="container">
         <div className="text-content">
@@ -72,7 +73,7 @@ function Home() {
             <strong> What is a Geeders <FaQuestionCircle /> </strong> A Geeders is a person just like you and me who loves their city and wants to share it with tourists. Anyone can become a Geeders in their own city, showcasing the best spots such as monuments, restaurants, clubs, museums, and more, during their free time. A Geeders operates independently, not tied to a tour agency with fixed schedules and programs. The tourist chooses what they want to do and where they want to go, and the Geeders adapts accordingly.
           </p>
           <p>
-            <strong><FaMapPin /> Wherever you are in any city around the globe</strong> You can find a Geeders to accompany you on your journey for an hour or as long as you need. Simply choose one from the Geeders profiles, selecting based on your interests and the language you speak. Our Geeders are everyday people who want to share the best spots for your vacation and make some extra money by becoming guides in their spare time.
+            <strong><FaMapPin /> Wherever you are in any city around the globe</strong> You can find a Geeders to accompany you on your journey for an hour or as long as you need. Simply choose one from the Geeders profiles, selecting based on your interests and the language you speak. Our Geeders are everyday people who want to share the best spots for your vacation and make some extra money by becoming Geeders in their spare time.
           </p>
           <p>
             <strong><FaClock /> No more getting up at 5 AM  </strong> For long, endless excursions to places you may not want to visit. With our Geeders, you can manage your schedule and destinations according to your preferences.
@@ -90,7 +91,7 @@ function Home() {
 
       <div className="explore">
         <div className="container">
-          <h1>Explore Points of Interest with Our Guides</h1>
+          <h1>Explore Points of Interest with Our Geeders</h1>
           <div className="items">
             <div className="item">
               <img src="https://img.icons8.com/ios/50/000000/museum.png" alt="Museum" />
@@ -154,7 +155,7 @@ function Home() {
             <p>Upgrade to a curated travel experience with tools and benefits, dedicated to explorers</p>
             <div className="title">
               <img src="./img/check.png" alt="" />
-              Connect with guides who have proven travel expertise
+              Connect with Geeders who have proven travel expertise
             </div>
             <div className="title">
               <img src="./img/check.png" alt="" />
