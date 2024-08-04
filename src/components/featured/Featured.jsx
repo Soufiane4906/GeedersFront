@@ -295,7 +295,7 @@ function Featured() {
       </div>
       <div className={`right ${isSwapped ? 'visible' : ''}`}
            style={{ backgroundImage: `url(${backgroundImage})` }}>
-        <img src="./img/man.png" alt="" />
+        {/* <img src="./img/man.png" alt="" /> */}
       </div>
     </div>
   </div>
