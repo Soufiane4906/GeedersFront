@@ -14,45 +14,36 @@ const Pay = () => {
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const byId = currentUser._id;
-  debugger;
 
+  const fetchBookingDetailsAndMakeRequest = async () => {
+    const details = JSON.parse(sessionStorage.getItem('bookingDetails'));
+    setBookingDetails(details || {});
+
+    if (!details || !details.id || !currentUser?._id) return;
+
+    try {
+      const res = await newRequest.post(`/orders/create-payment-intent/${details.id}`, {
+        totalPrice: details.totalPrice,
+        city: details.city,
+        country: details.country,
+        options: {
+          vehicle: details.selectedVehicle,
+          carPrice: details.carPrice,
+          scooterPrice: details.scooterPrice
+        },
+        hours: details.hours,
+        buyerId: byId, // Include buyerId in the request payload
+      });
+
+      setClientSecret(res.data.clientSecret);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchBookingDetails = () => {
-      const details = JSON.parse(sessionStorage.getItem('bookingDetails'));
-      setBookingDetails(details || {});
-    };
-    fetchBookingDetails();
+    fetchBookingDetailsAndMakeRequest();
   }, []);
-
-  useEffect(() => {
-    const makeRequest = async () => {
-      if (!bookingDetails.id || !currentUser?._id) return;
-
-      try {
-        const res = await newRequest.post(`/orders/create-payment-intent/${bookingDetails.id}`, {
-          totalPrice: bookingDetails.totalPrice,
-          city: bookingDetails.city,
-          country: bookingDetails.country,
-          options: {
-            vehicle: bookingDetails.selectedVehicle,
-            carPrice: bookingDetails.carPrice,
-            scooterPrice: bookingDetails.scooterPrice
-          },
-          hours: bookingDetails.hours,
-
-            buyerId: byId, // Include buyerId in the request payload
-        });
-
-        setClientSecret(res.data.clientSecret);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-debugger;
-    makeRequest();
-  }, [bookingDetails, currentUser]); // Add currentUser as a dependency
-
 
   const appearance = {
     theme: 'stripe',
@@ -85,7 +76,7 @@ debugger;
               <div className="summary-price">${bookingDetails?.price || '0.00'}</div>
             </div>
             <div className="summary-item">
-              <div className="summary-description">current user</div>
+              <div className="summary-description">Current User</div>
               <div className="summary-price">${currentUser?._id || '0.00'}</div>
             </div>
             {bookingDetails?.selectedVehicle && (
