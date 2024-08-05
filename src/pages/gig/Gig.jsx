@@ -61,6 +61,7 @@ function Gig() {
 
   const handleConfirmBooking = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    debugger;
 
     if (!currentUser) {
       toast.error(

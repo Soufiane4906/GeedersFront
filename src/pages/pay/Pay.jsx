@@ -13,6 +13,8 @@ const Pay = () => {
   const [bookingDetails, setBookingDetails] = useState({});
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const byId = currentUser._id;
+  debugger;
 
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const Pay = () => {
 
   useEffect(() => {
     const makeRequest = async () => {
-      if (!bookingDetails.id || !currentUser?.id) return;
+      if (!bookingDetails.id || !currentUser?._id) return;
 
       try {
         const res = await newRequest.post(`/orders/create-payment-intent/${bookingDetails.id}`, {
@@ -38,7 +40,8 @@ const Pay = () => {
             scooterPrice: bookingDetails.scooterPrice
           },
           hours: bookingDetails.hours,
-          buyerId: currentUser.id, // Include buyerId in the request payload
+
+            buyerId: byId, // Include buyerId in the request payload
         });
 
         setClientSecret(res.data.clientSecret);
@@ -46,7 +49,7 @@ const Pay = () => {
         console.log(err);
       }
     };
-
+debugger;
     makeRequest();
   }, [bookingDetails, currentUser]); // Add currentUser as a dependency
 
@@ -80,6 +83,10 @@ const Pay = () => {
             <div className="summary-item">
               <div className="summary-description">Base Price</div>
               <div className="summary-price">${bookingDetails?.price || '0.00'}</div>
+            </div>
+            <div className="summary-item">
+              <div className="summary-description">current user</div>
+              <div className="summary-price">${currentUser?._id || '0.00'}</div>
             </div>
             {bookingDetails?.selectedVehicle && (
               <div className="summary-item">
