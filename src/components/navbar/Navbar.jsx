@@ -40,7 +40,9 @@ function Navbar() {
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
-            <span className="text">Geeders</span>
+            {/* <span className="text">Geeders</span> */}
+            <img src={"/img/geedersLogo2.png"} alt="" />
+
           </Link>
         </div>
         <div className="links">

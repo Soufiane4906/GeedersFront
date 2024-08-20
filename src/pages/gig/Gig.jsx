@@ -17,6 +17,10 @@ function Gig() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [hours, setHours] = useState(1);
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUserId=currentUser._id;
+  //currentuser Id
+
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig", id],
@@ -69,6 +73,7 @@ function Gig() {
     sessionStorage.setItem('bookingDetails', JSON.stringify({
       id,
       totalPrice,
+      buyerId : currentUserId,
       price : data?.price,
       city: data?.city,
       country: data?.country,

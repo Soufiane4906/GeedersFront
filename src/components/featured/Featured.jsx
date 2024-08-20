@@ -59,7 +59,7 @@ function Featured() {
     setBackgroundImage((prev) =>
       prev ===
       "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
-        ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
+        ? "./img/bgMap.png" // Replace with the new image URL
         : "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
     );
   };

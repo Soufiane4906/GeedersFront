@@ -6,7 +6,7 @@ import CheckoutForm from '../../components/checkoutForm/CheckoutForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Pay.scss'; // Import custom styles
 
-const stripePromise = loadStripe("pk_test_51OtdAyGmXNQGydzP913niVXoymwGsHLrlllPlvqx2fcP96HMGtgp8vHs4wTPuvXtl5yD9SEBjAI6EjrEJIjdCjuh00GtozZgkO");
+const stripePromise = loadStripe("pk_live_51MJf33CGwTF1kH4wbf5E4l3qWjRm9jembJpLorwghX5NuQTu9WqRujtBJ9OAsnL43rkpBGLOM9Xd5gyNfNFA2aMT00JFT3qejX");
 
 const Pay = () => {
   const [clientSecret, setClientSecret] = useState("");
@@ -28,6 +28,7 @@ const Pay = () => {
         const res = await newRequest.post(`/orders/create-payment-intent/${bookingDetails.id}`, {
           totalPrice: bookingDetails.totalPrice,
           city: bookingDetails.city,
+          buyerId : bookingDetails.buyerId,
           country: bookingDetails.country,
           options: {
             vehicle: bookingDetails.selectedVehicle,
