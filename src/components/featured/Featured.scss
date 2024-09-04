@@ -25,11 +25,12 @@
   }
 
   .right {
+    border-radius: 8%;
     flex: 1;
     background-size: cover;
     background-position: center;
     transition: transform 0.5s ease, opacity 0.5s ease;
-    box-shadow: 0px 0px 20px 20px #79bcff;
+    box-shadow: 0px 0px 20px 6px #6fd16f59;
     width: 40vh;
     height: 60vh;
 
@@ -158,6 +159,8 @@
     color: #fff;
     font-size: 16px;
     cursor: pointer;
+    float: right;
+    margin-bottom: 9%;
     transition: background-color 0.3s ease;
 
     &:hover {
@@ -220,4 +223,10 @@
 }
 .css-10wo9uf-option {
   background-color: #f0f0f0 !important;
+}
+
+#root > div.app > main > div > div.features.dark > div > div > div> img {
+  width: 5%;
+  background: green;
+    border-radius: 50%;
 }

@@ -1,9 +1,10 @@
+
 .home {
   .features {
     background-color: #f1fdf7;
     display: flex;
     justify-content: center;
-    padding: 100px 0px;
+    padding: 100px 0;
 
     &.dark {
       background-color: #0d084d;
@@ -41,28 +42,32 @@
     }
 
     .container {
-      width: 1400px;
+      width: 100%;
+      max-width: 1400px;
       display: flex;
-      align-items: center;
-      gap: 200px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+
       .item {
+        flex: 1;
         display: flex;
         flex-direction: column;
         gap: 15px;
+
         &:first-child {
           flex: 2;
         }
+
         &:last-child {
           flex: 3;
         }
 
-        img {
-          width: 100%;
-        }
         h1 {
           font-weight: 500;
           margin-bottom: 10px;
         }
+
         .title {
           display: flex;
           align-items: center;
@@ -70,11 +75,12 @@
           font-weight: 500;
           font-size: 18px;
           color: #666;
-          img {
+          .check-icon {
             width: 24px;
             height: 24px;
           }
         }
+
         p {
           font-size: 18px;
           font-weight: 300;
@@ -83,37 +89,146 @@
           letter-spacing: 1px;
         }
 
+        img {
+          width: 100%;
+          height: auto;
+        }
+
         video {
-          width: 720px;
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 992px) { // lg
+    .features {
+      .container {
+        flex-direction: column;
+        align-items: center;
+
+        .item {
+          flex: none;
+          width: 100%;
+          text-align: center;
+
+          &:last-child {
+            margin-top: 20px;
+          }
+
+          img {
+            max-width: 100%;
+            height: auto;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) { // sm
+    .features {
+      .container {
+        .item {
+          h1 {
+            font-size: 24px;
+          }
+
+          .title {
+            font-size: 16px;
+          }
+
+          p {
+            font-size: 16px;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+  }
+  .geeders-info {
+    background-color: #0d084d;
+    color: white;
+    padding: 50px 0;
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+
+      .text-content {
+        flex: 1 1 100%; // Full width on small screens
+        max-width: 500px;
+
+        h1 {
+          color: #fffbee;
+    text-align: center;
+          font-size: 2rem;
+          margin-bottom: 20px;
+        }
+
+        p {
+          font-size: 1rem;
+          line-height: 1.6;
+          margin-bottom: 20px;
+
+          strong {
+            color: #01f784f2;
+            font-size: x-large;
+          }
+
+          svg {
+            margin-right: 8px;
+            color: #1dbf73;
+          }
+        }
+      }
+
+      .image-collage {
+        flex: 1 1 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+
+        img {
+          width: 100%; // Full width on small screens
+          max-width: 150px; // Adjust as needed
+          object-fit: cover;
+          border-radius: 10px;
+          transform: rotate(5deg);
+          transition: transform 0.5s;
+
+          &:hover {
+            transform: rotate(0deg);
+          }
         }
       }
     }
   }
 
   .explore {
-    display: flex;
-    justify-content: center;
-    padding: 100px 0px;
+    padding: 50px 0;
 
     .container {
-      width: 1400px;
-
       h1 {
-        color: #555;
+        text-align: center;
+        font-size: 1.5rem;
       }
 
       .items {
-        width: 100%;
         display: flex;
-        justify-content: space-between;
         flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
 
         .item {
-          width: 250px;
+          width: 150px;
           height: 150px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
           align-items: center;
           justify-content: center;
           text-align: center;
@@ -128,7 +243,7 @@
             width: 50px;
             height: 2px;
             background-color: lightgray;
-            transition: all .3s ease;
+            transition: all 0.3s ease;
           }
 
           span {
@@ -145,73 +260,4 @@
       }
     }
   }
-
-  .geeders-info {
-    padding: 50px 0;
-    background-color: #0d084d;
-
-    .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-    }
-
-    .text-content {
-      flex: 2;
-      h1 {
-        font-size: 2.5em;
-        color:#f1fdf7 ;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      p {
-        color: white !important;
-        font-weight: 300 !important;
-        font-size: 18px !important;
-        margin: 15px 0;
-        line-height: 1.6;
-
-        strong {
-          font-weight: bold;
-          color: #01f784f2;
-          display: block;
-          margin-bottom: 10px;
-          font-size: 1.2em;
-        }
-
-        svg {
-          margin-right: 8px;
-          color: #1dbf73;
-        }
-      }
-    }
-
-    .image-collage {
-      flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      align-items: center;
-
-      img {
-        width: 40%;
-        height: 10%;
-margin-top: 10%;
-        object-fit: cover;
-        border-radius: 10px;
-        transform: rotate(5deg);
-        transition: transform 0.5s;
-
-        &:hover {
-          transform: rotate(0deg);
-        }
-      }
-    }
-  }
-
-
 }

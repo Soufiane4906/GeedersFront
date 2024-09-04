@@ -111,81 +111,76 @@ function Featured() {
   };
   const [isSwapped, setIsSwapped] = useState(false);
 
-  return (
+  return  (
     <div className={`featured ${isSwapped ? 'swapped' : ''}`}>
-    <div className="container">
-      <div className={`left ${isSwapped ? 'hidden' : ''}`}>
-        <h1>
-          Discover the perfect <span>guide</span> for your adventure
-        </h1>
-        <div className="row">
-          <div className="col-md-4">
-            <div className="select">
-              <label>
-                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faGlobe} /> Country:
-              </label>
-              <select
-                required
-                onChange={handleCountryChange}
-                style={{ width: '100%' }}
-              >
-                <option value="">Select Country</option>
-                {countriesData.map((country) => (
-                  <option key={country.name} value={country.name}>
-                    {country.flag} {country.name}
-                  </option>
-                ))}
-              </select>
+      <div className="container">
+        <div className={`left ${isSwapped ? 'hidden' : ''}`}>
+          <h1>
+            Discover the perfect <span>guide</span> for your adventure
+          </h1>
+          <div className="row">
+            <div className="col-md-6 col-lg-4">
+              <div className="select">
+                <label>
+                  <FontAwesomeIcon style={{ marginRight: '4px' }} icon={faGlobe} /> Country:
+                </label>
+                <select required onChange={handleCountryChange} style={{ width: '100%' }}>
+                  <option value="">Select Country</option>
+                  {countriesData.map((country) => (
+                    <option key={country.name} value={country.name}>
+                      {country.flag} {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="select">
+                <label>
+                  <FontAwesomeIcon style={{ marginRight: '4px' }} icon={faCity} /> City:
+                </label>
+                <select
+                  required
+                  onChange={handleCityChange}
+                  style={{ width: '100%' }}
+                  disabled={!showCity}
+                >
+                  <option value="">Select City</option>
+                  {cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="select">
-              <label>
-                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faCity} /> City:
-              </label>
-              <select
-                required
-                onChange={handleCityChange}
-                style={{ width: '100%' }}
-                disabled={!showCity}
-              >
-                <option value="">Select City</option>
-                {cities.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
+          <div className="row">
+            <div className="col-md-12 col-lg-6">
+              <div className="select">
+                <label>
+                  <FontAwesomeIcon style={{ marginRight: '4px' }} icon={faLanguage} /> Languages:
+                </label>
+                <Select
+                  name="languages"
+                  options={languageOptions}
+                  isMulti
+                  value={languageOptions.filter((option) =>
+                    selectedLanguages.includes(option.value)
+                  )}
+                  onChange={handleLanguageChange}
+                  styles={{ container: (base) => ({ ...base, width: '100%' }) }}
+                />
+              </div>
             </div>
-          </div>
-
-        </div>
-        <div className="row">
-        <div className="col-md-9">
-            <div className="select">
-              <label>
-                <FontAwesomeIcon style={{marginRight:'4px'}} icon={faLanguage} /> Languages:
-              </label>
-              <Select
-                name="languages"
-                options={languageOptions}
-                isMulti
-                value={languageOptions.filter((option) =>
-                  selectedLanguages.includes(option.value)
-                )}
-                onChange={handleLanguageChange}
-                styles={{ container: (base) => ({ ...base, width: '100%' }) }}
-              />
-            </div>
-          </div>
-          <div className="col-md-8">
-            <div className="additional-fields">
-              <p>
-                <FontAwesomeIcon icon={faRoad} style={{ marginRight: '5px' }} />
-                With Car Options?
-              </p>
-              <div>
-              <label>
+            <div className="col-md-12 col-lg-6">
+              <div className="additional-fields">
+                <p>
+                  <FontAwesomeIcon icon={faRoad} style={{ marginRight: '5px' }} />
+                  With Vehicle Options?
+                </p>
+                <div>
+                  <label>
                     <input
                       type="radio"
                       name="vehicleMenu"
@@ -205,102 +200,98 @@ function Featured() {
                     />
                     No
                   </label>
-              </div>
-              {showVehicleOptions && (
-                <div>
-                  <label
-                    className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
-                      value="scooter"
-                      checked={selectedVehicles.includes('scooter')}
-                      onChange={handleVehicleChange}
-                    />
-                    <FontAwesomeIcon icon={faMotorcycle} /> Scooter
-                  </label>
-                  <label
-                    className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
-                      value="car"
-                      checked={selectedVehicles.includes('car')}
-                      onChange={handleVehicleChange}
-                    />
-                    <FontAwesomeIcon icon={faCar} /> Car
-                  </label>
                 </div>
-              )}
+                {showVehicleOptions && (
+                  <div>
+                    <label className={`checkbox-container ${selectedVehicles.includes('scooter') ? 'active' : ''}`}>
+                      <input
+                        type="checkbox"
+                        value="scooter"
+                        checked={selectedVehicles.includes('scooter')}
+                        onChange={handleVehicleChange}
+                      />
+                      <FontAwesomeIcon icon={faMotorcycle} /> Scooter
+                    </label>
+                    <label className={`checkbox-container ${selectedVehicles.includes('car') ? 'active' : ''}`}>
+                      <input
+                        type="checkbox"
+                        value="car"
+                        checked={selectedVehicles.includes('car')}
+                        onChange={handleVehicleChange}
+                      />
+                      <FontAwesomeIcon icon={faCar} /> Car
+                    </label>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <button
-        className="showpoi"
-        style={{background :'#ffc107' , marginRight: '4%'} }
-        onClick={() => {
+          <button
+            className="showpoi"
+            style={{ background: '#ffc107', marginRight: '4%' }}
+            onClick={handleMoreDetailsClick}
+          >
+            {showPointsOfInterest ? (
+              <>
+                <FontAwesomeIcon icon={faChevronUp} />
+                Show Less
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronDown} />
+                Would you like a guide with specific places or volunteers?
+              </>
+            )}
+          </button>
 
-          handleMoreDetailsClick();
-          setIsSwapped(!isSwapped);
-        }}>
-          {showPointsOfInterest ? (
-            <>
-              <FontAwesomeIcon icon={faChevronUp} />
-              Show Less
-            </>
-          ) : (
-            <>
-              <FontAwesomeIcon icon={faChevronDown} />
-              Would you like a guide with specific places or volunteers?
-            </>
+          {showPointsOfInterest && (
+            <div className="points-of-interest">
+              <p className="p-poi">
+                <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
+              </p>
+              <div className="poi-options">
+                {pointsOfInterestOptions.map((poi) => (
+                  <label
+                    key={poi.name}
+                    className={`poi-container ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={poi.name}
+                      checked={selectedPointsOfInterest.includes(poi.name)}
+                      onChange={(e) => {
+                        const { value, checked } = e.target;
+                        setSelectedPointsOfInterest((prev) =>
+                          checked
+                            ? [...prev, value]
+                            : prev.filter((poi) => poi !== value)
+                        );
+                      }}
+                    />
+                    <img
+                      src={poi.icon}
+                      alt={poi.name}
+                      style={{ width: 30, height: 30, marginRight: 10 }}
+                    />
+                    {poi.name}
+                  </label>
+                ))}
+              </div>
+            </div>
           )}
-        </button>
-
-        {showPointsOfInterest && (
-          <div className="points-of-interest">
-            <p className="p-poi">
-              <FontAwesomeIcon icon={faMapPin} /> Select Points of Interest
-            </p>
-            <div className="poi-options">
-              {pointsOfInterestOptions.map((poi) => (
-                <label
-                  key={poi.name}
-                  className={`poi-container ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}
-                >
-                  <input
-                    type="checkbox"
-                    value={poi.name}
-                    checked={selectedPointsOfInterest.includes(poi.name)}
-                    onChange={(e) => {
-                      const { value, checked } = e.target;
-                      setSelectedPointsOfInterest((prev) =>
-                        checked
-                          ? [...prev, value]
-                          : prev.filter((poi) => poi !== value)
-                      );
-                    }}
-                  />
-                  <img
-                    src={poi.icon}
-                    alt={poi.name}
-                    style={{ width: 30, height: 30, marginRight: 10 }}
-                  />
-                  {poi.name}
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-        <button onClick={handleSubmit}>Search <FaSearchPlus></FaSearchPlus></button>
-      </div>
-      <div className={`right ${isSwapped ? 'visible' : ''}`}
-           style={{ backgroundImage: `url(${backgroundImage})` }}>
-        <img src="./img/man.png" alt="" />
+          <button onClick={handleSubmit}>
+            Search <FaSearchPlus />
+          </button>
+        </div>
+        <div className={`right ${isSwapped ? 'visible' : ''}`} style={{ backgroundImage: `url(${backgroundImage})` }}>
+          {/* Optional image */}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 };
+
+
 
 export default Featured;
 const languageOptions = [

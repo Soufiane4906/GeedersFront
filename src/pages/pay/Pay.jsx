@@ -12,40 +12,38 @@ const Pay = () => {
   const [clientSecret, setClientSecret] = useState("");
   const [bookingDetails, setBookingDetails] = useState({});
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const byId = currentUser._id;
+
+  const fetchBookingDetailsAndMakeRequest = async () => {
+    const details = JSON.parse(sessionStorage.getItem('bookingDetails'));
+    setBookingDetails(details || {});
+
+    if (!details || !details.id || !currentUser?._id) return;
+
+    try {
+      const res = await newRequest.post(`/orders/create-payment-intent/${details.id}`, {
+        totalPrice: details.totalPrice,
+        city: details.city,
+        country: details.country,
+        options: {
+          vehicle: details.selectedVehicle,
+          carPrice: details.carPrice,
+          scooterPrice: details.scooterPrice
+        },
+        hours: details.hours,
+        buyerId: byId, // Include buyerId in the request payload
+      });
+
+      setClientSecret(res.data.clientSecret);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchBookingDetails = () => {
-      const details = JSON.parse(sessionStorage.getItem('bookingDetails'));
-      setBookingDetails(details || {});
-    };
-    fetchBookingDetails();
+    fetchBookingDetailsAndMakeRequest();
   }, []);
-
-  useEffect(() => {
-    const makeRequest = async () => {
-      if (!bookingDetails.id) return;
-
-      try {
-        const res = await newRequest.post(`/orders/create-payment-intent/${bookingDetails.id}`, {
-          totalPrice: bookingDetails.totalPrice,
-          city: bookingDetails.city,
-          buyerId : bookingDetails.buyerId,
-          country: bookingDetails.country,
-          options: {
-            vehicle: bookingDetails.selectedVehicle,
-            carPrice: bookingDetails.carPrice,
-            scooterPrice: bookingDetails.scooterPrice
-          },
-          hours: bookingDetails.hours,
-        });
-
-        setClientSecret(res.data.clientSecret);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    makeRequest();
-  }, [bookingDetails]);
 
   const appearance = {
     theme: 'stripe',
@@ -76,6 +74,10 @@ const Pay = () => {
             <div className="summary-item">
               <div className="summary-description">Base Price</div>
               <div className="summary-price">${bookingDetails?.price || '0.00'}</div>
+            </div>
+            <div className="summary-item">
+              <div className="summary-description">Current User</div>
+              <div className="summary-price">${currentUser?._id || '0.00'}</div>
             </div>
             {bookingDetails?.selectedVehicle && (
               <div className="summary-item">
