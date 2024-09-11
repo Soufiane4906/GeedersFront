@@ -59,8 +59,8 @@ function Featured() {
     setBackgroundImage((prev) =>
       prev ===
       "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
-        ? "./img/bgMap.png" // Replace with the new image URL
-        : "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
+      ? "https://thumbs.dreamstime.com/b/photo-collage-made-diverse-world-travel-destinations-wooden-surface-photos-127092750.jpg" // Replace with the new image URL
+      : "https://st2.depositphotos.com/3725083/5485/i/950/depositphotos_54856347-stock-photo-travel-the-world-monument-concept.jpg"
     );
   };
 
@@ -362,6 +362,14 @@ const languageOptions = [
 const pointsOfInterestOptions = [
   { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
   { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
+  //bussiness
+  { name: "Business", icon: "./img/icons8-b2b-50.png" },
+  //businnes
+
+
+
+
+
   {
     name: "Night Club",
     icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000",
