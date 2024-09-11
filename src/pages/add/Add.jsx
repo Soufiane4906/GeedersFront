@@ -554,6 +554,8 @@ const CustomOption = (props) => (
   </div>
 );
 const pointsOfInterestOptions = [
+  { name: "Business", icon: "./img/icons8-b2b-50.png" },
+  { name: "Administration", icon: "./img/icons8-administration.png" },
   { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
   { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
   {

@@ -360,14 +360,16 @@ const languageOptions = [
   // Add more languages as needed
 ];
 const pointsOfInterestOptions = [
-  { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
-  { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
+
   //bussiness
   { name: "Business", icon: "./img/icons8-b2b-50.png" },
+  { name: "Administration", icon: "./img/icons8-administration.png" },
+
   //businnes
 
 
-
+  { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
+  { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
 
 
   {

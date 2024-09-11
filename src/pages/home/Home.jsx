@@ -93,6 +93,16 @@ function Home() {
         <div className="container">
           <h1>Explore Points of Interest with Our Geeders</h1>
           <div className="items">
+          <div className="item">
+              <img src="./img/icons8-administration.png" alt="Administration" />
+              <div className="line"></div>
+              <span>Administration</span>
+            </div>
+            <div className="item">
+              <img src="./img/icons8-b2b-50.png" alt="Business" />
+              <div className="line"></div>
+              <span>Business</span>
+            </div>
             <div className="item">
               <img src="https://img.icons8.com/ios/50/000000/museum.png" alt="Museum" />
               <div className="line"></div>
