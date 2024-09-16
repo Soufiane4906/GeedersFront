@@ -76,8 +76,6 @@ const Pay = () => {
               <div className="summary-price">${bookingDetails?.price || '0.00'}</div>
             </div>
             <div className="summary-item">
-              <div className="summary-description">Current User</div>
-              <div className="summary-price">${currentUser?._id || '0.00'}</div>
             </div>
             {bookingDetails?.selectedVehicle && (
               <div className="summary-item">
