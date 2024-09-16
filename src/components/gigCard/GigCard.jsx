@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./GigCard.scss";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -12,8 +12,6 @@ import {
   FaBan,
 } from "react-icons/fa";
 
-
-
 const GigCard = ({ item }) => {
   const { isLoading, error, data } = useQuery({
     queryKey: [item.userId],
@@ -21,12 +19,17 @@ const GigCard = ({ item }) => {
       newRequest.get(`/users/${item.userId}`).then((res) => res.data),
   });
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const isUserLoggedIn = !!currentUser;
+
   // Ensure data is available and check for properties before accessing
-  const userData = data || {}; // Fallback to an empty object if data is not yet available
-  const languages = userData.languages || []; // Default to an empty array if languages is undefined
+  const userData = data || {};
+  const languages = userData.languages || [];
   const rating = !isNaN(item.totalStars / item.starNumber)
     ? Math.round(item.totalStars / item.starNumber)
     : 0;
+
+  const [showMessage, setShowMessage] = useState(false);
 
   return (
     <div className="gigCard">
@@ -108,8 +111,20 @@ const GigCard = ({ item }) => {
             </div>
           </div>
         </div>
-        <button className="detailsButton">
-          <Link to={`/gig/${item._id}`}>More Details / Book</Link>
+        <button
+          className={`detailsButton ${!isUserLoggedIn ? 'disabled' : ''} ${!isUserLoggedIn && showMessage ? 'showTooltip' : ''}`}
+          onMouseEnter={() => !isUserLoggedIn && setShowMessage(true)}
+          onMouseLeave={() => setShowMessage(false)}
+          disabled={!isUserLoggedIn}
+        >
+          {isUserLoggedIn ? (
+            <Link to={`/gig/${item._id}`}>More Details / Book</Link>
+          ) : (
+            <span className="linkText">More Details / Book</span>
+          )}
+          {!isUserLoggedIn && showMessage && (
+            <div className="tooltip">You should login first or create an account.</div>
+          )}
         </button>
       </div>
     </div>

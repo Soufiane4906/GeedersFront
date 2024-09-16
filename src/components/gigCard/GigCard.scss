@@ -138,6 +138,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    position: relative; // Ensure relative positioning for the tooltip
 
     a {
       color: white;
@@ -147,7 +148,39 @@
     &:hover {
       background-color: #17a673;
     }
+
+    &.disabled {
+      background-color: #ccc; // Gray color for disabled state
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.6; // Slightly transparent to indicate disabled state
+    }
+
+    // Tooltip styles
+    .tooltip {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 5px;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      z-index: 10;
+      display: block;
+      margin-top: 5px; // Space between button and tooltip
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &.showTooltip .tooltip {
+      opacity: 1;
+    }
   }
+
+
 }
 .userAvatar {
   border-radius: 50%;

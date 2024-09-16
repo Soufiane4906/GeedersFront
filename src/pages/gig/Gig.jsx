@@ -18,7 +18,12 @@ function Gig() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [hours, setHours] = useState(1);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const currentUserId=currentUser._id;
+  if (!currentUser) {
+    navigate('/login');
+    return null; // Ensure the component does not render anything
+  }
+
+  const currentUserId = currentUser._id;
   //currentuser Id
 
 
@@ -148,17 +153,7 @@ function Gig() {
               <h2>About The Guide</h2>
               <div className="user">
                 <div className="info">
-                  <span>{dataUser?.username}</span>
-                  {!isNaN(data?.totalStars / data?.starNumber) && (
-                    <div className="stars">
-                      {Array(Math.round(data.totalStars / data.starNumber))
-                        .fill()
-                        .map((_, i) => (
-                          <FaStar key={i} />
-                        ))}
-                      <span>{Math.round(data.totalStars / data.starNumber)}</span>
-                    </div>
-                  )}
+
                 </div>
               </div>
               <div className="box">
