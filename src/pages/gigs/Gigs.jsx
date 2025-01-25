@@ -108,7 +108,11 @@ function Gigs() {
             {isLoading ? (
                 "Loading..."
             ) : error ? (
-                "Something went wrong!"
+                <div>
+                  <p>Something went wrong!</p>
+                  <p>Error: {error.message}</p>
+                  <p>URL: {error.config.url}</p>
+                </div>
             ) : data && data.length > 0 ? (
                 data.map((gig) => <GigCard key={gig._id} item={gig} />)
             ) : (
