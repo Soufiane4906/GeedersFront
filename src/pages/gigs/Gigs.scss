@@ -2,14 +2,19 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  background-color: #f8f9fa;
+  padding: 40px 0;
 
   .container {
     width: 90%;
     max-width: 1400px;
-    padding: 30px 0px;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
     .breadcrumbs {
       font-weight: 300;
@@ -21,6 +26,7 @@
     h1 {
       font-size: 28px;
       margin-bottom: 10px;
+      color: #333;
     }
 
     .menu {
@@ -29,8 +35,9 @@
       justify-content: space-between;
       margin-bottom: 20px;
       background-color: white;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       z-index: 1000;
       position: sticky;
       top: 0;
@@ -40,29 +47,40 @@
       .left {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
         color: #555;
         font-weight: 300;
 
         input {
-          padding: 5px;
-          border: 1px solid lightgrey;
+          padding: 8px;
+          border: 1px solid #ddd;
           border-radius: 5px;
           outline: none;
+          font-size: 14px;
+          transition: border-color 0.3s ease;
 
           &::placeholder {
             color: #999;
           }
+
+          &:focus {
+            border-color: #1dbf73;
+          }
         }
 
         button {
-          padding: 5px 10px;
+          padding: 8px 16px;
           background-color: #1dbf73;
           color: white;
           border: none;
           font-weight: 500;
           border-radius: 5px;
           cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #17a362;
+          }
         }
       }
 
@@ -79,17 +97,23 @@
 
         .sortType {
           font-weight: 500;
+          color: #333;
         }
 
         img {
           width: 15px;
           cursor: pointer;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
         }
 
         .rightMenu {
-          padding: 20px;
+          padding: 15px;
           background-color: white;
-          border: 0.5px solid lightgrey;
+          border: 1px solid #ddd;
           border-radius: 5px;
           position: absolute;
           top: 30px;
@@ -97,11 +121,17 @@
           z-index: 9;
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 15px;
           color: #555;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
           span {
             cursor: pointer;
+            transition: color 0.3s ease;
+
+            &:hover {
+              color: #1dbf73;
+            }
           }
         }
       }
@@ -109,20 +139,36 @@
 
     .cards {
       display: flex;
-      flex-wrap: wrap; // Allows cards to wrap onto multiple lines
-      gap: 20px; // Space between cards
-      justify-content: center; // Center cards horizontally
-      transition: all 0.3s ease; // Smooth transition for animations
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      transition: all 0.3s ease;
+
+      .gig-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+      }
     }
 
     .map-container {
       align-self: center;
       margin-top: 30px;
-      height: 305px;
-      width: 550px;
+      height: 400px;
+      width: 100%;
+      max-width: 800px;
       position: relative;
       border: 1px solid #ffc107;
-      border-radius: 5px;
+      border-radius: 10px;
+      overflow: hidden;
 
       .map {
         height: 100%;

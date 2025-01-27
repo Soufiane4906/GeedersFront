@@ -1,6 +1,10 @@
 .trustedBy {
-  background-color: #f8f9fa;
-  padding: 40px 0;
+  margin-top: 60px;
+  background: linear-gradient(135deg, #160200, #6b64d9);
+  padding: 60px 20px;
+  color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
 
   .container {
     max-width: 1200px;
@@ -8,9 +12,12 @@
     text-align: center;
 
     h2 {
-      margin-bottom: 30px;
-      font-size: 2rem;
-      color: #333;
+      margin-bottom: 40px;
+      font-size: 2.5rem;
+      color: #ffffff;
+      span {
+        color: #ffc107;
+      }
     }
 
     .stats {
@@ -22,28 +29,37 @@
       .stat-item {
         flex: 1;
         max-width: 200px;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.1);
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 8px 1px #007bff89;
+        border-radius: 12px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
         text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          transform: translateY(-10px);
+          box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
         .stat-icon {
-          font-size: 2rem;
-          color: #007bff;
+          font-size: 2.5rem;
+          color: #ffc107;
+          margin-bottom: 10px;
         }
 
         .stat-number {
           display: block;
-          font-size: 1.5rem;
+          font-size: 1.75rem;
           font-weight: bold;
           margin-top: 10px;
+          color: #ffffff;
         }
 
         .stat-label {
           display: block;
           font-size: 1rem;
-          color: #555;
+          color: #ffffff;
+          opacity: 0.8;
         }
       }
     }

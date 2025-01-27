@@ -26,9 +26,9 @@ function Gigs() {
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["gigs", sort, country, city],
     queryFn: () =>
-      newRequest
-        .get(`/gigs?country=${country}&city=${city}&sort=${sort}`)
-        .then((res) => res.data),
+        newRequest
+            .get(`/gigs?country=${country}&city=${city}&sort=${sort}`)
+            .then((res) => res.data),
   });
 
   const locations = data ? data.map(gig => ({
@@ -66,58 +66,62 @@ function Gigs() {
   const noResultsMessage = "No matching guides found in these areas.";
 
   return (
-    <div className="gigs">
-      <div className="container">
-        <span className="breadcrumbs">Search Results</span>
-        <h1>Available Geeders</h1>
-        <div className="menu">
-          <div className="left">
-            <span>Country</span>
-            <input
-              type="text"
-              placeholder="Country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            />
-            <span>City</span>
-            <input
-              type="text"
-              placeholder="City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            />
-            <button onClick={apply}>Apply</button>
-          </div>
-          <div className="right">
-            <br />
-            <span className="sortBy">Sort by</span>
-            <span className="sortType">
+      <div className="gigs">
+        <div className="container">
+          <span className="breadcrumbs">Search Results</span>
+          <h1>Available BlaBlaTrip</h1>
+          <div className="menu">
+            <div className="left">
+              <span>Country</span>
+              <input
+                  type="text"
+                  placeholder="Country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+              />
+              <span>City</span>
+              <input
+                  type="text"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+              />
+              <button onClick={apply}>Apply</button>
+            </div>
+            <div className="right">
+              <br />
+              <span className="sortBy">Sort by</span>
+              <span className="sortType">
               {sort === "sales" ? "Best Guide" : sort === "popularity" ? "Popular" : "Newest"}
             </span>
-            <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
-            {open && (
-              <div className="rightMenu">
-                <span onClick={() => reSort("createdAt")}>Newest</span>
-                <span onClick={() => reSort("sales")}>Best</span>
-                <span onClick={() => reSort("popularity")}>Popular</span>
-              </div>
+              <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
+              {open && (
+                  <div className="rightMenu">
+                    <span onClick={() => reSort("createdAt")}>Newest</span>
+                    <span onClick={() => reSort("sales")}>Best</span>
+                    <span onClick={() => reSort("popularity")}>Popular</span>
+                  </div>
+              )}
+            </div>
+          </div>
+          <div className="cards">
+            {isLoading ? (
+                "Loading..."
+            ) : error ? (
+                <div>
+                  <p>Something went wrong!</p>
+                  <p>Error: {error.message}</p>
+                  <p>URL: {error.config.url}</p>
+                </div>
+            ) : data && data.length > 0 ? (
+                data.map((gig) => <GigCard key={gig._id} item={gig} />)
+            ) : (
+                <p>{noResultsMessage}</p>
             )}
           </div>
+          {data && data.length > 0 && <InteractiveMap locations={locations} />}
         </div>
-        <div className="cards">
-          {isLoading ? (
-            "Loading..."
-          ) : error ? (
-            "Something went wrong!"
-          ) : data && data.length > 0 ? (
-            data.map((gig) => <GigCard key={gig._id} item={gig} />)
-          ) : (
-            <p>{noResultsMessage}</p>
-          )}
-        </div>
-        {data && data.length > 0 && <InteractiveMap locations={locations} />}
       </div>
-    </div>
   );
 }
 

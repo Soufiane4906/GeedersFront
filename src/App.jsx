@@ -33,7 +33,7 @@ function App() {
     <div className="app">
       <QueryClientProvider client={queryClient}>
         <Navbar />
-        <main>
+        <main style={{ minHeight: "calc(100vh - 200px)" , marginTop: "100px"}}>
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>
