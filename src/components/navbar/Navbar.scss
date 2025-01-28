@@ -15,8 +15,8 @@
 
     button {
       background-color: white !important;
-      color: #1dbf73 !important;
-      border: 1px solid #1dbf73 !important;
+      color: #8264ee !important;
+      border: 1px solid #8264ee !important;
     }
   }
 
@@ -100,7 +100,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
 
             &:hover {
-              background-color: #1dbf73;
+              background-color: #8264ee;
               color: white;
 
               svg {
@@ -109,7 +109,7 @@
             }
 
             svg {
-              color: #1dbf73;
+              color: #8264ee;
               transition: color 0.3s ease;
             }
           }
@@ -124,8 +124,8 @@
         cursor: pointer;
 
         &:hover {
-          background-color: #1dbf73;
-          border-color: #1dbf73;
+          background-color: #8264ee;
+          border-color: #8264ee;
         }
       }
     }
@@ -164,7 +164,7 @@
           transition: background-color 0.3s ease, color 0.3s ease;
 
           &:hover {
-            background-color: #1dbf73;
+            background-color: #8264ee;
             color: white;
           }
         }

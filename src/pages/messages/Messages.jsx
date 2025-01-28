@@ -35,7 +35,7 @@ const Messages = () => {
     <div className="container">
       <div className="title">
         <h1>Messages</h1>
-        <FaEnvelope size={24} color="#1dbf73" />
+        <FaEnvelope size={24} color="#8264ee" />
       </div>
       {isLoading ? (
         <p>Loading...</p>
