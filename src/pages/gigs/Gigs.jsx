@@ -23,6 +23,8 @@ function Gigs() {
   const country = queryParams.get('country') || "";
   const city = queryParams.get('city') || "";
 
+
+
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["gigs", sort, country, city],
     queryFn: () =>
