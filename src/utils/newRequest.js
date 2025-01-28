@@ -1,12 +1,13 @@
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
+const processEnv = process.env; // Utilisez une variable locale pour stocker process.env
+const nodeEnv = processEnv.NODE_ENV || "development";
 
 const newRequest = axios.create({
- // baseURL: "https://BlaBlaTripapi.onrender.com/api/",
- //baseURL: "https://46.202.195.73:8800/api",
- baseURL: "https://www.blablatrip.com/api", // Correct base URL
-
-
-  withCredentials: true,
+ baseURL: processEnv.API_APP_BASE_URL,
+ withCredentials: true,
 });
 
 export default newRequest;
