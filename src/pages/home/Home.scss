@@ -1,44 +1,44 @@
+@import '../../variables';
+
 .home {
-  .features {
-    margin-top: 60px;
-    background: linear-gradient(135deg, #160200, #6b64d9);
-    padding: 60px 20px;
-    color: #ffffff;
+  .city-slider {
+    width: 100%;
+    margin-bottom: 40px;
 
-    &.dark {
-      background-color: #0d084d;
-
-      h1 {
-        color: white !important;
+    .slider-item {
+      position: relative;
+      img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 20px;
       }
 
-      i {
-        font-weight: 300;
-      }
-
-      p {
-        margin-bottom: 20px;
-        color: white !important;
-      }
-
-      .title {
-        color: white !important;
-        font-weight: 300 !important;
-        font-size: 14px !important;
-      }
-
-      button {
-        background-color: #8264ee;
-        border: none;
+      .slider-overlay {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
         color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        width: max-content;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+        h2 {
+          font-size: 2.5rem;
+          margin: 0;
+        }
+
+        p {
+          font-size: 1.2rem;
+          margin: 0;
+        }
       }
     }
+  }
+
+  .features {
+    margin-top: 60px;
+    background: linear-gradient(135deg, $primary-blue, $primary-blue-dark);
+    padding: 60px 20px;
+    color: $white;
 
     .container {
       width: 100%;
@@ -54,18 +54,10 @@
         flex-direction: column;
         gap: 15px;
 
-        &:first-child {
-          flex: 2;
-        }
-
-        &:last-child {
-          flex: 3;
-        }
-
         h1 {
           font-weight: 500;
           margin-bottom: 10px;
-          color: #ffc107;
+          color: $secondary-color;
         }
 
         .title {
@@ -74,32 +66,21 @@
           gap: 10px;
           font-weight: 500;
           font-size: 18px;
-          color: #fff;
+          color: $white;
 
           .check-icon {
             width: 24px;
             height: 24px;
-            color: #8264ee;
+            color: $secondary-color;
           }
         }
 
         p {
           font-size: 18px;
           font-weight: 300;
-          color: #f0ebff;
+          color: rgba($white, 0.8);
           line-height: 28px;
           letter-spacing: 1px;
-        }
-
-        img {
-          width: 100%;
-          height: auto;
-          border-radius: 10px;
-        }
-
-        video {
-          width: 100%;
-          height: auto;
         }
       }
     }
@@ -107,9 +88,9 @@
 
   .BlaBlaTrip-info {
     margin-top: 60px;
-    background: linear-gradient(135deg, #160200, #6b64d9);
+    background: linear-gradient(135deg, $primary-blue, $primary-blue-dark);
     padding: 60px 20px;
-    color: #ffffff;
+    color: $white;
 
     .container {
       display: flex;
@@ -123,7 +104,7 @@
         max-width: 500px;
 
         h1 {
-          color: #fffbee;
+          color: $secondary-color;
           text-align: center;
           font-size: 2rem;
           margin-bottom: 20px;
@@ -135,13 +116,13 @@
           margin-bottom: 20px;
 
           strong {
-            color: #01f784f2;
+            color: $secondary-color;
             font-size: x-large;
           }
 
           svg {
             margin-right: 8px;
-            color: #8264ee;
+            color: $secondary-color;
           }
         }
       }
@@ -176,7 +157,7 @@
       h1 {
         text-align: center;
         font-size: 1.5rem;
-        color: #262262;
+        color: $primary-blue;
       }
 
       .items {
@@ -194,7 +175,7 @@
           justify-content: center;
           text-align: center;
           cursor: pointer;
-          background-color: #f8f9fa;
+          background-color: $white;
           border-radius: 10px;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -222,7 +203,7 @@
           &:hover {
             .line {
               width: 80px;
-              background-color: #8264ee;
+              background-color: $secondary-color;
             }
           }
         }

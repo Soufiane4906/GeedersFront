@@ -6,7 +6,7 @@ const TrustedBy = () => {
   return (
       <div className="trustedBy">
         <div className="container">
-          <h2>Keep Exploring 🔍</h2>
+          <h2>Why Choose BlaBlaTrip? <span>🔍</span></h2>
           <div className="stats">
             <div className="stat-item">
               <FaGlobe className="stat-icon" />

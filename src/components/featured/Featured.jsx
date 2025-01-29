@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGlobe,
@@ -16,7 +18,31 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./Featured.scss";
 import { FaSearchPlus } from "react-icons/fa";
-import { countriesData, languageOptions, pointsOfInterestOptions } from "../../utils/options.js";
+import { languageOptions, pointsOfInterestOptions } from "../../utils/options.js";
+
+// Limited list of countries and cities
+const limitedCountries = [
+  { name: "France", cities: ["Paris"], image: "../img/paris.jpg" },
+  { name: "Spain", cities: ["Barcelona"], image: "../img/barcelone.jpg" },
+  { name: "United States", cities: ["New York"], image: "../img/newyork.jpg" },
+  { name: "Italy", cities: ["Rome"], image: "../img/rome.jpg" },
+  { name: "Japan", cities: ["Tokyo"], image: "../img/tokyo.jpg" },
+  { name: "United Kingdom", cities: ["London"], image: "../img/london.jpg" },
+  { name: "Germany", cities: ["Berlin"], image: "../img/berlin.jpg" },
+  { name: "Canada", cities: ["Toronto"], image: "../img/toronto.jpg" },
+];
+
+// Slider settings
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 3000,
+  arrows: false,
+};
 
 function Featured() {
   const [country, setCountry] = useState("");
@@ -28,23 +54,15 @@ function Featured() {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [showPointsOfInterest, setShowPointsOfInterest] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
-  const [backgroundImage, setBackgroundImage] = useState("./img/img_1.png");
   const navigate = useNavigate();
 
-  const handleCountryChange = async (e) => {
+  const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
     setCountry(selectedCountry);
     setShowCity(true);
     setCity("");
-    try {
-      const response = await axios.post(
-          "https://countriesnow.space/api/v0.1/countries/cities",
-          { country: selectedCountry }
-      );
-      setCities(response.data.data);
-    } catch (error) {
-      console.error("Error fetching cities:", error);
-    }
+    const countryData = limitedCountries.find((c) => c.name === selectedCountry);
+    setCities(countryData ? countryData.cities : []);
   };
 
   const handleCityChange = (e) => {
@@ -68,9 +86,6 @@ function Featured() {
 
   const handleMoreDetailsClick = () => {
     setShowPointsOfInterest((prev) => !prev);
-    setBackgroundImage((prev) =>
-        prev === "./img/img_1.png" ? "./img/img_2.png" : "./img/img_1.png"
-    );
   };
 
   const handleSubmit = () => {
@@ -92,11 +107,29 @@ function Featured() {
 
   return (
       <div className="featured">
+        {/* City Image Slider */}
+        <div className="city-slider">
+          <Slider {...sliderSettings}>
+            {limitedCountries.map((country) => (
+                <div key={country.name} className="slider-item">
+                  <img src={country.image} alt={country.name} />
+                  <div className="slider-overlay">
+                    <h2>{country.name}</h2>
+                    <p>Explore the best of {country.cities[0]}</p>
+                  </div>
+                </div>
+            ))}
+          </Slider>
+        </div>
+
         <div className="container">
           <div className="left">
             <h1>
-              Discover the perfect <span>guide</span> for your adventure
+              Discover the perfect <span>local expert</span> for your adventure
             </h1>
+            <p className="tagline">
+              Find the best travel companions to make your trip unforgettable.
+            </p>
             <div className="search-container">
               <div className="select">
                 <label>
@@ -104,9 +137,9 @@ function Featured() {
                 </label>
                 <select required onChange={handleCountryChange}>
                   <option value="">Select Country</option>
-                  {countriesData.map((country) => (
+                  {limitedCountries.map((country) => (
                       <option key={country.name} value={country.name}>
-                        {country.flag} {country.name}
+                        {country.name}
                       </option>
                   ))}
                 </select>

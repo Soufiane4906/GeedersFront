@@ -1,44 +1,79 @@
+@import '../../variables';
+
 .login {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: calc(100vh - 200px);
+  background-color: $background-light;
+  padding: 2rem;
 
   form {
-    width: 360px;
-    padding: 100px 0px;
+    @include card-style;
+    width: 100%;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5rem;
 
     h1 {
-      color: gray;
-      margin-bottom: 20px;
+      color: $primary-blue;
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
 
     label {
-      color: gray;
-      font-size: 18px;
-    }
-
-    input,
-    textarea {
-      padding: 20px;
-      border: 1px solid rgb(216, 214, 214);
-    }
-
-    button {
-      border: none;
-      padding: 20px;
-      color: white;
+      color: $text-dark;
       font-weight: 500;
-      font-size: 18px;
-      background-color: #8264ee;
-      cursor: pointer;
+      margin-bottom: 0.5rem;
     }
 
-    span{
-      color: red;
-      font-size: 12px;
+    input {
+      @include form-input;
     }
+
+    button[type="submit"] {
+      @include primary-button;
+      margin-top: 1rem;
+    }
+
+    .error {
+      color: $error-red;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      button {
+        @include secondary-button;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+
+        &.google-button {
+          background-color: $white;
+          border-color: #ddd;
+          color: $text-dark;
+
+          &:hover {
+            background-color: #f8f9fa;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login form {
+    padding: 1.5rem;
   }
 }
