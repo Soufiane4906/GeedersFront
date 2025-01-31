@@ -1,0 +1,84 @@
+// _variables.scss
+
+// Color Palette
+$primary-blue: #EFB036;
+$primary-blue-dark: #0947a1;
+$primary-blue-light: #4285f4;
+$secondary-color: #493D9E;
+$background-light: #f0f2f5;
+$text-dark: #333;
+$text-light: #666;
+$white: #ffffff;
+$error-red: #dc3545;
+$success-green: yellowgreen;
+
+// Shadows
+$card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+$hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+// Border Radius
+$border-radius-sm: 5px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+
+// Mixins
+@mixin card-style {
+  background-color: $white;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+  padding: 2rem;
+}
+
+@mixin form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid lighten($text-light, 30%);
+  border-radius: $border-radius-sm;
+  font-size: 1rem;
+  transition: border-color $transition-normal;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-blue;
+  }
+}
+
+@mixin primary-button {
+  background-color: $primary-blue;
+  color: $white;
+  border: none;
+  border-radius: $border-radius-sm;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color $transition-normal;
+
+  &:hover {
+    background-color: $primary-blue-dark;
+  }
+
+  &:disabled {
+    background-color: lighten($primary-blue, 20%);
+    cursor: not-allowed;
+  }
+}
+
+@mixin secondary-button {
+  background-color: transparent;
+  color: $primary-blue;
+  border: 1px solid $primary-blue;
+  border-radius: $border-radius-sm;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background-color: $primary-blue;
+    color: $white;
+  }
+}

@@ -2,11 +2,23 @@ import React, { useState, useEffect } from "react";
 import "./Home.scss";
 import Featured from "../../components/featured/Featured";
 import TrustedBy from "../../components/trustedBy/TrustedBy";
-import Slide from "../../components/slide/Slide";
-import Loading from '../../components/loading/Loading';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { FaCheckCircle, FaMapPin, FaClock, FaSearchPlus, FaQuestionCircle } from 'react-icons/fa';
-import ProjectCard from "../../components/projectCard/ProjectCard.jsx";
 import { projects } from "../../data.js";
+
+// Slider settings
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 3000,
+  arrows: false,
+};
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -17,11 +29,31 @@ function Home() {
   }, []);
 
   if (loading) {
-    return <Loading />;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
       <div className="home">
+        {/* City Image Slider */}
+        <div className="city-slider">
+          <Slider {...sliderSettings}>
+            {[
+              { name: "Paris", image: "./img/paris.jpg" },
+              { name: "New York", image: "./img/newyork.jpg" },
+              { name: "Tokyo", image: "./img/tokyo.jpg" },
+              { name: "London", image: "./img/london.jpg" },
+            ].map((city, index) => (
+                <div key={index} className="slider-item">
+                  <img src={city.image} alt={city.name} />
+                  <div className="slider-overlay">
+                    <h2>{city.name}</h2>
+                    <p>Explore the best of {city.name} with BlaBlaTrip</p>
+                  </div>
+                </div>
+            ))}
+          </Slider>
+        </div>
+
         <Featured />
         <TrustedBy />
 
@@ -41,7 +73,6 @@ function Home() {
                 Multilingual BlaBlaTrip
               </div>
               <p>
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
                 Thanks to our platform, you'll be connected with BlaBlaTrip who speak your language and understand your culture, ensuring a seamless and enriching experience.
               </p>
               <div className="title">
@@ -56,8 +87,7 @@ function Home() {
                 Personalized and Secure
               </div>
               <p>
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                Our platform ensures that your booking and payment are handled securely. You can book with confidence, knowing that you're getting a guide who meets your needs and preferences.
+                Our platform ensures that your booking and payment are handled securely. You can book with confidence, knowing that you're getting a BlaBlaTrip who meets your needs and preferences.
               </p>
             </div>
           </div>
@@ -111,7 +141,6 @@ function Home() {
             </div>
           </div>
         </div>
-
       </div>
   );
 }

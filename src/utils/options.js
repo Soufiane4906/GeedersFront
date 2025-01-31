@@ -63,6 +63,39 @@ export const languageOptions = [
   // Ajoutez d'autres langues si nécessaire
 ];
 
+
+export const cities = [
+    { name: "Paris, France", link: "/gigs?country=France&city=Paris" },
+    { name: "Barcelone, Spain", link: "/gigs?country=Spain&city=Barcelone" },
+    { name: "New York, United States", link: "/gigs?country=United+States&city=New+York" },
+    { name: "Rome, Italy", link: "/gigs?country=Italy&city=Rome" },
+    { name: "Pékin, China", link: "/gigs?country=China&city=Pékin" },
+    { name: "Istanbul, Turkey", link: "/gigs?country=Turkey&city=Istanbul" },
+    { name: "Cancún, Mexico", link: "/gigs?country=Mexico&city=Cancún" },
+    { name: "Bangkok, Thailand", link: "/gigs?country=Thailand&city=Bangkok" },
+    { name: "London, United Kingdom", link: "/gigs?country=United+Kingdom&city=London" },
+    { name: "Berlin, Germany", link: "/gigs?country=Germany&city=Berlin" },
+    { name: "Tokyo, Japan", link: "/gigs?country=Japan&city=Tokyo" },
+    { name: "Vienna, Austria", link: "/gigs?country=Austria&city=Vienna" },
+    { name: "Athens, Greece", link: "/gigs?country=Greece&city=Athens" },
+    { name: "Moscow, Russia", link: "/gigs?country=Russia&city=Moscow" },
+    { name: "Kuala Lumpur, Malaysia", link: "/gigs?country=Malaysia&city=Kuala+Lumpur" },
+    { name: "Lisbon, Portugal", link: "/gigs?country=Portugal&city=Lisbon" },
+    { name: "Toronto, Canada", link: "/gigs?country=Canada&city=Toronto" },
+    { name: "Amsterdam, Netherlands", link: "/gigs?country=Netherlands&city=Amsterdam" },
+    { name: "Warsaw, Poland", link: "/gigs?country=Poland&city=Warsaw" },
+    { name: "Budapest, Hungary", link: "/gigs?country=Hungary&city=Budapest" },
+    { name: "Singapore, Singapore", link: "/gigs?country=Singapore&city=Singapore" },
+    { name: "Seoul, South Korea", link: "/gigs?country=South+Korea&city=Seoul" },
+    { name: "Jakarta, Indonesia", link: "/gigs?country=Indonesia&city=Jakarta" },
+    { name: "Delhi, India", link: "/gigs?country=India&city=Delhi" },
+    { name: "Dubrovnik, Croatia", link: "/gigs?country=Croatia&city=Dubrovnik" },
+    { name: "Zurich, Switzerland", link: "/gigs?country=Switzerland&city=Zurich" },
+    { name: "Mecca, Saudi Arabia", link: "/gigs?country=Saudi+Arabia&city=Mecca" },
+    { name: "Brussels, Belgium", link: "/gigs?country=Belgium&city=Brussels" },
+    { name: "Dublin, Ireland", link: "/gigs?country=Ireland&city=Dublin" },
+    { name: "Hanoi, Vietnam", link: "/gigs?country=Vietnam&city=Hanoi" }
+];
 export const pointsOfInterestOptions = [
 //
     { name: "Business", icon: "./img/icons8-b2b-50.png" },

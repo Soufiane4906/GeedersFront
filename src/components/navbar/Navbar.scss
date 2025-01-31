@@ -1,8 +1,11 @@
+@import '../../variables';
+
+
 .navbar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #0a58ca;
+  background-color: $primary-blue;
   color: white;
   position: sticky;
   top: 0;
@@ -13,11 +16,15 @@
     background-color: white;
     color: black;
 
-    button {
-      background-color: white !important;
-      color: #8264ee !important;
-      border: 1px solid #8264ee !important;
-    }
+ button {
+   background: linear-gradient(135deg, #160200, #6b64d9) !important;
+   color: $secondary-color !important;
+   border: 1px solid $secondary-color !important;
+
+   &:hover {
+     background: linear-gradient(135deg, #6b64d9, #160200) !important;
+   }
+ }
   }
 
   .container {
@@ -35,6 +42,11 @@
       .navbar-logo {
         width: 100px;
         height: 100px;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
       }
     }
 
@@ -56,11 +68,17 @@
         cursor: pointer;
         position: relative;
 
-        img {
+        .user-avatar {
           width: 32px;
           height: 32px;
           border-radius: 50%;
           object-fit: cover;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+          }
         }
 
         .options {
@@ -68,7 +86,7 @@
           top: 50px;
           right: 0;
           padding: 15px;
-          background-color: #ffffff;
+          background-color: white;
           border-radius: 10px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           z-index: 999;
@@ -100,7 +118,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
 
             &:hover {
-              background-color: #8264ee;
+              background-color: $secondary-color;
               color: white;
 
               svg {
@@ -109,23 +127,27 @@
             }
 
             svg {
-              color: #8264ee;
+              color: $secondary-color;
               transition: color 0.3s ease;
             }
           }
-        }      }
+        }
+      }
 
-      button {
+      .nav-button {
         color: white;
         padding: 10px 20px;
         border-radius: 5px;
         border: 1px solid white;
         background-color: transparent;
         cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {
-          background-color: #8264ee;
-          border-color: #8264ee;
+          background-color: $secondary-color;
+          border-color: $secondary-color;
+          transform: translateY(-3px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
       }
     }
@@ -142,14 +164,12 @@
       justify-content: center;
       max-width: 1400px;
       margin: 0 auto;
-      overflow-x: auto; // Enable horizontal scrolling
-      white-space: nowrap; // Prevent wrapping of city names
+      overflow-x: auto;
+      white-space: nowrap;
 
-      /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
       &::-webkit-scrollbar {
-        display: none; // Hide the scrollbar
+        display: none;
       }
-
 
       .slider {
         display: flex;
@@ -161,11 +181,12 @@
           text-decoration: none;
           padding: 10px 15px;
           border-radius: 5px;
-          transition: background-color 0.3s ease, color 0.3s ease;
+          transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 
           &:hover {
-            background-color: #8264ee;
+            background-color: $secondary-color;
             color: white;
+            transform: translateY(-3px);
           }
         }
       }
@@ -202,12 +223,13 @@
 
   .menu-container {
     .menu {
-      justify-content: flex-start; // Align cities to the left on small devices
-      padding: 0 10px; // Add padding for better spacing
+      justify-content: flex-start;
+      padding: 0 10px;
 
       .slider {
-        gap: 10px; // Reduce gap between city names on small devices
+        gap: 10px;
       }
     }
   }
 }
+

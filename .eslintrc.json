@@ -1,14 +1,14 @@
 {
     "env": {
-        "browser": true,    // For React projects
-        "es2021": true,     // Modern JavaScript
-        "node": true        // Add Node.js environment to recognize `process`
+        "browser": true,
+        "es2021": true
     },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended"
     ],
-    "overrides": [],
+    "overrides": [
+    ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
@@ -17,10 +17,7 @@
         "react"
     ],
     "rules": {
-        "no-unused-vars": "warn",         // Warn instead of error on unused variables
-        "react/prop-types": "off",       // Disable prop-types checks
-        "no-console": "warn",            // Warn on console logs
-        "semi": ["error", "always"],     // Enforce semicolons
-        "quotes": ["error", "double"]    // Enforce double quotes
+      "no-unused-vars": "warn",
+      "react/prop-types": "off"
     }
 }

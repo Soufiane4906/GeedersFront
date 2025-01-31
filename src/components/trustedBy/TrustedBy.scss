@@ -1,8 +1,10 @@
+@import '../../variables';
+
 .trustedBy {
   margin-top: 60px;
-  background: linear-gradient(135deg, #160200, #6b64d9);
+  background: linear-gradient(135deg, $primary-blue, $primary-blue-dark);
   padding: 60px 20px;
-  color: #ffffff;
+  color: $white;
   border-radius: 20px;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
 
@@ -14,9 +16,10 @@
     h2 {
       margin-bottom: 40px;
       font-size: 2.5rem;
-      color: #ffffff;
+      color: $white;
+
       span {
-        color: #ffc107;
+        color: $secondary-color;
       }
     }
 
@@ -43,7 +46,7 @@
 
         .stat-icon {
           font-size: 2.5rem;
-          color: #ffc107;
+          color: $secondary-color;
           margin-bottom: 10px;
         }
 
@@ -52,13 +55,13 @@
           font-size: 1.75rem;
           font-weight: bold;
           margin-top: 10px;
-          color: #ffffff;
+          color: $white;
         }
 
         .stat-label {
           display: block;
           font-size: 1rem;
-          color: #ffffff;
+          color: $white;
           opacity: 0.8;
         }
       }
