@@ -5,7 +5,7 @@ import newRequest from "../../utils/newRequest";
 import "./Message.scss";
 import { AiFillMessage } from 'react-icons/ai';
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa'; // Icons for envelope, phone, city, and country
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Message = () => {
   const { id } = useParams();

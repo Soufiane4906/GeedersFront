@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { FaCheckCircle, FaRegClock, FaEnvelope, FaEye, FaInfoCircle } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import "./Orders.scss";
 
 const Orders = () => {

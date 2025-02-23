@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGlobe,
@@ -95,7 +95,7 @@ function Featured() {
         <div className="container">
           <div className="left">
             <h1>
-              Discover the perfect <span>guide</span> for your adventure
+              Discover the perfect  for your adventure
             </h1>
             <div className="search-container">
               <div className="select">
@@ -227,7 +227,7 @@ function Featured() {
                   </div>
               )}
               <button className="search-button" onClick={handleSubmit}>
-                Search <FaSearchPlus />
+                Search 
               </button>
             </div>
           </div>

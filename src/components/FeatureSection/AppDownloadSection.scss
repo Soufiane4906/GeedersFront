@@ -1,0 +1,80 @@
+.app-download-section {
+    
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to right, #e66224, #e66224);
+    padding: 12px;
+    border-radius: 8px;
+  
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  
+  .phone-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+  
+    @media (min-width: 768px) {
+      margin-bottom: 0;
+    }
+  }
+  
+  .phone-img {
+    margin-top: 24px;
+    width: 292px;
+    height: auto;
+  }
+  
+  .app-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 8px;
+  }
+  
+  .app-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+  
+  .app-name {
+    font-size: 1.4rem;
+    font-weight: semi-bold;
+    color: white;
+    margin-bottom: 8px;
+  }
+  
+  .app-description {
+    font-size: 1.3rem;
+    color: white;
+    margin-bottom: 16px;
+  }
+  
+  .app-start {
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 16px;
+  }
+  
+  .app-icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .app-store-icon {
+    width: 228px;
+    height: 228px;
+    object-fit: contain;
+    margin-right: 8px;
+  }
+  

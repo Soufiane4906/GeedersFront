@@ -1,66 +1,97 @@
-/* Footer styles */
 .footer {
-  margin-top: 60px;
-  background: linear-gradient(135deg, #160200, #6b64d9);
-  padding: 60px 20px;
-  color: #ffffff;
+  background-color: #f8f9fa; // Light background color
+  padding: 3rem 0; // Equivalent to py-12 in Tailwind
 
-  .footer-logo {
-    max-width: 100px;
-    height: 100px;
-  }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto; 
+    padding: 0 1rem; 
 
-  h5 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #fff;
-  }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr; // Single column on small screens
+      gap: 4rem; // Equivalent to gap-8 in Tailwind
 
-  p {
-    font-size: 1rem;
-    color: #fff !important;
-    margin-bottom: 0.5rem;
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(3, 1fr); // 3 columns on medium screens and up
+      }
 
-    strong {
-      color: #fff;
-    }
+      .col {
+        h3 {
+          font-size: 1.8rem; // Equivalent to text-2xl in Tailwind
+          font-weight: 700; // Equivalent to font-bold in Tailwind
+          margin-bottom: 0.5rem; // Equivalent to mb-2 in Tailwind
 
-    a {
-      color: #fff !important;
-      text-decoration: none;
+          span {
+            &:first-child {
+              color: black; // Red color for "Que"
+            }
+            &:last-child {
+              color: #e66224; // Black color for "zzy"
+            }
+          }
+        }
 
-      &:hover {
-        text-decoration: underline;
-        color: #160200;
+        p {
+          color: #4a5568; // Equivalent to text-gray-700 in Tailwind
+          font-size: 1.4rem; // Equivalent to text-lg in Tailwind
+        }
+
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+
+          li {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem; // Equivalent to space-y-2 in Tailwind
+
+            a {
+              color: #4a5568; // Equivalent to text-gray-700 in Tailwind
+              text-decoration: none;
+              transition: color 0.3s ease;
+              font-size: 1.2rem;
+
+              &:hover {
+                color: #e66224; // Equivalent to hover:text-[#FF204E] in Tailwind
+              }
+            }
+          }
+        }
       }
     }
-  }
 
-  .social {
-    a {
-      color: #fff;
-      font-size: 1.25rem;
-      transition: color 0.3s;
-
-      &:hover {
-        color: #160200;
-      }
-    }
-  }
-}
-
-/* Media queries for footer */
-@media (max-width: 768px) {
-  .footer {
-    padding: 40px 10px;
-
-    .container {
-      flex-direction: column;
-      align-items: center;
+    .social {
       text-align: center;
+      margin-top: 3rem; // Equivalent to mt-12 in Tailwind
 
-      .col-md-4 {
-        margin-bottom: 20px;
+      .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem; // Equivalent to space-x-6 in Tailwind
+        margin-bottom: 1rem; // Equivalent to mb-4 in Tailwind
+
+        a {
+          color: #4a5568; // Equivalent to text-gray-700 in Tailwind
+          text-decoration: none;
+          transition: color 0.3s ease;
+          font-size: 1.2rem;
+
+          &:hover {
+            color: #e66224; // Equivalent to hover:text-[#FF204E] in Tailwind
+          }
+
+          i {
+           font-size: 1.2rem;
+            
+            font-size: 1.5rem; // Equivalent to text-2xl in Tailwind
+          }
+        }
+      }
+
+      p {
+        color: #718096; // Equivalent to text-gray-600 in Tailwind
+        font-size: 1.4rem; // Equivalent to text-lg in Tailwind
       }
     }
   }

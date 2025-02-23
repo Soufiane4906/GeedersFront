@@ -1,42 +1,85 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter, faFacebook, faLinkedin, faPinterest, faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
-import "./Footer.scss";
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Footer() {
+import "../../style.scss";
+const Footer = () => {
   return (
-      <div className="footer bg-light py-4">
+    <footer className="footer-wrapper footer-layout1" style={{ backgroundImage: "url('assets/img/bg/footer-bg.jpg')" }}>
+      <div className="footer-top">
+        <div className="shadow-color"></div>
         <div className="container">
-          <div className="row align-items-center">
-            {/* Logo Section */}
-            <div className="col-md-4 mb-3 text-center">
-              <img src="./img/img_1.svg" style={{borderRadius : "1px solid #6841ea "}} alt="BlaBlaTrip Logo" className="footer-logo" />
-            </div>
-
-            {/* Contact and Info Section */}
-            <div className="col-md-4 mb-3">
-              <h5>Contact Us</h5>
-              <p className="mb-1"><FontAwesomeIcon icon={faPhone} /> <strong>Phone:</strong> +212 773-777320</p>
-              <p className="mb-1"><FontAwesomeIcon icon={faEnvelope} /> <strong>Email:</strong> <a href="mailto:BlaBlaTrip.info@gmail.com" className="text-dark">BlaBlaTrip.info@gmail.com</a></p>
-              <p><strong>Website:</strong> <a href="http://BlaBlaTrip.com" className="text-dark">BlaBlaTrip.com</a></p>
-            </div>
-
-            {/* Social Media Section */}
-            <div className="col-md-4 text-center">
-              <div className="social mb-2">
-                <a href="#twitter" aria-label="Twitter"><FontAwesomeIcon icon={faTwitter} className="me-2" size="lg" /></a>
-                <a href="#facebook" aria-label="Facebook"><FontAwesomeIcon icon={faFacebook} className="me-2" size="lg" /></a>
-                <a href="#linkedin" aria-label="LinkedIn"><FontAwesomeIcon icon={faLinkedin} className="me-2" size="lg" /></a>
-                <a href="#pinterest" aria-label="Pinterest"><FontAwesomeIcon icon={faPinterest} className="me-2" size="lg" /></a>
-                <a href="#instagram" aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} className="me-2" size="lg" /></a>
+          <div className="cta-style1">
+            <div className="row g-5 align-items-center justify-content-between">
+              <div className="col-lg-6">
+                <div className="cta-content">
+                  <h2 className="cta-title">Ready to get started?</h2>
+                  <p className="cta-text">It only takes a few minutes to register your FREE Travolo account.</p>
+                  <a href="sign-up.html" className="vs-btn style2">Open An Account</a>
+                </div>
               </div>
-              <p className="mb-1">© BlaBlaTrip International Ltd. 2023</p>
+              <div className="col-md-5 col-sm-6">
+                <div className="cta-image d-lg-block d-none">
+                  <img src="assets/img/newsletter.png" alt="CTA" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div className="widget-area">
+        <div className="container">
+          <div className="row g-5 justify-content-between">
+            <div className="col-md-6 col-xl-3">
+              <div className="widget footer-widget">
+                <div className="vs-widget-about">
+                  <div className="footer-logo">
+                    <a href="index.html"><img src="assets/img/white-logo.svg" alt="Travolo" className="logo" /></a>
+                  </div>
+                  <p className="footer-text">Curabitur aliquet quam id dui bandit posuere blandit.</p>
+                  <div className="social-style1">
+                    <a href="#"><i className="fab fa-facebook-f"></i></a>
+                    <a href="#"><i className="fab fa-instagram"></i></a>
+                    <a href="#"><i className="fab fa-pinterest-p"></i></a>
+                    <a href="#"><i className="fab fa-twitter"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-xl-2">
+              <div className="widget widget_nav_menu footer-widget">
+                <h3 className="widget_title">Useful Links</h3>
+                <ul className="menu">
+                  <li><a href="index.html"><i className="far fa-angle-right"></i> Home</a></li>
+                  <li><a href="destinations.html"><i className="far fa-angle-right"></i> Destinations</a></li>
+                  <li><a href="tours.html"><i className="far fa-angle-right"></i> Tour</a></li>
+                  <li><a href="shop.html"><i className="far fa-angle-right"></i> Shop</a></li>
+                  <li><a href="blog.html"><i className="far fa-angle-right"></i> Blog</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container">
+        <div className="copyright-wrap">
+          <div className="row justify-content-between align-items-center">
+            <div className="col-lg-auto">
+              <p className="copyright-text">
+                Copyright <i className="fal fa-copyright"></i> {new Date().getFullYear()} <a href="index.html">Travolo</a>.
+                All Rights Reserved By <a href="https://themeforest.net/user/vecuro">Vecuro</a>
+              </p>
+            </div>
+            <div className="col-auto d-none d-lg-block">
+              <ul className="list-unstyled copyright-menu">
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
-}
+};
 
 export default Footer;

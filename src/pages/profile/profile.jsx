@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Accordion } from 'react-bootstrap';
 import newRequest from '../../utils/newRequest.js'; // Assuming you have a file for API requests
 import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import './profile.scss';
 import 'react-toastify/dist/ReactToastify.css';

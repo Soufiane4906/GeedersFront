@@ -1,10 +1,10 @@
-import "./app.scss";
+import "./app.css";
 import { createBrowserRouter, RouterProvider ,Outlet} from "react-router-dom";
 import React, { Suspense, lazy } from 'react';
 import Loading from './components/loading/Loading';
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import Home from "./pages/home/Home";
+import Home from "./components/home/Home";
 import Gigs from "./pages/gigs/Gigs";
 import Gig from "./pages/gig/Gig";
 import Login from "./pages/login/Login";
@@ -18,11 +18,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
 import Profile from "./pages/profile/profile";
-// import Users from "./pages/users/Users";
+import Users from "./pages/users/Users";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Header from "./components/Header/Header";
 //botstrap
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SingleOrder from "./pages/singleorder/SingleOrder";
 
@@ -32,13 +34,13 @@ function App() {
   const Layout = () => (
     <div className="app">
       <QueryClientProvider client={queryClient}>
+        {/* < Header /> */}
         <Navbar />
-        <main style={{ minHeight: "calc(100vh - 200px)" , marginTop: "100px"}}>
+        <main>
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>
         </main>
-        <Footer />
         <ToastContainer />
       </QueryClientProvider>
     </div>

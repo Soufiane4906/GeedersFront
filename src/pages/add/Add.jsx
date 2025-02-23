@@ -21,7 +21,7 @@ import { ProgressBar, Step } from "react-step-progress-bar";
 import LocationMap from "./../../components/LocationMap";
 import "./Add.scss";
 import { ToastContainer, toast } from "react-toastify";
-import "bootstrap/dist/css/bootstrap.min.css";
+ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { useNavigate } from "react-router-dom";
 

@@ -3,9 +3,9 @@
   justify-content: center;
   align-items: center;
   padding: 60px 20px;
-  background: linear-gradient(135deg, #160200, #262262);
-  color: #ffffff;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  background-color: #e66224; // White background
+  color: white; // Dark text for contrast
+  border-radius: 8px;
 
   .container {
     width: 100%;
@@ -14,21 +14,21 @@
 
   .left {
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      color: #fff3cd;
+      font-size: 2.8rem; // Slightly larger title
+      margin-bottom: 40px; // Increased spacing below title
+      color: white; // Dark title for white bg
       text-align: center;
 
       span {
-        color: #ffc107;
+        color: #e66224; // Accent color for part of the title
       }
     }
 
     .search-container {
-      background: rgba(255, 255, 255, 0.1);
+      background: #f8f8f8; // Light gray container to differentiate from white bg
       padding: 30px;
       border-radius: 20px;
-      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
 
       .select {
         margin-bottom: 20px;
@@ -38,11 +38,12 @@
           align-items: center;
           font-size: 1rem;
           margin-bottom: 10px;
-          color: #ffffff;
+          color: #000;
 
           .fa {
             margin-right: 8px;
-            color: #ffc107;
+            color: #e66224;
+            display: inline-block;
           }
         }
 
@@ -50,14 +51,14 @@
           width: 100%;
           padding: 12px;
           border-radius: 8px;
-          border: 2px solid #262262;
+          border: 2px solid #ccc;
           background-color: #ffffff;
-          color: #000000;
+          color: #000;
           font-size: 1rem;
           transition: border-color 0.3s ease;
 
           &:focus {
-            border-color: #ffc107;
+            border-color: #e66224;
             outline: none;
           }
         }
@@ -69,7 +70,7 @@
         p {
           font-size: 1rem;
           margin-bottom: 10px;
-          color: #ffffff;
+          color: #000;
         }
 
         .radio-buttons {
@@ -80,7 +81,7 @@
           label {
             display: flex;
             align-items: center;
-            color: #ffffff;
+            color: #000;
 
             input {
               margin-right: 10px;
@@ -97,14 +98,14 @@
             display: flex;
             align-items: center;
             padding: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
 
             &.active {
-              background-color: #ffc107;
-              color: #000000;
+              background-color: #e66224;
+              color: #ffffff;
             }
 
             input {
@@ -113,25 +114,39 @@
 
             .fa {
               margin-right: 5px;
+              display: inline-block;
             }
           }
         }
       }
 
       .more-details {
+        margin-top: 20px;
+        margin-bottom: 20px;
         width: 100%;
         padding: 12px;
-        border: 1px solid #ffc107;
+        border: 1px solid #e66224;
         border-radius: 8px;
+
         background-color: transparent;
-        color: #ffffff;
+        color: #000;
         font-size: 1rem;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #ffc107;
-          color: #262262;
+          background-color: #e66224;
+          color: white;
+        }
+      }
+      .select {
+        color: #16214a;
+      
+        select {
+          color: #16214a;
+          background-color: #f4f4f4;  /* Change this to your preferred color */
+          padding: 10px;
+          border: 1px solid #ccc;  /* Optional: Add a border if needed */
         }
       }
 
@@ -140,11 +155,14 @@
 
         .p-poi {
           font-size: 1rem;
-          margin-bottom: 10px;
-          color: #ffffff;
+          margin-bottom: 20px;
+          color: #16214a;
+
         }
 
         .poi-options {
+          margin-bottom: 20px;
+          color:#16214a;
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
@@ -153,14 +171,14 @@
             display: flex;
             align-items: center;
             padding: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
 
             &.active {
-              background-color: #ffc107;
-              color: #000000;
+              background-color: #e66224;
+              color: #16214a;
             }
 
             input {
@@ -179,17 +197,17 @@
       .search-button {
         width: 100%;
         padding: 12px;
-        border: 1px solid #ffc107;
+        border: 1px solid #e66224;
         border-radius: 8px;
-        background-color: #635bc4;
+        background-color: #e66224;
         color: #ffffff;
         font-size: 1rem;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #ffc107;
-          color: #262262;
+          background-color: #e66224;
+          color: #ffffff;
         }
       }
     }
@@ -205,13 +223,16 @@
         padding: 20px;
 
         .select {
+        
           select {
+            color:#16214a;
             padding: 10px;
           }
         }
 
         .more-details, .search-button {
           padding: 10px;
+          color:#16214a;
         }
       }
     }

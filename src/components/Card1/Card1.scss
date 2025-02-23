@@ -1,0 +1,115 @@
+.features {
+    padding: 60px 0;
+  
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+  
+      .content {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+  
+        .text {
+          flex: 1;
+  
+          h1 {
+            font-size: 2.6rem;
+            color: #16214a;
+            margin-bottom: 20px;
+          }
+  
+          .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            color: #16214a;
+            margin: 20px 0 10px;
+  
+            .check-icon {
+              color: #16214a;
+            }
+          }
+  
+          p {
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+          }
+        }
+  
+        .image {
+          padding-right: 20px;
+          flex: 1;
+          text-align: left; /* Image aligned to the left */
+  
+          img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block; /* Ensure the image behaves as a block element */
+          }
+        }
+      }
+    }
+  }
+  
+  /* Media queries for responsiveness */
+  @media (max-width: 768px) {
+    .features {
+      padding: 40px 0;
+  
+      .container {
+        .content {
+          flex-direction: column;
+  
+          .text {
+            text-align: center;
+  
+            h1 {
+              font-size: 2rem;
+            }
+  
+            .title {
+              justify-content: center;
+            }
+          }
+  
+          .image {
+            text-align: center;
+            margin-top: 20px;
+  
+            img {
+              max-width: 300%; /* Adjust image size for smaller screens */
+              height: auto; /* Maintain aspect ratio */
+              margin: 0 auto; /* Center the image */
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .features {
+      .container {
+        .content {
+          .image {
+            display: flex;
+            justify-content: center; /* Center the image container */
+            align-items: center; /* Center the image vertically */
+          }
+  
+          .image img {
+            max-width: 100%; /* Prevents the image from scaling too large */
+            height: auto; /* Maintain aspect ratio */
+            margin: 0 auto; /* Center the image horizontally */
+          }
+        }
+      }
+    }
+  }
+  

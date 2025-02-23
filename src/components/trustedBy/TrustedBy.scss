@@ -1,65 +1,84 @@
 .trustedBy {
   margin-top: 60px;
-  background: linear-gradient(135deg, #160200, #6b64d9);
-  padding: 60px 20px;
-  color: #ffffff;
+  padding: 80px 20px;
+  background-color: #ffffff; // sets background to white
   border-radius: 20px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  color: #000; // update text color if needed
 
   .container {
     max-width: 1200px;
+    justify-content: center;
     margin: 0 auto;
     text-align: center;
-
-    h2 {
+    .description {
+      font-size: 1.25rem;
       margin-bottom: 40px;
-      font-size: 2.5rem;
-      color: #ffffff;
+      color: #000;
+    }
+    h2 {
+      font-size: 3.5rem;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #000;
+
       span {
-        color: #ffc107;
+        color: #e66224;
+        justify-content: center;
+        text-decoration: underline;
       }
     }
 
     .stats {
+      margin-top: 5px;
+      font-weight: bold;
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
+      text-align: center;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 30px;
 
       .stat-item {
         flex: 1;
-        max-width: 200px;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        max-width: 250px;
+        padding: 25px;
+        background: rgba(0, 0, 0, 0.05); // subtle background for card effect
+        border-radius: 16px;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
         text-align: center;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {
           transform: translateY(-10px);
-          box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+          box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
         }
-
         .stat-icon {
-          font-size: 2.5rem;
-          color: #ffc107;
+          font-size: 3rem;
+          color: #e66224;
           margin-bottom: 10px;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
         }
+        
 
         .stat-number {
           display: block;
-          font-size: 1.75rem;
+          font-size: 2rem;
           font-weight: bold;
-          margin-top: 10px;
-          color: #ffffff;
+          color: #000;
         }
 
         .stat-label {
           display: block;
           font-size: 1rem;
-          color: #ffffff;
-          opacity: 0.8;
+          color: rgba(0, 0, 0, 0.8);
+        }
+        .stat-description {
+          font-size: 0.9rem;
+          font-weight: 500;
+          margin-top: 16px;
+          color: rgba(0, 0, 0, 0.7);
         }
       }
     }

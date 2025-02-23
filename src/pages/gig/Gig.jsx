@@ -73,8 +73,8 @@ function Gig() {
           <div>
             You need to have an account to book.
             <br />
-            <a href="/login" style={{ color: '#3498db', textDecoration: 'underline' }}>Login</a> or
-            <a href="/register" style={{ color: '#3498db', textDecoration: 'underline' }}> Register</a>
+            <a href="/login" >Login</a> or
+            <a href="/register"> Register</a>
           </div>,
           { autoClose: false }
       );
