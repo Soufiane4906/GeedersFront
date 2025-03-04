@@ -89,7 +89,7 @@ const GigCard = ({ item }) => {
           <div className="detail">
             <div className="price">
               <span>STARTING AT</span>
-              <h2 style={{ color: "green" }}>$ {item.price} / hour</h2>
+              <h2 style={{ color: "#e66224" }}>$ {item.price} / hour</h2>
             </div>
             <div className="features">
               {item.hasCar ? (

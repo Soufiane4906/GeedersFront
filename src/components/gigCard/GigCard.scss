@@ -1,22 +1,32 @@
 .gigCard {
-  border: 1px solid #ddd;
+  border: 1px solid #ffd8b5; 
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(255, 127, 0, 0.15); 
   width: 100%;
   max-width: 400px;
   margin: 10px;
+  background-color: white;
+  
+  @media (max-width: 768px) {
+    margin: 10px auto;
+    max-width: 100%;
+  }
 
   &:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 12px rgba(255, 127, 0, 0.3); // Enhanced orange shadow on hover
   }
 
   .topSection {
     display: flex;
     flex-direction: column;
     padding: 15px;
+    
+    @media (max-width: 576px) {
+      padding: 12px;
+    }
   }
 
   .userInfo {
@@ -29,6 +39,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    
+    @media (max-width: 576px) {
+      flex-wrap: wrap;
+    }
   }
 
   .userAvatar {
@@ -36,6 +50,16 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+    transition: border 0.3s ease;
+    
+    @media (max-width: 576px) {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  .verified-avatar {
+    border: 3px solid #16214a; // Orange border for verified users
   }
 
   .userDetails {
@@ -46,21 +70,35 @@
   .username {
     font-weight: bold;
     font-size: 16px;
+    color: black;
+    
+    @media (max-width: 576px) {
+      font-size: 15px;
+    }
   }
 
   .verified {
     display: flex;
     align-items: center;
-    color: green;
+    color: black; // Orange for verified status
+    margin-top: 5px;
+    font-size: 14px;
 
     svg {
       margin-right: 5px;
+      fill: #16214a; // Orange fill for verified icon
     }
   }
 
   .description {
     font-size: 14px;
     color: #666;
+    margin: 8px 0;
+    line-height: 1.4;
+    
+    @media (max-width: 576px) {
+      font-size: 13px;
+    }
   }
 
   .rating {
@@ -68,6 +106,10 @@
     align-items: center;
     gap: 5px;
     margin: 10px 0;
+    
+    svg {
+      color: #16214a; // Golden orange for stars
+    }
   }
 
   .availability,
@@ -77,27 +119,41 @@
     h4 {
       font-weight: bold;
       margin-bottom: 5px;
+      color: #16214a; // Dark orange
     }
 
     ul {
       list-style-type: none;
       padding: 0;
+      margin: 5px 0;
     }
 
     li {
       font-size: 14px;
       color: #333;
+      padding: 3px 0;
+      
+      @media (max-width: 576px) {
+        font-size: 13px;
+      }
     }
 
     .flags {
       font-size: 14px;
       color: #333;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
     }
   }
 
   .detailsSection {
     padding: 15px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #ffd8b5; // Light orange border
+    
+    @media (max-width: 576px) {
+      padding: 12px;
+    }
 
     .detail {
       margin-bottom: 10px;
@@ -106,54 +162,92 @@
     .price {
       font-size: 18px;
       font-weight: bold;
-      color: green;
+      color: #16214a; // Orange for price
+      margin-bottom: 12px;
 
       h2 {
         margin: 0;
+      }
+      
+      @media (max-width: 576px) {
+        font-size: 16px;
       }
     }
 
     .features {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 8px;
+      margin-bottom: 15px;
 
       .feature {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
         font-size: 14px;
+        
+        svg {
+          color: #16214a; // Medium orange for icons
+        }
+        
+        @media (max-width: 576px) {
+          font-size: 13px;
+          gap: 6px;
+        }
+      }
+
+      .noOptions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #888;
+        font-size: 14px;
+        font-style: italic;
+        
+        @media (max-width: 576px) {
+          font-size: 13px;
+        }
       }
     }
   }
 
   .detailsButton {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: none;
-    background-color: #1dbf73;
+    background-color: #ff7f00; // Orange button
     color: white;
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     position: relative; // Ensure relative positioning for the tooltip
+    margin-top: 5px;
+    
+    @media (max-width: 576px) {
+      padding: 10px;
+      font-size: 15px;
+    }
 
     a {
       color: white;
       text-decoration: none;
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     &:hover {
-      background-color: #17a673;
+      background-color: #ff6600; // Darker orange on hover
+      transform: translateY(-2px);
     }
 
     &.disabled {
-      background-color: #ccc; // Gray color for disabled state
+      background-color: #ffcc99; // Light orange for disabled state
       cursor: not-allowed;
       pointer-events: none;
-      opacity: 0.6; // Slightly transparent to indicate disabled state
+      opacity: 0.6;
     }
 
     // Tooltip styles
@@ -162,88 +256,32 @@
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
-      background: #333;
+      background: #ff6600; // Dark orange background
       color: #fff;
-      padding: 5px;
-      border-radius: 3px;
+      padding: 6px 10px;
+      border-radius: 4px;
       font-size: 12px;
       white-space: nowrap;
       z-index: 10;
       display: block;
-      margin-top: 5px; // Space between button and tooltip
+      margin-top: 8px; // Space between button and tooltip
       opacity: 0;
       transition: opacity 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      
+      &:before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-bottom-color: #ff6600; // Match tooltip background
+      }
     }
 
     &.showTooltip .tooltip {
       opacity: 1;
     }
-  }
-
-
-}
-.userAvatar {
-  border-radius: 50%;
-  width: 100px; /* Adjust as needed */
-  height: 100px; /* Adjust as needed */
-  object-fit: cover; /* Ensure the image fits well */
-  transition: border 0.3s ease; /* Smooth transition for border change */
-}
-
-.verified-avatar {
-  border: 5px solid green; /* Green border for verified users */
-}
-
-/* Additional styling for the verified status text */
-.verified {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.verified svg {
-  margin-right: 5px;
-}
-
-.features {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-
-  .feature {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-  }
-
-  .noOptions {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #666;
-    font-size: 14px;
-  }
-}
-
-.detailsButton {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background-color: #1dbf73;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  a {
-    color: white;
-    text-decoration: none;
-  }
-
-  &:hover {
-    background-color: #17a673;
   }
 }

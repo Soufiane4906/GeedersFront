@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Accordion } from 'react-bootstrap';
-import newRequest from '../../utils/newRequest.js'; // Assuming you have a file for API requests
-import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import newRequest from '../../utils/newRequest.js';
+import { toast } from 'react-toastify';
 import 'react-datepicker/dist/react-datepicker.css';
 import './profile.scss';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,18 +9,19 @@ import Select from 'react-select';
 import { FaLanguage, FaLock } from 'react-icons/fa';
 import { FaUser, FaEdit, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
-import {   FaIdCard } from 'react-icons/fa';
+import { FaIdCard } from 'react-icons/fa';
 import { AiFillMessage } from 'react-icons/ai';
 import { Form, Button, Col, Row } from 'react-bootstrap';
-//toast
-import { ToastContainer  } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 
 const Profile = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const [activeTab, setActiveTab] = useState('profile');
 
+  // Keep your original data fetching logic
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -56,58 +55,76 @@ const Profile = () => {
     }
   };
 
-  if (!user) return <h1>Loading...</h1>;
+  if (!user) return <div className="loading">Loading...</div>;
 
   return (
-    <div className="container profile">
-       <div className="text-center mb-4">
-        {user.img ? (
-          <img
-            src={user.img}
-            alt="User Avatar"
-            className="img-fluid rounded-circle"
-            style={{ width: '150px', height: '150px' }}
-          />
-        ) : (
-          <FaUserCircle
-            size={150}
-            className="img-fluid rounded-circle"
-          />
+    <div className="container profile-dashboard">
+      <ToastContainer />
+      
+      {/* User profile header */}
+      <div className="profile-header">
+        <div className="profile-avatar">
+          {user.img ? (
+            <img
+              src={user.img}
+              alt="User Avatar"
+              className="img-fluid rounded-circle"
+              style={{ width: '150px', height: '150px' }}
+            />
+          ) : (
+            <FaUserCircle size={150} className="img-fluid rounded-circle" />
+          )}
+        </div>
+        <h1>{user.username}</h1>
+      </div>
+      
+      {/* Navigation tabs */}
+      <div className="dashboard-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
+          onClick={() => setActiveTab('profile')}
+        >
+          <FaUser /> View Profile
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'edit' ? 'active' : ''}`}
+          onClick={() => setActiveTab('edit')}
+        >
+          <FaEdit /> Edit Profile
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'password' ? 'active' : ''}`}
+          onClick={() => setActiveTab('password')}
+        >
+          <FaLock /> Change Password
+        </button>
+      </div>
+      
+      {/* Tab content */}
+      <div className="tab-content">
+        {activeTab === 'profile' && (
+          <div className="dashboard-section">
+            <ProfileDetail user={user} />
+          </div>
+        )}
+        
+        {activeTab === 'edit' && (
+          <div className="dashboard-section">
+            <ProfileEdit user={user} onUpdate={handleUpdate} />
+          </div>
+        )}
+        
+        {activeTab === 'password' && (
+          <div className="dashboard-section">
+            <ProfilePassword onUpdatePassword={handleUpdatePassword} />
+          </div>
         )}
       </div>
-
-        <Accordion defaultActiveKey="0">
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>
-            <FaUser style={{ marginRight: '8px' }} /> View Profile
-          </Accordion.Header>
-          <Accordion.Body>
-            <ProfileDetail user={user} />
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>
-            <FaEdit style={{ marginRight: '8px' }} /> Edit Profile
-          </Accordion.Header>
-          <Accordion.Body>
-            <ProfileEdit user={user} onUpdate={handleUpdate} />
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="2">
-          <Accordion.Header>
-            <FaLock style={{ marginRight: '8px' }} /> Change Password
-          </Accordion.Header>
-          <Accordion.Body>
-            <ProfilePassword onUpdatePassword={handleUpdatePassword} />
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-
     </div>
   );
 };
 
-export default Profile;
+// Keep your existing component definitions
 const ProfileDetail = ({ user }) => {
   return (
     <div className="profile-detail">
@@ -125,25 +142,22 @@ const ProfileDetail = ({ user }) => {
         <p><FaCreditCard className="icon" /> <strong>Account Number :</strong> {user.accountNumber}</p>
       </div>
       <div className="images">
-  <p><strong>Identity Images:</strong></p>
-  {user.imgRecto || user.imgVerso || user.imgPassport ? (
-    <>
-      {user.imgRecto ? <img src={user.imgRecto} alt="Identity Front" /> : <p>Identity front image not available.</p>}
-      {user.imgVerso ? <img src={user.imgVerso} alt="Identity Back" /> : <p>Identity back image not available.</p>}
-      {user.imgPassport ? <img src={user.imgPassport} alt="Passport" /> : <p>Passport image not available.</p>}
-    </>
-  ) : (
-    <div className="warning">
-      <p>No identity images available. Your account will not be verified without valid identity images. Please upload a front, back, or passport image.</p>
-    </div>
-  )}
-</div>
-
+        <p><strong>Identity Images:</strong></p>
+        {user.imgRecto || user.imgVerso || user.imgPassport ? (
+          <>
+            {user.imgRecto ? <img src={user.imgRecto} alt="Identity Front" /> : <p>Identity front image not available.</p>}
+            {user.imgVerso ? <img src={user.imgVerso} alt="Identity Back" /> : <p>Identity back image not available.</p>}
+            {user.imgPassport ? <img src={user.imgPassport} alt="Passport" /> : <p>Passport image not available.</p>}
+          </>
+        ) : (
+          <div className="warning">
+            <p>No identity images available. Your account will not be verified without valid identity images. Please upload a front, back, or passport image.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
-
 
 const ProfileEdit = ({ user, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -385,8 +399,6 @@ const ProfileEdit = ({ user, onUpdate }) => {
   );
 };
 
-
-
 const languageOptions = [
   { value: "English", label: "🇬🇧 English" },
   { value: "French", label: "🇫🇷 French" },
@@ -454,6 +466,7 @@ const languageOptions = [
   // Add more languages as needed
 
 ];
+
 const ProfilePassword = ({ onUpdatePassword }) => {
   const [passwords, setPasswords] = useState({
     oldPassword: '',
@@ -502,3 +515,5 @@ const ProfilePassword = ({ onUpdatePassword }) => {
     </form>
   );
 };
+
+export default Profile;

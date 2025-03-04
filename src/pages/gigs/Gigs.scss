@@ -2,7 +2,6 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  background-color: #f8f9fa;
   padding: 40px 0;
 
   .container {
@@ -16,17 +15,30 @@
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
+    @media (max-width: 768px) {
+      width: 95%;
+      padding: 20px 15px;
+    }
+
     .breadcrumbs {
       font-weight: 300;
       text-transform: uppercase;
       font-size: 13px;
-      color: #555;
+      color: #181818; // Orange text for breadcrumbs
+      
+      @media (max-width: 768px) {
+        font-size: 11px;
+      }
     }
 
     h1 {
       font-size: 28px;
       margin-bottom: 10px;
-      color: #333;
+      color: #181818; // Darker orange for headings
+      
+      @media (max-width: 768px) {
+        font-size: 22px;
+      }
     }
 
     .menu {
@@ -43,6 +55,13 @@
       top: 0;
       left: 0;
       right: 0;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+        padding: 12px;
+      }
 
       .left {
         display: flex;
@@ -50,27 +69,38 @@
         gap: 15px;
         color: #555;
         font-weight: 300;
+        
+        @media (max-width: 768px) {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
 
         input {
           padding: 8px;
-          border: 1px solid #ddd;
+          border: 1px solid #ffd8b5; // Light orange border
           border-radius: 5px;
           outline: none;
           font-size: 14px;
           transition: border-color 0.3s ease;
+          
+          @media (max-width: 768px) {
+            flex: 1;
+            min-width: 0;
+          }
 
           &::placeholder {
-            color: #999;
+            color: #ffaa80; // Light orange placeholder
           }
 
           &:focus {
-            border-color: #1dbf73;
+            border-color: #ff8c00; // Orange focus
           }
         }
 
         button {
           padding: 8px 16px;
-          background-color: #1dbf73;
+          background-color: #ff7f00; // Orange button
           color: white;
           border: none;
           font-weight: 500;
@@ -79,7 +109,7 @@
           transition: background-color 0.3s ease;
 
           &:hover {
-            background-color: #17a362;
+            background-color: #ff6600; // Darker orange on hover
           }
         }
       }
@@ -89,6 +119,11 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        
+        @media (max-width: 768px) {
+          width: 100%;
+          justify-content: space-between;
+        }
 
         .sortBy {
           color: #555;
@@ -97,7 +132,7 @@
 
         .sortType {
           font-weight: 500;
-          color: #333;
+          color: #ff6600; // Orange text
         }
 
         img {
@@ -113,7 +148,7 @@
         .rightMenu {
           padding: 15px;
           background-color: white;
-          border: 1px solid #ddd;
+          border: 1px solid #ffd8b5; // Light orange border
           border-radius: 5px;
           position: absolute;
           top: 30px;
@@ -124,13 +159,18 @@
           gap: 15px;
           color: #555;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          
+          @media (max-width: 768px) {
+            width: 100%;
+            right: auto;
+          }
 
           span {
             cursor: pointer;
             transition: color 0.3s ease;
 
             &:hover {
-              color: #1dbf73;
+              color: #ff7f00; // Orange on hover
             }
           }
         }
@@ -143,18 +183,31 @@
       gap: 20px;
       justify-content: center;
       transition: all 0.3s ease;
+      
+      @media (max-width: 768px) {
+        gap: 15px;
+      }
 
       .gig-card {
         background-color: white;
-        border: 1px solid #ddd;
+        border: 1px solid #ffd8b5; // Light orange border
         border-radius: 8px;
         padding: 15px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        width: calc(33.333% - 20px); // Three cards per row on desktop
+        
+        @media (max-width: 992px) {
+          width: calc(50% - 15px); // Two cards per row on tablet
+        }
+        
+        @media (max-width: 576px) {
+          width: 100%; // One card per row on mobile
+        }
 
         &:hover {
           transform: translateY(-5px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px rgba(255, 127, 0, 0.3); // Orange shadow on hover
         }
       }
     }
@@ -166,9 +219,13 @@
       width: 100%;
       max-width: 800px;
       position: relative;
-      border: 1px solid #ffc107;
+      border: 2px solid #ff7f00; // Orange border
       border-radius: 10px;
       overflow: hidden;
+      
+      @media (max-width: 768px) {
+        height: 300px;
+      }
 
       .map {
         height: 100%;

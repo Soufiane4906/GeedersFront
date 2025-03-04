@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Navbar.scss";
@@ -11,11 +11,13 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaMapMarkerAlt,
+  FaBars,
 } from "react-icons/fa";
 
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
+  const userRef = useRef(null);
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -52,10 +54,23 @@ function Navbar() {
         }}
       >
         <span style={{ color: "#16214a" }}>BlaBla</span>
-        <span style={{ color: "#e66224" }}>Trip</span>
+        <span style={{ color: "#ff7b00" }}>Trip</span>
       </div>
     );
   };
+
+  const handleClickOutside = (e) => {
+    if (userRef.current && !userRef.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
@@ -66,19 +81,17 @@ function Navbar() {
           </Link>
         </div>
         <div className="links">
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
           {currentUser ? (
-            <div className="user" onClick={() => setOpen(!open)}>
+            <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
               <span>{currentUser?.username}</span>
-
-              {open && (
-                <div className={`options ${open ? "open" : ""}`}>
+              
+              <div className={`options ${open ? "open" : ""}`}>
+                <div className="user-info">
+                  <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
+                  <span>{currentUser?.username}</span>
+                </div>
+                <div className="menu-links">
                   <Link className="link" to="/profile">
                     <FaUserCircle /> Profile
                   </Link>
@@ -102,7 +115,7 @@ function Navbar() {
                     <FaSignOutAlt /> Logout
                   </Link>
                 </div>
-              )}
+              </div>
             </div>
           ) : (
             <>

@@ -1,7 +1,6 @@
 .messages {
   display: flex;
   justify-content: center;
-  background-color: #f5f5f5;
   min-height: 100vh;
   padding: 20px;
 
@@ -10,8 +9,13 @@
     max-width: 1400px;
     background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(255, 123, 0, 0.1); // Orange shadow
     padding: 30px;
+
+    @media (max-width: 768px) {
+      padding: 15px;
+      border-radius: 8px;
+    }
 
     .title {
       display: flex;
@@ -21,11 +25,16 @@
 
       h1 {
         font-size: 24px;
-        color: #333;
+        color: #ff7b00; // Orange text
+        
+        @media (max-width: 768px) {
+          font-size: 20px;
+        }
       }
 
       svg {
         transition: transform 0.3s ease-in-out;
+        color: #ff7b00; // Orange icon
         &:hover {
           transform: scale(1.2);
         }
@@ -35,15 +44,25 @@
     .table {
       width: 100%;
       border-collapse: collapse;
+      
+      @media (max-width: 768px) {
+        font-size: 14px;
+        display: block;
+        overflow-x: auto;
+      }
 
       th,
       td {
         padding: 12px;
         text-align: left;
+        
+        @media (max-width: 768px) {
+          padding: 8px;
+        }
       }
 
       th {
-        background-color: #1dbf73;
+        background-color: #ff7b00; // Orange header
         color: white;
         font-weight: 600;
       }
@@ -51,31 +70,62 @@
       td {
         font-size: 14px;
         color: #555;
+        
+        @media (max-width: 768px) {
+          font-size: 13px;
+        }
       }
 
       tr {
         transition: background-color 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+        
         &:hover {
-          background-color: #e9f5f2;
+          background-color: #fff1e6; // Light orange hover
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      .action-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 5px;
         }
       }
 
       .btn-success {
-        background-color: #1dbf73;
+        background-color: #ff7b00; // Orange button
         border: none;
         border-radius: 5px;
         padding: 8px 16px;
         color: white;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        white-space: nowrap;
+        
+        @media (max-width: 768px) {
+          padding: 6px 12px;
+          font-size: 13px;
+          width: 100%;
+          text-align: center;
+        }
+        
         &:hover {
-          background-color: #17a34b;
+          background-color: #e56b00; // Darker orange on hover
         }
       }
     }
 
     .link {
-      color: #1dbf73;
+      color: #ff7b00; // Orange links
       text-decoration: none;
       &:hover {
         text-decoration: underline;
@@ -83,7 +133,7 @@
     }
 
     .active {
-      background-color: #e9f5f2;
+      background-color: #fff1e6; // Light orange active state
     }
   }
 }

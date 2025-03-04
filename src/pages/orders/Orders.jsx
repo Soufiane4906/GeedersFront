@@ -41,7 +41,7 @@ const Orders = () => {
         <p className="text-center text-danger">Error loading orders.</p>
       ) : (
         <>
-          <h1 className="text-primary mb-4">Orders</h1>
+          <h1 className=" mb-4">Orders</h1>
           <table className="table table-striped table-hover">
             <thead>
               <tr>

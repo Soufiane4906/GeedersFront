@@ -1,7 +1,6 @@
 .gig {
   .container {
     padding: 20px;
-    background-color: #f9f9f9;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -11,8 +10,13 @@
       max-width: 70%;
       background-color: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(255, 123, 0, 0.1); 
       padding: 20px;
+
+      @media (max-width: 768px) {
+        max-width: 100%;
+        padding: 15px;
+      }
 
       .breadcrumbs {
         font-size: 0.9rem;
@@ -24,6 +28,12 @@
         display: flex;
         align-items: center;
         margin-bottom: 20px;
+        
+        @media (max-width: 768px) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
 
         .pp {
           width: 60px;
@@ -41,7 +51,7 @@
         .stars {
           display: flex;
           align-items: center;
-          color: #ffcc00;
+          color: #ff7b00; // Changed to orange
           font-size: 1.2rem;
 
           span {
@@ -55,7 +65,7 @@
       .seller {
         .box {
           padding: 15px;
-          background-color: #f4f4f4;
+          background-color: #fff8f0;
           border-radius: 8px;
           margin-bottom: 20px;
 
@@ -63,15 +73,27 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            
+            @media (max-width: 768px) {
+              flex-direction: column;
+              gap: 10px;
+            }
 
             .item {
               display: flex;
               align-items: center;
               margin-bottom: 10px;
+              
+              @media (max-width: 480px) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+              }
 
               .title {
                 font-weight: bold;
                 margin-right: 5px;
+                color: #ff7b00; // Orange text
               }
 
               .desc {
@@ -80,7 +102,7 @@
 
                 svg {
                   margin-right: 5px;
-                  color: #333;
+                  color: #181818; // Orange icons
                 }
               }
             }
@@ -94,19 +116,24 @@
       max-width: 30%;
       background-color: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(255, 123, 0, 0.1); // Orange shadow
       padding: 20px;
+      
+      @media (max-width: 768px) {
+        max-width: 100%;
+        padding: 15px;
+      }
 
       .headerTitle {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 5rem;
+        height: 6rem;
         width: 100%;
-        box-shadow: 1px 1px 14px 2px #1dbf73;
+        box-shadow: 1px 1px 14px 2px #ff7b00; // Changed to orange
         font-weight: 700;
         text-align: center;
-        background: linear-gradient(45deg, #1dbf73, #fff);
+        background: linear-gradient(45deg, #ff7b00, #fff); // Changed to orange
         border-radius: 13px;
         margin-bottom: 20px;
       }
@@ -124,7 +151,7 @@
 
         h2 {
           font-size: 2rem;
-          color: #27ae60;
+          color: #ff7b00; // Changed to orange
         }
       }
 
@@ -137,26 +164,40 @@
         h3 {
           font-size: 1.2rem;
           margin-bottom: 10px;
+          color: #181818; // Orange headings
         }
 
         input[type="checkbox"] {
           margin-right: 10px;
+          accent-color: #181818; // Orange checkboxes
         }
 
         input[type="number"] {
           width: 100%;
           padding: 8px;
-          border: 1px solid #ddd;
+          border: 1px solid #181818; // Light orange border
           border-radius: 4px;
           font-size: 1rem;
+          
+          &:focus {
+            outline: none;
+            border-color: #181818;
+            box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+          }
         }
 
         select {
           width: 100%;
           padding: 8px;
-          border: 1px solid #ddd;
+          border: 1px solid #181818; // Light orange border
           border-radius: 4px;
           font-size: 1rem;
+          
+          &:focus {
+            outline: none;
+            border-color: #ff7b00;
+            box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+          }
         }
       }
 
@@ -165,18 +206,18 @@
         padding: 10px;
         font-size: 1.2rem;
         color: #fff;
-        background-color: #27ae60;
+        background-color: #ff7b00; // Changed to orange
         border: none;
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s;
 
         &:hover {
-          background-color: #219150;
+          background-color: #e56b00; // Darker orange on hover
         }
 
         &:disabled {
-          background-color: #b2b2b2;
+          background-color: #ffcc99; // Light orange for disabled
           cursor: not-allowed;
         }
       }
@@ -186,10 +227,26 @@
   @media (max-width: 768px) {
     .container {
       flex-direction: column;
-
-      .left,
-      .right {
-        max-width: 100%;
+      padding: 10px;
+      gap: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 8px;
+      
+      .left, .right {
+        padding: 12px;
+      }
+      
+      .headerTitle {
+        height: 4rem;
+        font-size: 0.9rem;
+      }
+      
+      .price h2 {
+        font-size: 1.6rem;
       }
     }
   }

@@ -1,33 +1,60 @@
 .myGigs {
+  background-color: #fff5ec; // Light orange background
+  padding: 20px 0;
+  
+  @media (max-width: 768px) {
+    padding: 10px 0;
+  }
+  
   .container {
-    margin: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 90%;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    box-shadow: 0 4px 12px rgba(255, 127, 0, 0.15); // Orange-tinted shadow
+    padding: 25px;
+    
+    @media (max-width: 768px) {
+      width: 95%;
+      padding: 15px;
+      margin: 10px auto;
+    }
 
     .title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      
+      @media (max-width: 576px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
 
       h1 {
         margin: 0;
-        color: #333;
+        color: #ff6600; // Dark orange
+        font-size: 28px;
+        
+        @media (max-width: 768px) {
+          font-size: 22px;
+        }
       }
 
       button {
-        background-color: #28a745;
+        background-color: #ff7f00; // Orange
         color: #fff;
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
+        font-weight: 500;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #218838;
+          background-color: #ff6600; // Darker orange
         }
       }
     }
@@ -35,34 +62,65 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      
+      @media (max-width: 768px) {
+        display: block;
+        overflow-x: auto;
+      }
 
       th, td {
-        padding: 12px;
+        padding: 15px;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #ffd8b5; // Light orange border
+        
+        @media (max-width: 576px) {
+          padding: 10px 8px;
+          font-size: 14px;
+        }
       }
 
       thead {
-        background-color: #f8f9fa;
+        background-color: #fff8f0; // Very light orange
         th {
-          color: #495057;
+          color: #ff6600; // Dark orange
+          font-weight: 600;
+          white-space: nowrap;
         }
       }
 
       tbody {
         tr {
+          transition: background-color 0.3s ease;
+          
+          &:hover {
+            background-color: #fff8f0; // Very light orange highlight
+          }
+          
           &:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #fffaf5; // Very subtle orange-tinted rows
+          }
+
+          .img {
+            width: 50px;
+            height: 25px;
+            object-fit: cover;
+            
+            @media (max-width: 576px) {
+              width: 40px;
+              height: 20px;
+            }
           }
 
           .delete {
             width: 20px;
             height: 20px;
             cursor: pointer;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            color: #ff6600; // Dark orange
 
             &:hover {
-              opacity: 0.7;
+              transform: scale(1.2);
+              color: #ff4500; // Deeper orange on hover
             }
           }
         }
@@ -70,19 +128,48 @@
     }
 
     .location {
-      color: #333;
+      color: #ff8c00; // Medium orange
+      font-weight: 500;
     }
 
     .stars {
       .fa-star, .fa-star-o {
-        color: #ffd700;
+        color: #ffaa33; // Golden orange for stars
       }
     }
 
     .vehicle-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
       i {
-        color: #333;
+        color: #ff8c00; // Medium orange
         margin-right: 5px;
+      }
+    }
+    
+    // Added responsive adjustments for mobile
+    @media (max-width: 576px) {
+      .mobile-hide {
+        display: none;
+      }
+      
+      .mobile-label {
+        font-weight: 600;
+        display: block;
+        color: #ff6600;
+        margin-bottom: 5px;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        
+        button {
+          padding: 8px 12px;
+          font-size: 14px;
+        }
       }
     }
   }
