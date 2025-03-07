@@ -1,5 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from "react-router-dom";
 
 import "../../style.scss";
 const BlogSection = () => {
@@ -38,24 +39,24 @@ const BlogSection = () => {
             <div key={index} className="col-xl-4" style={{ padding: "15px" }}>
               <div className="vs-blog" style={{ border: "1px solid #ddd", borderRadius: "10px", overflow: "hidden" }}>
                 <div className="blog-img">
-                  <a href="blog-details.html">
+                  <Link to="/blog-details">
                     <img src={blog.img} alt="blog image" style={{ width: "100%", display: "block" }} />
-                  </a>
+                  </Link>
                 </div>
                 <div className="blog-content" style={{ padding: "15px" }}>
                   <h2 className="blog-title" style={{ fontSize: "1.5rem" }}>
-                    <a href="blog-details.html">{blog.title}</a>
+                    <Link to="/blog-details">{blog.title}</Link>
                   </h2>
                   <p className="blog-text" style={{ color: "#555" }}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dolor sit amet.
                   </p>
                   <div className="blog-bottom" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <a className="blog-date" href="blog-details.html" style={{ color: "#777" }}>
+                    <Link className="blog-date" to="/blog-details" style={{ color: "#777" }}>
                       <i className="fas fa-calendar-alt"></i> {blog.date}
-                    </a>
-                    <a className="vs-btn" href="blog-details.html" style={{ background: "#000", color: "#fff", padding: "8px 12px", textDecoration: "none", borderRadius: "5px" }}>
+                    </Link>
+                    <Link className="vs-btn" to="/blog-details" style={{ background: "#000", color: "#fff", padding: "8px 12px", textDecoration: "none", borderRadius: "5px" }}>
                       Read More <i className="fal fa-arrow-right"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -63,9 +64,9 @@ const BlogSection = () => {
           ))}
         </div>
         <div className="text-center" style={{ marginTop: "30px" }}>
-          <a href="blog-grid.html" className="vs-btn" style={{ background: "#000", color: "#fff", padding: "10px 20px", textDecoration: "none", borderRadius: "5px" }}>
+          <Link to="/blog-grid" className="vs-btn" style={{ background: "#000", color: "#fff", padding: "10px 20px", textDecoration: "none", borderRadius: "5px" }}>
             View More
-          </a>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,12 +1,14 @@
 import Raeact from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from "react-router-dom";
+
 
 import "../../style.scss";
 const HeroSection = () => {
   return (
     <section
-    className="hero-layout"
-    style={{ backgroundImage: "url('../assets/img/banner/banner-bg-1.png')" }}
+      className="hero-layout"
+      style={{ backgroundImage: "url('../assets/img/banner/banner-bg-1.png')" }}
     >
       <div className="hero-mask">
         <div
@@ -21,17 +23,17 @@ const HeroSection = () => {
                 <div className="col-lg-6">
                   <div className="hero-content">
                     <span className="hero-subtitle">Let's Go Now</span>
-                    <h1 className="hero-title">
-                      Explore the World
-                    </h1>
+                    <h1 className="hero-title">Explore the World</h1>
                     <p className="hero-text">
-                      Blablatrip connects you with passionate local Ambassadors who are ready to share their city’s best-kept secrets.
-                       Skip the crowded tourist traps and immerse yourself in authentic, personalized experiences. 
-                    Blablatrip gives you a deeper connection to the places you visit.
+                      Blablatrip connects you with passionate local Ambassadors
+                      who are ready to share their city’s best-kept secrets.
+                      Skip the crowded tourist traps and immerse yourself in
+                      authentic, personalized experiences. Blablatrip gives you
+                      a deeper connection to the places you visit.
                     </p>
-                    <a href="about.html" className="vs-btn style4">
+                    <Link to="/contact" className="vs-btn style4">
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="col-lg-6">
@@ -51,8 +53,6 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-
-
         </div>
 
         <div className="hero-bottom">

@@ -1,7 +1,21 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import "../../style.scss";
+
+const BlaBlaTripLogo = () => {
+  return (
+    <div
+      style={{
+        fontFamily: "Franklin Gothic Demi Cond, Arial Narrow, sans-serif",
+        fontSize: "32px",
+      }}
+    >
+      <span style={{ color: "white" }}>BlaBla</span>
+      <span style={{ color: "#ff7b00" }}>Trip</span>
+    </div>
+  );
+};
+
 const Footer = () => {
   return (
     <footer className="footer-wrapper footer-layout1" style={{ backgroundImage: "url('assets/img/bg/footer-bg.jpg')" }}>
@@ -33,7 +47,7 @@ const Footer = () => {
               <div className="widget footer-widget">
                 <div className="vs-widget-about">
                   <div className="footer-logo">
-                    <a href="index.html"><img src="assets/img/white-logo.svg" alt="Travolo" className="logo" /></a>
+                    <a href="index.html"><BlaBlaTripLogo /></a>
                   </div>
                   <p className="footer-text">Curabitur aliquet quam id dui bandit posuere blandit.</p>
                   <div className="social-style1">
@@ -65,8 +79,8 @@ const Footer = () => {
           <div className="row justify-content-between align-items-center">
             <div className="col-lg-auto">
               <p className="copyright-text">
-                Copyright <i className="fal fa-copyright"></i> {new Date().getFullYear()} <a href="index.html">Travolo</a>.
-                All Rights Reserved By <a href="https://themeforest.net/user/vecuro">Vecuro</a>
+                Copyright <i className="fal fa-copyright"></i> {new Date().getFullYear()} <a href="index.html">BlaBlaTrip</a>.
+                All Rights Reserved By <a href="https://themeforest.net/user/vecuro">BlaBlaTrip</a>
               </p>
             </div>
             <div className="col-auto d-none d-lg-block">

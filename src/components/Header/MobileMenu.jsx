@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 
 const MobileMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,18 +35,18 @@ const MobileMenu = () => {
           <ul>
             {['Home', 'Destinations', 'Pages', 'Tours', 'Shop', 'Blog'].map((menu, index) => (
               <li className={`menu-item-has-children ${openSubmenus.includes(index) ? 'vs-active' : ''}`} key={index}>
-                <a href="#" onClick={(e) => { e.preventDefault(); toggleSubmenu(index); }}>
+                <Link to="#" onClick={(e) => { e.preventDefault(); toggleSubmenu(index); }}>
                   {menu} <span className="vs-mean-expand"></span>
-                </a>
+                </Link>
                 <ul className={`sub-menu ${openSubmenus.includes(index) ? 'vs-open' : ''}`}>
                   {['Item 1', 'Item 2', 'Item 3'].map((subitem, subindex) => (
-                    <li key={subindex}><a href="#">{subitem}</a></li>
+                    <li key={subindex}><Link to="#">{subitem}</Link></li>
                   ))}
                 </ul>
               </li>
             ))}
             <li>
-              <a href="contact.html">Contact</a>
+              <Link to="contact">Contact</Link>
             </li>
           </ul>
         </div>

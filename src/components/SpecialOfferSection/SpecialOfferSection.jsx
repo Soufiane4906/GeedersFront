@@ -3,6 +3,7 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "../../style.scss";
+import { Link } from "react-router-dom";
 const SpecialOfferSection = () => {
   return (
     <section className="space position-relative" style={{ backgroundImage: 'url("assets/img/bg/offer-bg.jpg")' }}>
@@ -13,9 +14,9 @@ const SpecialOfferSection = () => {
               <span className="sec-subtitle">Go & Discover</span>
               <h2 className="sec-title h1">Unlock Exclusive Travel Deals</h2>
               <p className="sec-text">
-              Explore unique destinations with Blablatrip and enjoy special offers on unforgettable experiences. Plan your journey effortlessly and travel smarter
+                Explore unique destinations with Blablatrip and enjoy special offers on unforgettable experiences. Plan your journey effortlessly and travel smarter
               </p>
-              <a href="contact.html" className="vs-btn style2">View More</a>
+              <Link to="/contact" className="vs-btn style2">View More</Link>
             </div>
           </div>
           <div className="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
