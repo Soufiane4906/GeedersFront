@@ -18,11 +18,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
 import Profile from "./pages/profile/profile";
-import Users from "./pages/users/Users";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Header from "./components/Header/Header";
 //botstrap
 
 import 'bootstrap/dist/css/bootstrap.min.css';
