@@ -30,7 +30,6 @@ function Home() {
  
         <Hero />
         <TrustedBy />
-        <Featured />
         <Card1 />
         <Card />
         

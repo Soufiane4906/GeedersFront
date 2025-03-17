@@ -69,7 +69,7 @@ function Gigs() {
       <div className="gigs">
         <div className="container">
           <span className="breadcrumbs">Search Results</span>
-          <h1>Available BlaBlaTrip</h1>
+          <h1>Available Ambassadors</h1>
           <div className="menu">
             <div className="left">
               <span>Country</span>
