@@ -18,7 +18,6 @@ const Header = () => {
   const [currentUser, setCurrentUser] = useState({
     username: 'JohnDoe',
     img: '/img/noavatar.jpg',
-    isSeller: true,
   }); // Mock user data
 
   const toggleMobileMenu = () => {

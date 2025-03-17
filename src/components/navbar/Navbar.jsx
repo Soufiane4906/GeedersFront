@@ -47,15 +47,9 @@ function Navbar() {
 
   const BlaBlaTripLogo = () => {
     return (
-      <div
-        style={{
-          fontFamily: "Franklin Gothic Demi Cond, Arial Narrow, sans-serif",
-          fontSize: "32px",
-        }}
-      >
-        <span style={{ color: "#16214a" }}>BlaBla</span>
-        <span style={{ color: "#ff7b00" }}>Trip</span>
-      </div>
+
+        <img src={"/img/img_3.png"}  alt={'rfe'}/>
+
     );
   };
 
@@ -74,18 +68,21 @@ function Navbar() {
 
   return (
     <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
-      <div className="container">
         <div className="logo">
-          <Link className="link" to="/">
             <BlaBlaTripLogo />
-          </Link>
+
         </div>
         <div className="links">
           {currentUser ? (
             <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
-              <span>{currentUser?.username}</span>
-              
+              <span>{currentUser?.username} </span>
+              {currentUser.isSeller && (
+                  <>
+                 <span> (Ambassador)</span>
+                  </>
+              )}
+
               <div className={`options ${open ? "open" : ""}`}>
                 <div className="user-info">
                   <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
@@ -126,7 +123,6 @@ function Navbar() {
           )}
         </div>
       </div>
-    </div>
   );
 }
 
