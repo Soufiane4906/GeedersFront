@@ -63,7 +63,7 @@ function Gigs() {
     return <Loading />;
   }
 
-  const noResultsMessage = "No matching guides found in these areas.";
+  const noResultsMessage = "No matching Ambassadors found in these areas.";
 
   return (
       <div className="gigs">
@@ -92,7 +92,7 @@ function Gigs() {
               <br />
               <span className="sortBy">Sort by</span>
               <span className="sortType">
-              {sort === "sales" ? "Best Guide" : sort === "popularity" ? "Popular" : "Newest"}
+              {sort === "sales" ? "Best Ambassador" : sort === "popularity" ? "Popular" : "Newest"}
             </span>
               <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
               {open && (

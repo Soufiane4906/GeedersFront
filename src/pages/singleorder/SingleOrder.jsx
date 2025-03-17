@@ -97,7 +97,7 @@ const SingleOrder = () => {
           <div className="col-md-6">
             <div className="card">
               <div className="card-header bg-success text-white">
-                <h2 style={{textAlign :'center'} }>Guide Information</h2>
+                <h2 style={{textAlign :'center'} }>Ambassador Information</h2>
               </div>
               <div className="card-body">
                 <div className="d-flex align-items-center mb-3">

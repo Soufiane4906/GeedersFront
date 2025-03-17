@@ -145,7 +145,7 @@ function Gig() {
                 "Something went wrong!"
             ) : (
                 <div className="seller">
-                  <h2>About The Guide</h2>
+                  <h2>About The Ambassador</h2>
                   <div className="user">
                     <div className="info"></div>
                   </div>
@@ -231,8 +231,8 @@ function Gig() {
             <div className="booking-info">
               <h3>Booking Details</h3>
               <p>
-                Payment will be made directly to the guide. If the tour is canceled
-                by the guide, please contact us for a refund.
+                Payment will be made directly to the Ambassador. If the tour is canceled
+                by the Ambassador, please contact us for a refund.
               </p>
               <button
                   className="btn btn-success"

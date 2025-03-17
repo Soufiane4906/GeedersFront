@@ -55,7 +55,7 @@ const GigCard = ({ item }) => {
                   {userData.isVerified && (
                     <div className="verified">
                       <FaCheckCircle color="green" />
-                      <span>This guide is verified</span>
+                      <span>This Ambassador is verified</span>
                     </div>
                   )}
                 </div>
