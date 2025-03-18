@@ -6,47 +6,142 @@ import {
   faGlobe,
   faCity,
   faCalendarAlt,
+  faLanguage,
+  faCheck
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// Liste des 30 villes les plus visitées et leurs pays associés
+// Liste des villes les plus visitées et leurs pays associés
 const topVisitedCities = [
-  { city: "Bangkok", country: "Thailand" },
-  { city: "Casablanca", country: "Morocco" },
+  // France
   { city: "Paris", country: "France" },
-  { city: "London", country: "United Kingdom" },
-  { city: "Dubai", country: "United Arab Emirates" },
-  { city: "Singapore", country: "Singapore" },
-  { city: "Kuala Lumpur", country: "Malaysia" },
-  { city: "New York", country: "United States" },
-  { city: "Istanbul", country: "Turkey" },
-  { city: "Tokyo", country: "Japan" },
-  { city: "Antalya", country: "Turkey" },
-  { city: "Seoul", country: "South Korea" },
-  { city: "Osaka", country: "Japan" },
-  { city: "Makkah", country: "Saudi Arabia" },
-  { city: "Pattaya", country: "Thailand" },
-  { city: "Milan", country: "Italy" },
+  { city: "Nice", country: "France" },
+  // Espagne
   { city: "Barcelona", country: "Spain" },
-  { city: "Bali", country: "Indonesia" },
-  { city: "Hong Kong", country: "Hong Kong" },
-  { city: "Amsterdam", country: "Netherlands" },
-  { city: "Vienna", country: "Austria" },
-  { city: "Taipei", country: "Taiwan" },
-  { city: "Rome", country: "Italy" },
-  { city: "Shanghai", country: "China" },
-  { city: "Las Vegas", country: "United States" },
-  { city: "Los Angeles", country: "United States" },
   { city: "Madrid", country: "Spain" },
-  { city: "Guangzhou", country: "China" },
-  { city: "Prague", country: "Czech Republic" },
+  // États-Unis
+  { city: "New York", country: "United States" },
+  { city: "San Francisco", country: "United States" },
+  { city: "New Orleans", country: "United States" },
   { city: "Miami", country: "United States" },
-  { city: "Berlin", country: "Germany" }
+  { city: "Los Angeles", country: "United States" },
+  // Italie
+  { city: "Rome", country: "Italy" },
+  { city: "Venice", country: "Italy" },
+  { city: "Milan", country: "Italy" },
+  // Chine
+  { city: "Beijing", country: "China" },
+  { city: "Xi'an", country: "China" },
+  { city: "Shanghai", country: "China" },
+  // Turquie
+  { city: "Istanbul", country: "Turkey" },
+  { city: "Antalya", country: "Turkey" },
+  // Mexique
+  { city: "Cancún", country: "Mexico" },
+  { city: "Acapulco", country: "Mexico" },
+  { city: "Guadalajara", country: "Mexico" },
+  // Thaïlande
+  { city: "Bangkok", country: "Thailand" },
+  { city: "Phuket", country: "Thailand" },
+  // Royaume-Uni
+  { city: "London", country: "United Kingdom" },
+  { city: "Cambridge", country: "United Kingdom" },
+  // Allemagne
+  { city: "Berlin", country: "Germany" },
+  { city: "Munich", country: "Germany" },
+  // Japon
+  { city: "Tokyo", country: "Japan" },
+  { city: "Hokkaido", country: "Japan" },
+  { city: "Kyoto", country: "Japan" },
+  { city: "Okinawa", country: "Japan" },
+  // Autriche
+  { city: "Vienna", country: "Austria" },
+  { city: "Salzburg", country: "Austria" },
+  // Grèce
+  { city: "Athens", country: "Greece" },
+  { city: "Mykonos", country: "Greece" },
+  // Russie
+  { city: "Moscow", country: "Russia" },
+  { city: "Saint Petersburg", country: "Russia" },
+  // Malaisie
+  { city: "Kuala Lumpur", country: "Malaysia" },
+  // Portugal
+  { city: "Lisbon", country: "Portugal" },
+  { city: "Porto", country: "Portugal" },
+  // Canada
+  { city: "Toronto", country: "Canada" },
+  { city: "Montreal", country: "Canada" },
+  { city: "Vancouver", country: "Canada" },
+  { city: "Quebec", country: "Canada" },
+  // Pays-Bas
+  { city: "Amsterdam", country: "Netherlands" },
+  { city: "Rotterdam", country: "Netherlands" },
+  // Pologne
+  { city: "Warsaw", country: "Poland" },
+  { city: "Krakow", country: "Poland" },
+  // Hongrie
+  { city: "Budapest", country: "Hungary" },
+  // Singapour
+  { city: "Singapore", country: "Singapore" },
+  // Corée du Sud
+  { city: "Seoul", country: "South Korea" },
+  { city: "Busan", country: "South Korea" },
+  // Indonésie
+  { city: "Jakarta", country: "Indonesia" },
+  { city: "Surabaya", country: "Indonesia" },
+  // Inde
+  { city: "New Delhi", country: "India" },
+  { city: "Jaipur", country: "India" },
+  // Croatie
+  { city: "Dubrovnik", country: "Croatia" },
+  { city: "Zagreb", country: "Croatia" },
+  // Suisse
+  { city: "Zurich", country: "Switzerland" },
+  { city: "Geneva", country: "Switzerland" },
+  // Arabie Saoudite
+  { city: "Makkah", country: "Saudi Arabia" },
+  { city: "Riyadh", country: "Saudi Arabia" },
+  // Belgique
+  { city: "Brussels", country: "Belgium" },
+  { city: "Bruges", country: "Belgium" },
+  // Irlande
+  { city: "Dublin", country: "Ireland" },
+  { city: "Limerick", country: "Ireland" },
+  // Vietnam
+  { city: "Hanoi", country: "Vietnam" },
+  { city: "Ho Chi Minh City", country: "Vietnam" },
+  // Maroc
+  { city: "Casablanca", country: "Morocco" },
+  { city: "Marrakech", country: "Morocco" },
+  // Émirats Arabes Unis
+  { city: "Dubai", country: "United Arab Emirates" },
+  { city: "Abu Dhabi", country: "United Arab Emirates" },
+  // Qatar
+  { city: "Doha", country: "Qatar" }
+];
+
+// Liste des langues disponibles
+const availableLanguages = [
+  { code: "en", name: "English" },
+  { code: "fr", name: "Français" },
+  { code: "es", name: "Español" },
+  { code: "de", name: "Deutsch" },
+  { code: "it", name: "Italiano" },
+  { code: "zh", name: "中文" },
+  { code: "ja", name: "日本語" },
+  { code: "ru", name: "Русский" },
+  { code: "ar", name: "العربية" },
+  { code: "pt", name: "Português" },
+  { code: "nl", name: "Nederlands" },
+  { code: "ko", name: "한국어" },
+  { code: "hi", name: "हिन्दी" },
+  { code: "tr", name: "Türkçe" },
+  { code: "vi", name: "Tiếng Việt" }
 ];
 
 // Extraire les pays uniques
-const countries = [...new Set(topVisitedCities.map(item => item.country))];
+const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();
 
 const HeroSection = () => {
   const [country, setCountry] = useState("");
@@ -55,6 +150,8 @@ const HeroSection = () => {
   const [showCity, setShowCity] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const navigate = useNavigate();
 
   // Gestion du changement de pays
@@ -67,7 +164,8 @@ const HeroSection = () => {
     // Filtrer les villes correspondant au pays sélectionné
     const filteredCities = topVisitedCities
         .filter(item => item.country === selectedCountry)
-        .map(item => item.city);
+        .map(item => item.city)
+        .sort();
 
     setCities(filteredCities);
   };
@@ -76,13 +174,36 @@ const HeroSection = () => {
     setCity(e.target.value);
   };
 
+  const toggleLanguage = (languageCode) => {
+    setSelectedLanguages(prevSelected => {
+      if (prevSelected.includes(languageCode)) {
+        return prevSelected.filter(code => code !== languageCode);
+      } else {
+        return [...prevSelected, languageCode];
+      }
+    });
+  };
+
   const handleSubmit = () => {
     if (!country || !city) {
       alert("Please select a country and city.");
       return;
     }
 
-    navigate(`/gigs?country=${country}&city=${city}`);
+    // Construction de l'URL avec les paramètres
+    let url = `/gigs?country=${country}&city=${city}`;
+
+    // Ajouter les dates si elles sont sélectionnées
+    if (startDate && endDate) {
+      url += `&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
+    }
+
+    // Ajouter les langues si elles sont sélectionnées
+    if (selectedLanguages.length > 0) {
+      url += `&languages=${selectedLanguages.join(',')}`;
+    }
+
+    navigate(url);
   };
 
   return (
@@ -148,8 +269,81 @@ const HeroSection = () => {
                     </div>
                   </div>
 
-                  {/* Bouton de recherche */}
+                  {/* Nouvelle sélection des langues - Dropdown avec boutons */}
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+                    <div className="form-group">
+                      <label>
+                        <FontAwesomeIcon icon={faLanguage} className="me-2" />
+                        Languages
+                      </label>
+                      <div className="position-relative">
+                        <button
+                            type="button"
+                            className="form-control text-start d-flex justify-content-between align-items-center"
+                            onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                        >
+                          <span>
+                            {selectedLanguages.length === 0
+                                ? "Select languages"
+                                : `${selectedLanguages.length} language(s) selected`}
+                          </span>
+                          <span className="dropdown-toggle"></span>
+                        </button>
+
+                        {showLanguageDropdown && (
+                            <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow" style={{ maxHeight: "200px", overflowY: "auto", zIndex: 1000 }}>
+                              {availableLanguages.map((lang) => (
+                                  <div
+                                      key={lang.code}
+                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                      onClick={() => toggleLanguage(lang.code)}
+                                      style={{ cursor: "pointer" }}
+                                  >
+                                    <div className="form-check mb-0">
+                                      <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={selectedLanguages.includes(lang.code)}
+                                          onChange={() => {}}
+                                          id={`lang-${lang.code}`}
+                                      />
+                                      <label className="form-check-label" htmlFor={`lang-${lang.code}`}>
+                                        {lang.name}
+                                      </label>
+                                    </div>
+                                  </div>
+                              ))}
+                            </div>
+                        )}
+                      </div>
+
+                      {/* Affichage des langues sélectionnées */}
+                      {selectedLanguages.length > 0 && (
+                          <div className="mt-2 d-flex flex-wrap">
+                            {selectedLanguages.map(code => {
+                              const lang = availableLanguages.find(l => l.code === code);
+                              return (
+                                  <span
+                                      key={code}
+                                      className="badge bg-primary me-1 mb-1 d-flex align-items-center"
+                                  >
+                                {lang.name}
+                                    <button
+                                        type="button"
+                                        className="btn-close btn-close-white ms-2"
+                                        style={{ fontSize: "0.5rem" }}
+                                        onClick={() => toggleLanguage(code)}
+                                    ></button>
+                              </span>
+                              );
+                            })}
+                          </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bouton de recherche */}
+                  <div className="col-lg-12 col-md-12 col-sm-12 col-12 mt-3 text-center">
                     <button type="button" className="vs-btn style4" onClick={handleSubmit}>
                       Find Now
                     </button>
