@@ -47,8 +47,8 @@ function Navbar() {
 
   const BlaBlaTripLogo = () => {
     return (
-
-        <img src={"/img/img_3.png"}  alt={'rfe'}/>
+        <Link to="/"> <img src={"/img/img_3.png"} alt={'rfe'}/>
+        </Link>
 
     );
   };
