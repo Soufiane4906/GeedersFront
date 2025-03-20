@@ -1,4 +1,129 @@
 // utils/options.js
+export const topVisitedCities = [
+    // France
+    { city: "Paris", country: "France" },
+    { city: "Nice", country: "France" },
+    // Espagne
+    { city: "Barcelona", country: "Spain" },
+    { city: "Madrid", country: "Spain" },
+    // États-Unis
+    { city: "New York", country: "United States" },
+    { city: "San Francisco", country: "United States" },
+    { city: "New Orleans", country: "United States" },
+    { city: "Miami", country: "United States" },
+    { city: "Los Angeles", country: "United States" },
+    // Italie
+    { city: "Rome", country: "Italy" },
+    { city: "Venice", country: "Italy" },
+    { city: "Milan", country: "Italy" },
+    // Chine
+    { city: "Beijing", country: "China" },
+    { city: "Xi'an", country: "China" },
+    { city: "Shanghai", country: "China" },
+    // Turquie
+    { city: "Istanbul", country: "Turkey" },
+    { city: "Antalya", country: "Turkey" },
+    // Mexique
+    { city: "Cancún", country: "Mexico" },
+    { city: "Acapulco", country: "Mexico" },
+    { city: "Guadalajara", country: "Mexico" },
+    // Thaïlande
+    { city: "Bangkok", country: "Thailand" },
+    { city: "Phuket", country: "Thailand" },
+    // Royaume-Uni
+    { city: "London", country: "United Kingdom" },
+    { city: "Cambridge", country: "United Kingdom" },
+    // Allemagne
+    { city: "Berlin", country: "Germany" },
+    { city: "Munich", country: "Germany" },
+    // Japon
+    { city: "Tokyo", country: "Japan" },
+    { city: "Hokkaido", country: "Japan" },
+    { city: "Kyoto", country: "Japan" },
+    { city: "Okinawa", country: "Japan" },
+    // Autriche
+    { city: "Vienna", country: "Austria" },
+    { city: "Salzburg", country: "Austria" },
+    // Grèce
+    { city: "Athens", country: "Greece" },
+    { city: "Mykonos", country: "Greece" },
+    // Russie
+    { city: "Moscow", country: "Russia" },
+    { city: "Saint Petersburg", country: "Russia" },
+    // Malaisie
+    { city: "Kuala Lumpur", country: "Malaysia" },
+    // Portugal
+    { city: "Lisbon", country: "Portugal" },
+    { city: "Porto", country: "Portugal" },
+    // Canada
+    { city: "Toronto", country: "Canada" },
+    { city: "Montreal", country: "Canada" },
+    { city: "Vancouver", country: "Canada" },
+    { city: "Quebec", country: "Canada" },
+    // Pays-Bas
+    { city: "Amsterdam", country: "Netherlands" },
+    { city: "Rotterdam", country: "Netherlands" },
+    // Pologne
+    { city: "Warsaw", country: "Poland" },
+    { city: "Krakow", country: "Poland" },
+    // Hongrie
+    { city: "Budapest", country: "Hungary" },
+    // Singapour
+    { city: "Singapore", country: "Singapore" },
+    // Corée du Sud
+    { city: "Seoul", country: "South Korea" },
+    { city: "Busan", country: "South Korea" },
+    // Indonésie
+    { city: "Jakarta", country: "Indonesia" },
+    { city: "Surabaya", country: "Indonesia" },
+    // Inde
+    { city: "New Delhi", country: "India" },
+    { city: "Jaipur", country: "India" },
+    // Croatie
+    { city: "Dubrovnik", country: "Croatia" },
+    { city: "Zagreb", country: "Croatia" },
+    // Suisse
+    { city: "Zurich", country: "Switzerland" },
+    { city: "Geneva", country: "Switzerland" },
+    // Arabie Saoudite
+    { city: "Makkah", country: "Saudi Arabia" },
+    { city: "Riyadh", country: "Saudi Arabia" },
+    // Belgique
+    { city: "Brussels", country: "Belgium" },
+    { city: "Bruges", country: "Belgium" },
+    // Irlande
+    { city: "Dublin", country: "Ireland" },
+    { city: "Limerick", country: "Ireland" },
+    // Vietnam
+    { city: "Hanoi", country: "Vietnam" },
+    { city: "Ho Chi Minh City", country: "Vietnam" },
+    // Maroc
+    { city: "Casablanca", country: "Morocco" },
+    { city: "Marrakech", country: "Morocco" },
+    // Émirats Arabes Unis
+    { city: "Dubai", country: "United Arab Emirates" },
+    { city: "Abu Dhabi", country: "United Arab Emirates" },
+    // Qatar
+    { city: "Doha", country: "Qatar" }
+];
+export const availableLanguages = [
+    { code: "en", name: "English" },
+    { code: "fr", name: "Français" },
+    { code: "es", name: "Español" },
+    { code: "de", name: "Deutsch" },
+    { code: "it", name: "Italiano" },
+    { code: "zh", name: "中文" },
+    { code: "ja", name: "日本語" },
+    { code: "ru", name: "Русский" },
+    { code: "ar", name: "العربية" },
+    { code: "pt", name: "Português" },
+    { code: "nl", name: "Nederlands" },
+    { code: "ko", name: "한국어" },
+    { code: "hi", name: "हिन्दी" },
+    { code: "tr", name: "Türkçe" },
+    { code: "vi", name: "Tiếng Việt" }
+];
+
 export const languageOptions = [
     { value: "English", label: "🇬🇧 English" },
     { value: "French", label: "🇫🇷 French" },

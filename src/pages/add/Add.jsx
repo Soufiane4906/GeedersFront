@@ -22,6 +22,7 @@ import LocationMap from "./../../components/LocationMap";
 import "./Add.scss";
 import { ToastContainer, toast } from "react-toastify";
  import 'bootstrap/dist/css/bootstrap.min.css';
+import { topVisitedCities } from "../../utils/options.js"; // Import predefined cities
 
 import { useNavigate } from "react-router-dom";
 
@@ -47,8 +48,7 @@ const Add = () => {
     price: 0,
     features: [],
     poi: [],
-    latitude: null,
-    longitude: null,
+
   });
   const [error, setError] = useState("");
   const [cities, setCities] = useState([]);
@@ -56,7 +56,7 @@ const Add = () => {
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
   const navigate = useNavigate();
 
-  const handleCountryChange = async (e) => {
+  const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
     setFormData((prevData) => ({
       ...prevData,
@@ -64,22 +64,18 @@ const Add = () => {
       city: "",
     }));
     setShowCity(true);
-    try {
-      const response = await axios.post(
-        "https://countriesnow.space/api/v0.1/countries/cities",
-        {
-          country: selectedCountry,
-        }
-      );
-      setCities(response.data.data);
-    } catch (error) {
-      console.error("There was an error fetching the cities!", error);
-    }
+
+    // Get cities that match the selected country from `topVisitedCities`
+    const filteredCities = topVisitedCities
+        .filter((item) => item.country === selectedCountry)
+        .map((item) => item.city)
+        .sort();
+
+    setCities(filteredCities); // Use predefined cities
   };
 
   const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    setFormData((prevData) => ({ ...prevData, city: selectedCity }));
+    setFormData((prevData) => ({ ...prevData, city: e.target.value }));
   };
 
   const handleChange = (e) => {
@@ -207,71 +203,65 @@ const Add = () => {
         </div>
       )}
       {step === 2 && (
-        <div>
-          <div className="form-group">
-            <label htmlFor="country">
-              <FontAwesomeIcon
-                icon={faGlobe}
-                style={{ marginInlineEnd: "2%" }}
-              />{" "}
-              Country
-            </label>
-            <select
-              name="country"
-              value={formData.country}
-              onChange={handleCountryChange}
-              style={{ width: "100%" }}
-              className="country-city-selector"
-            >
-              <option value="">Select Country</option>
-              {countriesData.map((country) => (
-                <option key={country.name} value={country.name}>
-                  {country.flag} {country.name}
-                </option>
-              ))}
-            </select>
+          <div>
+            {/* Country Selection */}
+            <div className="form-group">
+              <label htmlFor="country">
+                <FontAwesomeIcon icon={faGlobe} style={{ marginRight: "2%" }} /> Country
+              </label>
+              <select
+                  name="country"
+                  value={formData.country}
+                  onChange={handleCountryChange}
+                  style={{ width: "100%" }}
+                  className="form-control"
+              >
+                <option value="">Select Country</option>
+                {[...new Set(topVisitedCities.map((city) => city.country))].map((countryName) => (
+                    <option key={countryName} value={countryName}>
+                      {countryName}
+                    </option>
+                ))}
+              </select>
+            </div>
+
+            {/* City Selection (Only Cities from Hero.jsx) */}
+            <div className="form-group">
+              <label htmlFor="city">
+                <FontAwesomeIcon icon={faCity} style={{ marginRight: "2%" }} /> City
+              </label>
+              <select
+                  name="city"
+                  value={formData.city}
+                  onChange={handleCityChange}
+                  style={{ width: "100%" }}
+                  disabled={!showCity}
+                  className="form-control"
+              >
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Remove Location Selection */}
+            {/* <div className="form-group">
+              <label htmlFor="location">
+                <FontAwesomeIcon icon={faMapMarkerAlt} style={{ marginInlineEnd: "2%" }} /> Select Location
+              </label>
+              <LocationMap setFormData={setFormData} formData={formData} />
+          </div> */}
+
+            <button className="btn btn-secondary" onClick={() => setStep(step - 1)}>
+              Back
+            </button>
+            <button className="btn btn-primary" style={{ float: "right" }} onClick={() => setStep(step + 1)}>
+              Next
+            </button>
           </div>
-          <div className="form-group">
-            <label htmlFor="city">
-              <FontAwesomeIcon
-                icon={faCity}
-                style={{ marginInlineEnd: "2%" }}
-              />{" "}
-              City
-            </label>
-            <select
-              name="city"
-              value={formData.city}
-              onChange={handleCityChange}
-              style={{ width: "100%" }}
-              disabled={!showCity}
-              className="country-city-selector"
-            >
-              <option value="">Select City</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{textAlign :'-webkit-center'}}>
-            <label htmlFor="location">
-              <FontAwesomeIcon
-                icon={faMapMarkerAlt}
-                style={{ marginInlineEnd: "2%" }}
-              />{" "}
-              Select Location
-            </label>
-            <LocationMap  setFormData={setFormData} formData={formData} />
-          </div>
-          <button className="btn btn-secondary" onClick={prevStep}>
-            Back
-          </button>
-          <button className="btn btn-primary"  style={{float :'right'}}  onClick={nextStep}>
-            Next
-          </button>
-        </div>
       )}
       {step === 3 && (
         <div>
@@ -587,123 +577,3 @@ const pointsOfInterestOptions = [
     icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000",
   },
 ];
-const countriesData = [
-  { name: "France", flag: "🇫🇷" },
-  { name: "Germany", flag: "🇩🇪" },
-  { name: "Italy", flag: "🇮🇹" },
-  { name: "Spain", flag: "🇪🇸" },
-  { name: "China", flag: "🇨🇳" },
-  { name: "Japan", flag: "🇯🇵" },
-  { name: "Korea", flag: "🇰🇷" },
-  { name: "Arab Emirates", flag: "🇦🇪" },
-  { name: "Russia", flag: "🇷🇺" },
-  { name: "Portugal", flag: "🇵🇹" },
-  { name: "Netherlands", flag: "🇳🇱" },
-  { name: "Greece", flag: "🇬🇷" },
-  { name: "India", flag: "🇮🇳" },
-  { name: "Pakistan", flag: "🇵🇰" },
-  { name: "Turkey", flag: "🇹🇷" },
-  { name: "Sweden", flag: "🇸🇪" },
-  { name: "Norway", flag: "🇳🇴" },
-  { name: "Denmark", flag: "🇩🇰" },
-  { name: "Finland", flag: "🇫🇮" },
-  { name: "Switzerland", flag: "🇨🇭" },
-  { name: "Austria", flag: "🇦🇹" },
-  { name: "Belgium", flag: "🇧🇪" },
-  { name: "Poland", flag: "🇵🇱" },
-  { name: "Czech Republic", flag: "🇨🇿" },
-  { name: "Hungary", flag: "🇭🇺" },
-  { name: "Romania", flag: "🇷🇴" },
-  { name: "Bulgaria", flag: "🇧🇬" },
-  { name: "Croatia", flag: "🇭🇷" },
-  { name: "Serbia", flag: "🇷🇸" },
-  { name: "Bosnia and Herzegovina", flag: "🇧🇦" },
-  //go
-  { name: "United States", flag: "🇺🇸" },
-  { name: "Canada", flag: "🇨🇦" },
-  { name: "Mexico", flag: "🇲🇽" },
-  { name: "Brazil", flag: "🇧🇷" },
-  { name: "Argentina", flag: "🇦🇷" },
-  { name: "Chile", flag: "🇨🇱" },
-  { name: "Colombia", flag: "🇨🇴" },
-  { name: "Peru", flag: "🇵🇪" },
-  { name: "Venezuela", flag: "🇻🇪" },
-  { name: "Ecuador", flag: "🇪🇨" },
-  { name: "Uruguay", flag: "🇺🇾" },
-  { name: "Paraguay", flag: "🇵🇾" },
-  { name: "Bolivia", flag: "🇧🇴" },
-  { name: "Australia", flag: "🇦🇺" },
-  { name: "New Zealand", flag: "🇳🇿" },
-  { name: "Fiji", flag: "🇫🇯" },
-  { name: "Papua New Guinea", flag: "🇵🇬" },
-  { name: "Solomon Islands", flag: "🇸🇧" },
-  { name: "Vanuatu", flag: "🇻🇺" },
-  { name: "Samoa", flag: "🇼🇸" },
-  { name: "Tonga", flag: "🇹🇴" },
-  { name: "Kiribati", flag: "🇰🇮" },
-  { name: "Tuvalu", flag: "🇹🇻" },
-  { name: "Nauru", flag: "🇳🇷" },
-  { name: "Marshall Islands", flag: "🇲🇭" },
-  { name: "Micronesia", flag: "🇫🇲" },
-  { name: "Palau", flag: "🇵🇼" },
-  { name: "Singapore", flag: "🇸🇬" },
-  { name: "Malaysia", flag: "🇲🇾" },
-  { name: "Indonesia", flag: "🇮🇩" },
-  { name: "Philippines", flag: "🇵🇭" },
-  { name: "Thailand", flag: "🇹🇭" },
-  { name: "Vietnam", flag: "🇻🇳" },
-  { name: "Cambodia", flag: "🇰🇭" },
-  { name: "Laos", flag: "🇱🇦" },
-  { name: "Myanmar", flag: "🇲🇲" },
-  { name: "Bangladesh", flag: "🇧🇩" },
-  { name: "Nepal", flag: "🇳🇵" },
-  { name: "Sri Lanka", flag: "🇱🇰" },
-  { name: "Afghanistan", flag: "🇦🇫" },
-  { name: "Iran", flag: "🇮🇷" },
-  { name: "Iraq", flag: "🇮🇶" },
-  { name: "Syria", flag: "🇸🇾" },
-  { name: "Lebanon", flag: "🇱🇧" },
-  //allez
-  { name: "South Africa", flag: "🇿🇦" },
-  { name: "Nigeria", flag: "🇳🇬" },
-  { name: "Egypt", flag: "🇪🇬" },
-  { name: "Algeria", flag: "🇩🇿" },
-  { name: "Morocco", flag: "🇲🇦" },
-  { name: "Tunisia", flag: "🇹🇳" },
-  { name: "Libya", flag: "🇱🇾" },
-  { name: "Sudan", flag: "🇸🇩" },
-  { name: "Ethiopia", flag: "🇪🇹" },
-  { name: "Kenya", flag: "🇰🇪" },
-  { name: "Uganda", flag: "🇺🇬" },
-  { name: "Ghana", flag: "🇬🇭" },
-  { name: "Cameroon", flag: "🇨🇲" },
-  { name: "Ivory Coast", flag: "🇨🇮" },
-  { name: "Senegal", flag: "🇸🇳" },
-  { name: "Mali", flag: "🇲🇱" },
-  { name: "Niger", flag: "🇳🇪" },
-  { name: "Chad", flag: "🇹🇩" },
-  { name: "Mauritania", flag: "🇲🇷" },
-  { name: "Mozambique", flag: "🇲🇿" },
-  { name: "Madagascar", flag: "🇲🇬" },
-  { name: "Zimbabwe", flag: "🇿🇼" },
-  { name: "Zambia", flag: "🇿🇲" },
-  { name: "Angola", flag: "🇦🇴" },
-  { name: "Namibia", flag: "🇳🇦" },
-  { name: "Botswana", flag: "🇧🇼" },
-  { name: "Mauritius", flag: "🇲🇺" },
-  { name: "Malawi", flag: "🇲🇼" },
-  { name: "Lesotho", flag: "🇱🇸" },
-  { name: "Swaziland", flag: "🇸🇿" },
-  { name: "Burundi", flag: "🇧🇮" },
-  { name: "Rwanda", flag: "🇷🇼" },
-  //come on for the last time
-  { name: "Antarctica", flag: "🇦🇶" },
-  { name: "Greenland", flag: "🇬🇱" },
-  { name: "Faroe Islands", flag: "🇫🇴" },
-  { name: "Iceland", flag: "🇮🇸" },
-  { name: "Svalbard and Jan Mayen", flag: "🇸🇯" },
-  { name: "United Kingdom", flag: "🇬🇧" },
-  { name: "Ireland", flag: "🇮🇪" },
-  //you understand me ?
-];
-countriesData.sort((a, b) => a.name.localeCompare(b.name));
