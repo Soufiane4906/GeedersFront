@@ -223,10 +223,12 @@ function Gig() {
             <div className="privacy">
               <input
                   type="checkbox"
+                  name="check"
+                  id="check" // Add this
                   checked={privacyAccepted}
                   onChange={() => setPrivacyAccepted(!privacyAccepted)}
               />
-              <label>I accept all privacy conditions</label>
+              <label htmlFor="check">I accept all privacy conditions</label>
             </div>
             <div className="booking-info">
               <h3>Booking Details</h3>
