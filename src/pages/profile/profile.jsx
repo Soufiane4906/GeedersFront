@@ -134,7 +134,7 @@ const ProfileDetail = ({ user }) => {
         <p><FaEnvelope className="icon" /> <strong>Email :</strong> {user.email}</p>
         <p><FaGlobe className="icon" /> <strong>Country :</strong> {user.country}</p>
         <p><FaMapMarkerAlt className="icon" /> <strong>City :</strong> {user.city}</p>
-        <p><FaFileAlt className="icon" /> <strong>Role :</strong> {user.isSeller ? 'Guide' : 'Buyer'}</p>
+        <p><FaFileAlt className="icon" /> <strong>Role :</strong> {user.isAmbassador ? 'Guide' : 'Guest'}</p>
         <p><FaLanguage className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
         <p><FaPhone className="icon" /> <strong>Phone :</strong> {user.phone}</p>
         <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
@@ -328,7 +328,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
 
       <Row className="mb-3">
         <Form.Group as={Col} md="6">
-          {user.isSeller ? (
+          {user.isAmbassador ? (
             <>
               <Form.Label> <FaCreditCard className="icon" />     PayPal Card Number</Form.Label>
               <Form.Control

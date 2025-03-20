@@ -16,9 +16,9 @@ const Orders = () => {
   });
 
   const handleContact = async (order) => {
-    const sellerId = order.sellerId;
-    const buyerId = order.buyerId;
-    const id = sellerId + buyerId;
+    const AmbassadorId = order.AmbassadorId;
+    const GuestId = order.GuestId;
+    const id = AmbassadorId + GuestId;
 
     try {
       const res = await newRequest.get(`/conversations/single/${id}`);
@@ -26,7 +26,7 @@ const Orders = () => {
     } catch (err) {
       if (err.response.status === 404) {
         const res = await newRequest.post(`/conversations/`, {
-          to: currentUser.seller ? buyerId : sellerId,
+          to: currentUser.Ambassador ? GuestId : AmbassadorId,
         });
         navigate(`/message/${res.data.id}`);
       }

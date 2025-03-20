@@ -77,7 +77,7 @@ function Navbar() {
             <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
               <span>{currentUser?.username} </span>
-              {currentUser.isSeller && (
+              {currentUser.isAmbassador && (
                   <>
                  <span> (Ambassador)</span>
                   </>
@@ -92,7 +92,7 @@ function Navbar() {
                   <Link className="link" to="/profile">
                     <FaUserCircle /> Profile
                   </Link>
-                  {currentUser.isSeller && (
+                  {currentUser.isAmbassador && (
                     <>
                       <Link className="link" to="/mygigs">
                         <FaCalendarAlt /> My Posts

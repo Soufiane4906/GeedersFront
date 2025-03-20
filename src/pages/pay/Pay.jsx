@@ -32,7 +32,7 @@ const Pay = () => {
           scooterPrice: details.scooterPrice
         },
         hours: details.hours,
-        buyerId: byId, // Include buyerId in the request payload
+        GuestId: byId, // Include GuestId in the request payload
       });
 
       setClientSecret(res.data.clientSecret);

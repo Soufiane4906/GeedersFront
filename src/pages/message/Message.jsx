@@ -53,28 +53,28 @@ const Message = () => {
     <div className="message">
       <div className="container">
         <div className="row">
-          {/* Buyer Details Section */}
+          {/* Guest Details Section */}
           {/* <div className="col-md-4">
             <div className="card">
               <div className="card-header">Guide Details</div>
               <div className="card-body">
                 <img
-                  src={data.buyer.img || "https://via.placeholder.com/100"}
-                  alt="Buyer"
+                  src={data.Guest.img || "https://via.placeholder.com/100"}
+                  alt="Guest"
                   className="img-fluid rounded-circle mb-3"
                 />
-                <h5 className="card-title">{data.buyer.username}</h5>
+                <h5 className="card-title">{data.Guest.username}</h5>
                 <p className="card-text">
-                  <FaEnvelope /> {data.buyer.email}
+                  <FaEnvelope /> {data.Guest.email}
                 </p>
                 <p className="card-text">
-                  <FaPhone /> {data.buyer.phone}
+                  <FaPhone /> {data.Guest.phone}
                 </p>
                 <p className="card-text">
-                  <FaMapMarkerAlt /> {data.buyer.city || "Unknown City"}
+                  <FaMapMarkerAlt /> {data.Guest.city || "Unknown City"}
                 </p>
                 <p className="card-text">
-                  <FaGlobe /> {data.buyer.country || "Unknown Country"}
+                  <FaGlobe /> {data.Guest.country || "Unknown Country"}
                 </p>
               </div>
             </div>

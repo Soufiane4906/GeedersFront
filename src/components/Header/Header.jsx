@@ -93,7 +93,7 @@ const Header = () => {
                         <Link className="dropdown-item" to="/profile">
                           <FaUserCircle /> Profile
                         </Link>
-                        {currentUser.isSeller && (
+                        {currentUser.isAmbassador && (
                           <>
                             <Link className="dropdown-item" to="/mygigs">
                               <FaCalendarAlt /> My Posts

@@ -89,7 +89,7 @@ function Gig() {
     sessionStorage.setItem('bookingDetails', JSON.stringify({
       id,
       totalPrice,
-      buyerId: currentUserId,
+      GuestId: currentUserId,
       price: data?.price,
       city: data?.city,
       country: data?.country,
@@ -144,7 +144,7 @@ function Gig() {
             ) : errorUser ? (
                 "Something went wrong!"
             ) : (
-                <div className="seller">
+                <div className="Ambassador">
                   <h2>About The Ambassador</h2>
                   <div className="user">
                     <div className="info"></div>

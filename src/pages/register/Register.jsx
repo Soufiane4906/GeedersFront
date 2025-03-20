@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Register.scss";
@@ -6,7 +6,7 @@ import newRequest from "../../utils/newRequest";
 import HeroProfile from "../../components/HeroProfile";
 import Footer from "../../components/footer/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCity, faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { faCity, faGlobe, faUser, faLanguage } from "@fortawesome/free-solid-svg-icons";
 
 const topVisitedCities = [
   { city: "Bangkok", country: "Thailand" },
@@ -26,23 +26,57 @@ const topVisitedCities = [
 
 const uniqueCountries = [...new Set(topVisitedCities.map((c) => c.country))];
 
+const availableLanguages = [
+  "English", "French", "Spanish", "Arabic", "Chinese", "Japanese",
+  "German", "Italian", "Portuguese", "Russian", "Thai", "Turkish"
+];
+
+
 function Register() {
   const [step, setStep] = useState(1);
   const [user, setUser] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
     username: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
     country: "",
     city: "",
-    password: "",
+    userType: "guest",
     isAmbassador: false,
   });
+
+
+  useEffect(() => {
+    console.log(step);
+    console.log((step === 4 && !user.isAmbassador));
+  }, [step]); // Exécution uniquement lorsque `step` change
+
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleUserTypeChange = (e) => {
+    const selectedType = e.target.value;
+    setUser((prev) => ({
+      ...prev,
+      userType: selectedType,
+      isAmbassador: selectedType === "ambassador",
+    }));
+  };
+
+  const handleLanguageChange = (e) => {
+    const options = e.target.options;
+    const selectedLanguages = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selectedLanguages.push(options[i].value);
+      }
+    }
+    setUser((prev) => ({ ...prev, languages: selectedLanguages }));
   };
 
   const handleCountryChange = (e) => {
@@ -71,40 +105,30 @@ function Register() {
   return (
       <>
         <HeroProfile />
-        <div className="register mt-4 mb-4"> {/* Added margin top and bottom */}
+        <div className="register mt-4 mb-4">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-lg-6">
                 <form onSubmit={handleSubmit} className="signup-form bg-smoke p-4 rounded">
                   <h1 className="form-title text-center mb-lg-35">Inscription</h1>
 
-                  {/* Étape 1 : Infos personnelles */}
+                  {/* Étape 1: Type de compte */}
                   {step === 1 && (
                       <>
                         <div className="form-group">
-                          <label htmlFor="firstname">Prénom</label>
-                          <input
-                              name="firstname"
-                              type="text"
-                              placeholder="Prénom"
-                              value={user.firstname}
-                              onChange={handleChange}
+                          <label htmlFor="userType">
+                            <FontAwesomeIcon icon={faUser} /> Type de compte
+                          </label>
+                          <select
+                              name="userType"
+                              value={user.userType}
+                              onChange={handleUserTypeChange}
                               className="form-control"
                               required
-                          />
-                        </div>
-
-                        <div className="form-group">
-                          <label htmlFor="lastname">Nom</label>
-                          <input
-                              name="lastname"
-                              type="text"
-                              placeholder="Nom"
-                              value={user.lastname}
-                              onChange={handleChange}
-                              className="form-control"
-                              required
-                          />
+                          >
+                            <option value="guest">Guest</option>
+                            <option value="ambassador">Ambassador</option>
+                          </select>
                         </div>
 
                         <button type="button" onClick={nextStep} className="vs-btn style4 w-100">
@@ -113,8 +137,48 @@ function Register() {
                       </>
                   )}
 
-                  {/* Étape 2 : Email & Mot de passe */}
+                  {/* Étape 2 : Infos personnelles */}
                   {step === 2 && (
+                      <>
+                        <div className="form-group">
+                          <label htmlFor="firstName">Prénom</label>
+                          <input
+                              name="firstName"
+                              type="text"
+                              placeholder="Prénom"
+                              value={user.firstName}
+                              onChange={handleChange}
+                              className="form-control"
+                              required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="lastName">Nom</label>
+                          <input
+                              name="lastName"
+                              type="text"
+                              placeholder="Nom"
+                              value={user.lastName}
+                              onChange={handleChange}
+                              className="form-control"
+                              required
+                          />
+                        </div>
+
+                        <div className="d-flex justify-content-between">
+                          <button type="button" onClick={prevStep} className="vs-btn style3">
+                            Précédent
+                          </button>
+                          <button type="button" onClick={nextStep} className="vs-btn style4">
+                            Suivant
+                          </button>
+                        </div>
+                      </>
+                  )}
+
+                  {/* Étape 3 : Email & Mot de passe */}
+                  {step === 3 && (
                       <>
                         <div className="form-group">
                           <label htmlFor="email">Email</label>
@@ -153,8 +217,8 @@ function Register() {
                       </>
                   )}
 
-                  {/* Étape 3 : Pays & Ville */}
-                  {step === 3 && (
+                  {/* Étape 4 : Pays & Ville */}
+                  {step === 4 && user.isAmbassador    && (
                       <>
                         <div className="form-group">
                           <label htmlFor="country">
@@ -211,25 +275,114 @@ function Register() {
                       </>
                   )}
 
-                  {/* Étape 4 : Récapitulatif et soumission */}
-                  {step === 4 && (
+                  {/* Étape 5: Informations supplémentaires pour les ambassadeurs */}
+                  {step === 5 && user.isAmbassador && (
+                      <>
+                        <div className="form-group">
+                          <label htmlFor="phone">Téléphone</label>
+                          <input
+                              name="phone"
+                              type="tel"
+                              placeholder="Numéro de téléphone"
+                              value={user.phone}
+                              onChange={handleChange}
+                              className="form-control"
+                              required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="age">Âge</label>
+                          <input
+                              name="age"
+                              type="number"
+                              placeholder="Votre âge"
+                              value={user.age}
+                              onChange={handleChange}
+                              className="form-control"
+                              required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="languages">
+                            <FontAwesomeIcon icon={faLanguage} /> Langues parlées
+                          </label>
+                          <select
+                              name="languages"
+                              multiple
+                              value={user.languages}
+                              onChange={handleLanguageChange}
+                              className="form-control"
+                              required
+                          >
+                            {availableLanguages.map((language) => (
+                                <option key={language} value={language}>
+                                  {language}
+                                </option>
+                            ))}
+                          </select>
+                          <small className="form-text text-muted">
+                            Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs langues
+                          </small>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="desc">Description</label>
+                          <textarea
+                              name="desc"
+                              placeholder="Parlez-nous de vous et de votre expérience en tant que guide local"
+                              value={user.desc}
+                              onChange={handleChange}
+                              className="form-control"
+                              rows="4"
+                              required
+                          ></textarea>
+                        </div>
+
+                        <div className="d-flex justify-content-between">
+                          <button type="button" onClick={prevStep} className="vs-btn style3">
+                            Précédent
+                          </button>
+                          <button type="button" onClick={nextStep} className="vs-btn style4">
+                            Suivant
+                          </button>
+                        </div>
+                      </>
+                  )}
+
+                  {/* Étape 4/6 : Récapitulatif et soumission */}
+                  {((step === 4 && !user.isAmbassador) || step === 6) && (
                       <>
                         <h3 className="text-center">Résumé des informations</h3>
                         <ul className="list-group">
-
-                          <li className="list-group-item"><b>UserName  :</b> {user.firstname}{ user.lastname}</li>
-
-                          <li className="list-group-item"><strong>Prénom :</strong> {user.firstname}</li>
-                          <li className="list-group-item"><strong>Nom :</strong> {user.lastname}</li>
+                          <li className="list-group-item"><b>Type de compte :</b> {
+                            user.userType === "guest" ? "Guest" :
+                                user.userType === "ambassador" ? "Ambassador" : "Administrateur"
+                          }</li>
+                          <li className="list-group-item"><strong>Prénom :</strong> {user.firstName}</li>
+                          <li className="list-group-item"><strong>Nom :</strong> {user.lastName}</li>
                           <li className="list-group-item"><strong>Email :</strong> {user.email}</li>
-                          <li className="list-group-item"><strong>Pays :</strong> {user.country}</li>
-                          <li className="list-group-item"><strong>Ville :</strong> {user.city}</li>
 
 
+                          {user.isAmbassador && (
+                              <>
+                                <li className="list-group-item"><strong>Pays :</strong> {user.country}</li>
+                                <li className="list-group-item"><strong>Ville :</strong> {user.city}</li>
+                                <li className="list-group-item"><strong>Téléphone :</strong> {user.phone}</li>
+                                <li className="list-group-item"><strong>Âge :</strong> {user.age}</li>
+                                {user.isAmbassador && user.languages && user.languages.length > 0 && (
+                                    <li className="list-group-item">
+                                      <strong>Langues parlées :</strong> {user.languages.join(", ")}
+                                    </li>
+                                )}
+                                <li className="list-group-item"><strong>Description :</strong> {user.desc}</li>
+                              </>
+                          )}
                         </ul>
 
                         <div className="d-flex justify-content-between mt-3">
-                        <button type="button" onClick={prevStep} className="vs-btn style3">
+                          <button type="button" onClick={prevStep} className="vs-btn style3">
                             Précédent
                           </button>
                           <button type="submit" className="vs-btn style4">
@@ -243,7 +396,7 @@ function Register() {
             </div>
           </div>
         </div>
-        <Footer />
+
       </>
   );
 }

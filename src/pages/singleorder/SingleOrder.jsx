@@ -102,30 +102,30 @@ const SingleOrder = () => {
               <div className="card-body">
                 <div className="d-flex align-items-center mb-3">
                   <img
-                    src={data.seller.img || "https://via.placeholder.com/100"}
+                    src={data.Ambassador.img || "https://via.placeholder.com/100"}
                     alt="Guide"
                     className="img-fluid rounded-circle me-3"
                     style={{ width: '100px', height: '100px' }}
                   />
                   <div>
-                    <h5 className="card-title">{data.seller.username}</h5>
+                    <h5 className="card-title">{data.Ambassador.username}</h5>
                     <p className="card-text">
-                      <FaEnvelope /> {data.seller.email}
+                      <FaEnvelope /> {data.Ambassador.email}
                     </p>
                     <p className="card-text">
-                      <FaPhone /> {data.seller.phone || "N/A"}
+                      <FaPhone /> {data.Ambassador.phone || "N/A"}
                     </p>
                     <p className="card-text">
-                      <FaMapMarkerAlt /> {data.seller.city}, {data.seller.country}
+                      <FaMapMarkerAlt /> {data.Ambassador.city}, {data.Ambassador.country}
                     </p>
                     <p className="card-text">
-                      <FaLanguage /> {data.seller.spokenLanguages || "N/A"}
+                      <FaLanguage /> {data.Ambassador.spokenLanguages || "N/A"}
                     </p>
                     <p className="card-text">
-                      {data.seller.desc || "N/A"}
+                      {data.Ambassador.desc || "N/A"}
                     </p>
                     <p className="card-text">
-                      <FaCheck /> {data.seller.isVerified ? "Verified" : "Not Verified"}
+                      <FaCheck /> {data.Ambassador.isVerified ? "Verified" : "Not Verified"}
                     </p>
                   </div>
                 </div>

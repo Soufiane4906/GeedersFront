@@ -47,7 +47,7 @@ const Messages = () => {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
+              <th>{currentUser.isAmbassador ? "Guest" : "Ambassador"}</th>
               <th>Last Message</th>
               <th>Date</th>
               <th>Action</th>
@@ -57,13 +57,13 @@ const Messages = () => {
             {data.map((c) => (
               <tr
                 className={
-                  ((currentUser.isSeller && !c.readBySeller) ||
-                    (!currentUser.isSeller && !c.readByBuyer)) &&
+                  ((currentUser.isAmbassador && !c.readByAmbassador) ||
+                    (!currentUser.isAmbassador && !c.readByGuest)) &&
                   "active"
                 }
                 key={c.id}
               >
-                <td>{currentUser.isSeller ? c.buyerId : c.sellerId}</td>
+                <td>{currentUser.isAmbassador ? c.GuestId : c.AmbassadorId}</td>
                 <td>
                   <Link to={`/message/${c.id}`} className="link">
                     {c?.lastMessage?.substring(0, 100)}...
@@ -71,8 +71,8 @@ const Messages = () => {
                 </td>
                 <td>{moment(c.updatedAt).fromNow()}</td>
                 <td>
-                  {((currentUser.isSeller && !c.readBySeller) ||
-                    (!currentUser.isSeller && !c.readByBuyer)) && (
+                  {((currentUser.isAmbassador && !c.readByAmbassador) ||
+                    (!currentUser.isAmbassador && !c.readByGuest)) && (
                     <button className="btn btn-success" onClick={() => handleRead(c.id)}>
                       Mark as Read
                     </button>
