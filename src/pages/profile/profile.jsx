@@ -13,6 +13,7 @@ import { FaIdCard } from 'react-icons/fa';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import {languageOptions} from '../../utils/options.js';
+import upload from "../../utils/upload.js";
 
 const Profile = () => {
   const { id } = useParams();
@@ -25,7 +26,10 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const response = await newRequest.get(`/users/${currentUser._id}`);
+
         setUser(response.data);
+        //console user
+        console.log(response.data);
       } catch (err) {
         console.error(err);
         toast.error('Failed to fetch user data.');
@@ -173,9 +177,11 @@ const ProfileEdit = ({ user, onUpdate }) => {
     imgRecto: user.imgRecto || '',
     imgVerso: user.imgVerso || '',
     imgPassport: user.imgPassport || '',
+    img: user.img || '',
   });
 
   const [files, setFiles] = useState({
+    img : null,
     imgRecto: null,
     imgVerso: null,
     imgPassport: null,
@@ -193,25 +199,12 @@ const ProfileEdit = ({ user, onUpdate }) => {
     }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const { name, files } = e.target;
-    setFiles((prev) => ({
-      ...prev,
-      [name]: files[0], // Store the file
-    }));
-  };
-
-  const upload = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await newRequest.post('/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    return response.data.url;
+    if (files.length > 0) {
+      const uploadedUrl = await upload(files[0]);
+      setFormData((prev) => ({ ...prev, [name]: uploadedUrl }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -286,7 +279,25 @@ const ProfileEdit = ({ user, onUpdate }) => {
             required
           />
         </Form.Group>
+        <Form.Group>
+          <Form.Label>Photo de profil</Form.Label>
+          <Form.Control type="file" name="img" onChange={handleFileChange} />
+        </Form.Group>
 
+        <Form.Group>
+          <Form.Label>Carte d'identité Recto</Form.Label>
+          <Form.Control type="file" name="imgRecto" onChange={handleFileChange} />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Carte d'identité Verso</Form.Label>
+          <Form.Control type="file" name="imgVerso" onChange={handleFileChange} />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Passeport</Form.Label>
+          <Form.Control type="file" name="imgPassport" onChange={handleFileChange} />
+        </Form.Group>
         <Form.Group as={Col} md="6">
           <Form.Label><FaFileAlt /> Languages</Form.Label>
           <Select
@@ -393,30 +404,23 @@ const ProfileEdit = ({ user, onUpdate }) => {
 
       <Row className="mb-3">
         <Form.Group as={Col} md="4">
-          <Form.Label><FaImage /> Upload Identity Front Image</Form.Label>
-          <Form.Control
-            type="file"
-            name="imgRecto"
-            onChange={handleFileChange}
-          />
+          <Form.Label><FaImage /> Photo de profil</Form.Label>
+          <Form.Control type="file" name="img" onChange={handleFileChange} />
         </Form.Group>
 
         <Form.Group as={Col} md="4">
-          <Form.Label><FaImage />Upload Identity Back Image</Form.Label>
-          <Form.Control
-            type="file"
-            name="imgVerso"
-            onChange={handleFileChange}
-          />
+          <Form.Label><FaImage /> Carte d'identité Recto</Form.Label>
+          <Form.Control type="file" name="imgRecto" onChange={handleFileChange} />
         </Form.Group>
 
         <Form.Group as={Col} md="4">
-          <Form.Label><FaImage /> Upload Passport Image</Form.Label>
-          <Form.Control
-            type="file"
-            name="imgPassport"
-            onChange={handleFileChange}
-          />
+          <Form.Label><FaImage /> Carte d'identité Verso</Form.Label>
+          <Form.Control type="file" name="imgVerso" onChange={handleFileChange} />
+        </Form.Group>
+
+        <Form.Group as={Col} md="4">
+          <Form.Label><FaImage /> Passeport</Form.Label>
+          <Form.Control type="file" name="imgPassport" onChange={handleFileChange} />
         </Form.Group>
       </Row>
 
@@ -428,6 +432,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
           Cancel
         </Button>
       </Form.Group>
+
     </Form>
   );
 };
