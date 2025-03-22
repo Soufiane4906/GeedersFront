@@ -5,7 +5,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-
+import newRequest from "../../utils/newRequest";
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
@@ -59,8 +59,8 @@ const CheckoutForm = () => {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: "https://BlaBlaTrip.com/success",
+       // return_url: "https://BlaBlaTrip.com/success",
+        return_url: "http://localhost:5173/success",
       },
     });
 

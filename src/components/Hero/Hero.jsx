@@ -12,9 +12,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {topVisitedCities , availableLanguages} from "../../utils/options.js";
-// Liste des villes les plus visitées et leurs pays associés
 
-// Liste des langues disponibles
 
 // Extraire les pays uniques
 const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();

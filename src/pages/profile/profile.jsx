@@ -10,10 +10,9 @@ import { FaLanguage, FaLock } from 'react-icons/fa';
 import { FaUser, FaEdit, FaEnvelope, FaGlobe, FaCity, FaPhone, FaFileAlt, FaCreditCard, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaIdCard } from 'react-icons/fa';
-import { AiFillMessage } from 'react-icons/ai';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
-
+import {languageOptions} from '../../utils/options.js';
 
 const Profile = () => {
   const { id } = useParams();
@@ -134,7 +133,7 @@ const ProfileDetail = ({ user }) => {
         <p><FaEnvelope className="icon" /> <strong>Email :</strong> {user.email}</p>
         <p><FaGlobe className="icon" /> <strong>Country :</strong> {user.country}</p>
         <p><FaMapMarkerAlt className="icon" /> <strong>City :</strong> {user.city}</p>
-        <p><FaFileAlt className="icon" /> <strong>Role :</strong> {user.isAmbassador ? 'Guide' : 'Guest'}</p>
+        <p><FaFileAlt className="icon" /> <strong>Role :</strong> {user.isAmbassador ? 'Ambassador' : 'Guest'}</p>
         <p><FaLanguage className="icon" /> <strong>Languages:</strong> {user.languages.join(', ')}</p>
         <p><FaPhone className="icon" /> <strong>Phone :</strong> {user.phone}</p>
         <p><FaIdCard className="icon" /> <strong>Description:</strong> {user.desc}</p>
@@ -169,6 +168,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
     phone: user.phone || '',
     desc: user.desc || '',
     accountNumber: user.accountNumber || '',
+    paymentMethod: user.paymentMethod || '',
     location: user.location || '',
     imgRecto: user.imgRecto || '',
     imgVerso: user.imgVerso || '',
@@ -197,7 +197,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
     const { name, files } = e.target;
     setFiles((prev) => ({
       ...prev,
-      [name]: files[0],
+      [name]: files[0], // Store the file
     }));
   };
 
@@ -218,20 +218,30 @@ const ProfileEdit = ({ user, onUpdate }) => {
     e.preventDefault();
 
     try {
-      const imgRectoUrl = files.imgRecto ? await upload(files.imgRecto) : formData.imgRecto;
-      const imgVersoUrl = files.imgVerso ? await upload(files.imgVerso) : formData.imgVerso;
-      const imgPassportUrl = files.imgPassport ? await upload(files.imgPassport) : formData.imgPassport;
+      const uploadFile = async (file) => {
+        if (!file) return null;
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await newRequest.post("/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        return response.data.url;
+      };
 
-      const updatedFormData = {
+      const imgRectoUrl = files.imgRecto ? await uploadFile(files.imgRecto) : formData.imgRecto;
+      const imgVersoUrl = files.imgVerso ? await uploadFile(files.imgVerso) : formData.imgVerso;
+      const imgPassportUrl = files.imgPassport ? await uploadFile(files.imgPassport) : formData.imgPassport;
+
+      const updatedData = {
         ...formData,
         imgRecto: imgRectoUrl,
         imgVerso: imgVersoUrl,
         imgPassport: imgPassportUrl,
       };
 
-      await onUpdate(updatedFormData);
+      await onUpdate(updatedData);
     } catch (err) {
-      toast.error('Failed to update profile.');
+      toast.error("Failed to update profile.");
     }
   };
 
@@ -326,36 +336,59 @@ const ProfileEdit = ({ user, onUpdate }) => {
         </Form.Group>
       </Row>
 
+      {/* Payment Method Selection - First */}
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6">
+          <Form.Label>
+            <FaCreditCard /> Select Payment Method
+          </Form.Label>
+          <Form.Select
+              name="paymentMethod"
+              value={formData.paymentMethod}
+              onChange={handleChange}
+              required
+          >
+            <option value="">Select Payment Method</option>
+            <option value="paypal">PayPal</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="bank_transfer">Bank Transfer</option>
+          </Form.Select>
+        </Form.Group>
+      </Row>
+
+      {/* Account Number Input - After */}
       <Row className="mb-3">
         <Form.Group as={Col} md="6">
           {user.isAmbassador ? (
-            <>
-              <Form.Label> <FaCreditCard className="icon" />     PayPal Card Number</Form.Label>
-              <Form.Control
-                type="text"
-                name="accountNumber"
-                value={formData.accountNumber}
-                onChange={handleChange}
-                placeholder="PayPal Card Number"
-                required
-              />
-            </>
+              <>
+                <Form.Label>
+                  <FaCreditCard className="icon" /> Account Card Number
+                </Form.Label>
+                <Form.Control
+                    type="text"
+                    name="accountNumber"
+                    value={formData.accountNumber}
+                    onChange={handleChange}
+                    placeholder="PayPal Card Number"
+                    required
+                />
+              </>
           ) : (
-            <>
-              <Form.Label><FaCreditCard /> Bank Card Number</Form.Label>
-              <Form.Control
-                type="text"
-                name="accountNumber"
-                value={formData.accountNumber}
-                onChange={handleChange}
-                placeholder="Bank Card Number"
-                required
-              />
-            </>
+              <>
+                <Form.Label>
+                  <FaCreditCard /> Bank Card Number
+                </Form.Label>
+                <Form.Control
+                    type="text"
+                    name="accountNumber"
+                    value={formData.accountNumber}
+                    onChange={handleChange}
+                    placeholder="Bank Card Number"
+                    required
+                />
+              </>
           )}
         </Form.Group>
-
-
       </Row>
 
       <Row className="mb-3">
@@ -399,120 +432,55 @@ const ProfileEdit = ({ user, onUpdate }) => {
   );
 };
 
-const languageOptions = [
-  { value: "English", label: "🇬🇧 English" },
-  { value: "French", label: "🇫🇷 French" },
-  { value: "German", label: "🇩🇪 German" },
-  { value: "Italian", label: "🇮🇹 Italian"},
-  { value: "Spanish", label: "🇪🇸 Spanish"},
-  { value: "Chinese", label: "🇨🇳 Chinese"},
-  { value: "Japanese", label: "🇯🇵 Japanese"},
-  { value: "Korean", label: "🇰🇷 Korean" },
-  { value: "Arabic", label: "🇦🇪 Arabic" },
-  { value: "Russian", label: "🇷🇺 Russian" },
-  { value: "Portuguese", label: "🇵🇹 Portuguese"},
-  { value: "Dutch", label: "🇳🇱 Dutch"},
-  { value: "Greek", label: "🇬🇷 Greek"},
-  { value: "Hindi", label: "🇮🇳 Hindi"},
-  { value: "Urdu", label: "🇵🇰 Urdu"},
-  { value: "Turkish", label: "🇹🇷 Turkish"},
-  { value: "Swedish", label: "🇸🇪 Swedish"},
-  { value: "Norwegian", label: "🇳🇴 Norwegian"},
-  { value: "Danish", label: "🇩🇰 Danish"},
-  { value: "Finnish", label: "🇫🇮 Finnish"},
-  { value: "Polish", label: "🇵🇱 Polish"},
-  { value: "Czech", label: "🇨🇿 Czech"},
-  { value: "Slovak", label: "🇸🇰 Slovak"},
-  { value: "Hungarian", label: "🇭🇺 Hungarian"},
-  { value: "Romanian", label: "🇷🇴 Romanian"},
-  { value: "Bulgarian", label: "🇧🇬 Bulgarian"},
-  { value: "Serbian", label: "🇷🇸 Serbian"},
-  { value: "Croatian", label: "🇭🇷 Croatian"},
-  { value: "Slovenian", label: "🇸🇮 Slovenian"},
-  { value: "Albanian", label: "🇦🇱 Albanian"},
-  { value: "Macedonian", label: "🇲🇰 Macedonian"},
-  { value: "Bosnian", label: "🇧🇦 Bosnian"},
-  { value: "Montenegrin", label: "🇲🇪 Montenegrin"},
-  { value: "Kosovar", label: "🇽🇰 Kosovar"},
-  { value: "Georgian", label: "🇬🇪 Georgian"},
-  { value: "Armenian", label: "🇦🇲 Armenian"},
-  { value: "Azerbaijani", label: "🇦🇿 Azerbaijani"},
-  { value: "Kazakh", label: "🇰🇿 Kazakh"},
-  { value: "Uzbek", label: "🇺🇿 Uzbek"},
-  { value: "Turkmen", label: "🇹🇲 Turkmen"},
-  { value: "Kyrgyz", label: "🇰🇬 Kyrgyz"},
-  { value: "Tajik", label: "🇹🇯 Tajik"},
-  { value: "Afghan", label: "🇦🇫 Afghan"},
-  { value: "Pakistani", label: "🇵🇰 Pakistani"},
-  { value: "Indian", label: "🇮🇳 Indian"},
-  { value: "Bangladeshi", label: "🇧🇩 Bangladeshi"},
-  { value: "Nepali", label: "🇳🇵 Nepali"},
-  { value: "Bhutanese", label: "🇧🇹 Bhutanese"},
-  { value: "Sri Lankan", label: "🇱🇰 Sri Lankan"},
-  { value: "Maldivian", label: "🇲🇻 Maldivian"},
-  { value: "American", label: "🇺🇸 American"},
-  { value: "Canadian", label: "🇨🇦 Canadian"},
-  { value: "Mexican", label: "🇲🇽 Mexican"},
-  { value: "Brazilian", label: "🇧🇷 Brazilian"},
-  { value: "Argentinian", label: "🇦🇷 Argentinian"},
-  { value: "Chilean", label: "🇨🇱 Chilean"},
-  { value: "Peruvian", label: "🇵🇪 Peruvian"},
-  { value: "Colombian", label: "🇨🇴 Colombian"},
-  { value: "Venezuelan", label: "🇻🇪 Venezuelan"},
-  { value: "Ecuadorian", label: "🇪🇨 Ecuadorian"},
-  //more
-
-
-  // Add more languages as needed
-
-];
 
 const ProfilePassword = ({ onUpdatePassword }) => {
   const [passwords, setPasswords] = useState({
-    oldPassword: '',
-    newPassword: '',
+    oldPassword: "",
+    newPassword: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords((prev) => ({ ...prev, [name]: value }));
+    setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!passwords.oldPassword || !passwords.newPassword) {
+      toast.error("Both fields are required.");
+      return;
+    }
     await onUpdatePassword(passwords);
   };
 
   return (
-    <form className="profile-password" onSubmit={handleSubmit}>
-      <h2>Change Password</h2>
-      <div className="form-group">
-        <label htmlFor="oldPassword"><FaLock /> Old Password</label>
-        <input
-          name="oldPassword"
-          type="password"
-          className="form-control"
-          value={passwords.oldPassword}
-          onChange={handleChange}
-          placeholder="Current Password"
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="newPassword"><FaLock /> New Password</label>
-        <input
-          name="newPassword"
-          type="password"
-          className="form-control"
-          value={passwords.newPassword}
-          onChange={handleChange}
-          placeholder="New Password"
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary mt-3">Change Password</button>
-      <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={() => setPasswords({ oldPassword: '', newPassword: '' })}>Cancel</button>
-    </form>
+      <form className="profile-password" onSubmit={handleSubmit}>
+        <h2>Change Password</h2>
+        <div className="form-group">
+          <label htmlFor="oldPassword"><FaLock /> Old Password</label>
+          <input
+              name="oldPassword"
+              type="password"
+              className="form-control"
+              value={passwords.oldPassword}
+              onChange={handleChange}
+              placeholder="Current Password"
+              required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="newPassword"><FaLock /> New Password</label>
+          <input
+              name="newPassword"
+              type="password"
+              className="form-control"
+              value={passwords.newPassword}
+              onChange={handleChange}
+              placeholder="New Password"
+              required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary mt-3">Change Password</button>
+      </form>
   );
 };
 
