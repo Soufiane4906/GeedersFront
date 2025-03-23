@@ -1,0 +1,119 @@
+.about-us-page,
+.terms-page,
+.privacy-page {
+  padding-top: 60px;
+  padding-bottom: 30px;
+
+  .sec-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: $title-color;
+    font-family: $title-font;
+  }
+
+  .sec-line {
+    height: 2px;
+    width: 80px;
+    background-color: $theme-color;
+    margin: 0 auto 20px;
+  }
+
+  .sec-text {
+    color: $body-color;
+    margin-bottom: 30px;
+  }
+
+  .terms-section,
+  .privacy-section {
+    margin-bottom: 40px;
+
+    h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: $title-color;
+      font-family: $title-font;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: $body-color;
+      line-height: 1.8;
+    }
+
+    ul {
+      margin-bottom: 20px;
+    }
+  }
+
+  .company-info {
+    background-color: $bg-color1;
+    padding: 25px;
+    border-radius: 10px;
+
+    h4 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: $title-color;
+    }
+
+    p {
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
+  }
+}
+
+@include lg {
+  .about-us-page,
+  .terms-page,
+  .privacy-page {
+    .sec-title {
+      font-size: 36px;
+    }
+  }
+}
+
+@include md {
+  .about-us-page,
+  .terms-page,
+  .privacy-page {
+    padding-top: 40px;
+
+    .sec-title {
+      font-size: 32px;
+    }
+
+    .terms-section,
+    .privacy-section {
+      h3 {
+        font-size: 22px;
+      }
+    }
+  }
+}
+
+@include sm {
+  .about-us-page,
+  .terms-page,
+  .privacy-page {
+    padding-top: 30px;
+
+    .sec-title {
+      font-size: 28px;
+    }
+
+    .terms-section,
+    .privacy-section {
+      h3 {
+        font-size: 20px;
+      }
+    }
+
+    .company-info {
+      padding: 20px;
+    }
+  }
+}

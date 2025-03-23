@@ -552,7 +552,7 @@ const Add = () => {
                         name="shortDesc"
                         className={`form-control ${validationErrors.shortDesc ? 'is-invalid' : ''}`}
                         value={formData.shortDesc}
-                        placeholder="Share a bit about yourself, your expertise, and why travelers should choose you as their guide..."
+                        placeholder="Share a bit about yourself, your expertise, and why travelers should choose you as their ambassadors..."
                         rows="4"
                         onChange={handleChange}
                     ></textarea>

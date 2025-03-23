@@ -1,5 +1,5 @@
 import "./app.css";
-import { createBrowserRouter, RouterProvider ,Outlet} from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import React, { Suspense, lazy } from 'react';
 import Loading from './components/loading/Loading';
 import Navbar from "./components/navbar/Navbar";
@@ -16,7 +16,10 @@ import MyGigs from "./pages/myGigs/MyGigs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
-import Profile from "./pages/profile/profile";
+import Profile from "./pages/profile/Profile.jsx";
+import AboutUs from "./pages/about/AboutUs.jsx";
+import Terms from "./pages/legal/Terms.jsx";
+import Privacy from "./pages/legal/Privacy.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,18 +34,18 @@ function App() {
   const queryClient = new QueryClient();
 
   const Layout = () => (
-    <div className="app">
-      <QueryClientProvider client={queryClient}>
-        {/* < Header /> */}
-        <Navbar />
-        <main>
-          <Suspense fallback={<Loading />}>
-            <Outlet />
-          </Suspense>
-        </main>
-        <ToastContainer position="bottom-right" autoClose={3000} />
-      </QueryClientProvider>
-    </div>
+      <div className="app">
+        <QueryClientProvider client={queryClient}>
+          {/* < Header /> */}
+          <Navbar />
+          <main>
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
+          </main>
+          <ToastContainer position="bottom-right" autoClose={3000} />
+        </QueryClientProvider>
+      </div>
   );
 
   const router = createBrowserRouter([
@@ -79,7 +82,7 @@ function App() {
         {
           path: "/singleOrder/:id",
           element: <SingleOrder />,
-          },
+        },
         {
           path: "/messages",
           element: <Messages />,
@@ -112,7 +115,18 @@ function App() {
           path: "/success",
           element: <Success />,
         },
-
+        {
+          path: "/about",
+          element: <AboutUs />,
+        },
+        {
+          path: "/terms",
+          element: <Terms />,
+        },
+        {
+          path: "/privacy",
+          element: <Privacy />,
+        },
       ],
     },
   ]);

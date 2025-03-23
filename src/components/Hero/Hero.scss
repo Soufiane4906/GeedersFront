@@ -2,7 +2,7 @@
   position: relative;
   background-size: cover;
   background-position: center;
-  min-height: 650px;
+  min-height: 300px;
   display: flex;
   align-items: flex-end;
   padding-bottom: 3rem;
@@ -215,4 +215,67 @@
     width: 100%;
     margin-top: 15px;
   }
+}
+
+// Add these styles to your Hero.scss file
+
+.poi-dropdown-container {
+  .poi-options-container {
+    max-height: 280px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--theme-color, #ff681a);
+      border-radius: 4px;
+    }
+  }
+
+  .poi-option {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 0 5px;
+
+    &:hover {
+      background-color: var(--bg-color1, #fff5f0);
+    }
+  }
+
+  .poi-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--smoke-color, #f7f7f7);
+    padding: 4px;
+  }
+
+  .poi-badge {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--theme-color2, #37d4d9) !important;
+    border-radius: 6px;
+    font-weight: 500;
+
+    img {
+      filter: brightness(0) invert(1);
+    }
+  }
+}
+
+.react-datepicker-popper {
+  z-index: 2;
+  line-height: 0;
 }

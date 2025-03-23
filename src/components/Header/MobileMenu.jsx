@@ -28,7 +28,7 @@ const MobileMenu = () => {
         </button>
         <div className="mobile-logo">
           <a href="index.html">
-            <img src="assets/img/logo.svg" alt="Travolo" />
+            <img src="assets/img/logo.svg" alt="BlaBlaTrip" />
           </a>
         </div>
         <div className="vs-mobile-menu">

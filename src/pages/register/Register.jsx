@@ -331,7 +331,7 @@ function Register() {
                           <label htmlFor="desc">Description</label>
                           <textarea
                               name="desc"
-                              placeholder="Parlez-nous de vous et de votre expérience en tant que guide local"
+                              placeholder="Parlez-nous de vous et de votre expérience en tant qu'un ambassadeur local"
                               value={user.desc}
                               onChange={handleChange}
                               className="form-control"

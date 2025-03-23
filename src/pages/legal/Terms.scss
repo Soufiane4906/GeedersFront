@@ -1,0 +1,120 @@
+.terms-page {
+  padding-top: 60px;
+  padding-bottom: 30px;
+
+  .sec-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--title-color);
+    font-family: var(--title-font);
+  }
+
+  .sec-line {
+    height: 2px;
+    width: 80px;
+    background-color: var(--theme-color);
+    margin: 0 auto 20px;
+  }
+
+  .sec-text {
+    color: var(--body-color);
+    margin-bottom: 30px;
+  }
+
+  .terms-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .terms-section {
+    margin-bottom: 40px;
+
+    h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--title-color);
+      font-family: var(--title-font);
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: var(--body-color);
+      line-height: 1.8;
+    }
+
+    ul.about-list1 {
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      list-style: none;
+      margin-bottom: 20px;
+
+      li {
+        position: relative;
+        padding-left: 25px;
+        margin-bottom: 5px;
+        margin-right: 15px;
+        color: var(--body-color);
+
+        &::before {
+          content: "";
+          width: 6px;
+          height: 6px;
+          outline: 5px solid var(--border-color);
+          background-color: var(--theme-color);
+          border-radius: 50%;
+          position: absolute;
+          left: 5px;
+          top: 10px;
+        }
+      }
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--title-color);
+    }
+  }
+
+  // Responsive Styles
+  @media (max-width: 992px) {
+    .sec-title {
+      font-size: 36px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 40px;
+
+    .sec-title {
+      font-size: 32px;
+    }
+
+    .terms-section {
+      h3 {
+        font-size: 22px;
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding-top: 30px;
+
+    .sec-title {
+      font-size: 28px;
+    }
+
+    .terms-section {
+      h3 {
+        font-size: 20px;
+      }
+
+      ul.about-list1 {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}

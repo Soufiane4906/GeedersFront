@@ -7,14 +7,14 @@ import {
   faCity,
   faCalendarAlt,
   faLanguage,
-  faMapMarkerAlt,
   faSearch,
   faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {topVisitedCities, availableLanguages, pointsOfInterest} from "../../utils/options.js";
-import "./Hero.scss"; // Make sure to create this file with the SCSS styles
+import { topVisitedCities, availableLanguages } from "../../utils/options.js";
+import PointsOfInterestSection from "../PointsOfInterestSection/PointsOfInterestSection"; // Import the new component
+import "./Hero.scss";
 
 // Extract unique countries
 const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();
@@ -28,9 +28,7 @@ const HeroSection = () => {
   const [startDate, endDate] = dateRange;
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [availablePOIs, setAvailablePOIs] = useState([]);
   const [selectedPOIs, setSelectedPOIs] = useState([]);
-  const [showPOIDropdown, setShowPOIDropdown] = useState(false);
   const navigate = useNavigate();
 
   // Handle country change
@@ -48,39 +46,12 @@ const HeroSection = () => {
         .sort();
 
     setCities(filteredCities);
-
-    // Reset available POIs when country changes
-    setAvailablePOIs([]);
   };
 
   // Handle city change
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
     setCity(selectedCity);
-
-    // Update available POIs based on country and city
-    if (country && selectedCity) {
-      // Filter POIs by country and city
-      const filteredPOIs = pointsOfInterest
-          .filter(poi => poi.country === country && poi.city === selectedCity)
-          .map(poi => ({
-            id: poi.id,
-            name: poi.name
-          }));
-
-      setAvailablePOIs(filteredPOIs);
-    }
-  };
-
-  // Toggle POI selection
-  const togglePOI = (poiId) => {
-    setSelectedPOIs(prevSelected => {
-      if (prevSelected.includes(poiId)) {
-        return prevSelected.filter(id => id !== poiId);
-      } else {
-        return [...prevSelected, poiId];
-      }
-    });
   };
 
   // Toggle language selection
@@ -94,12 +65,11 @@ const HeroSection = () => {
     });
   };
 
-  // Close dropdowns when clicking outside
+  // Close language dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!e.target.closest('.dropdown-container')) {
+      if (!e.target.closest('.language-dropdown-container')) {
         setShowLanguageDropdown(false);
-        setShowPOIDropdown(false);
       }
     };
 
@@ -138,7 +108,7 @@ const HeroSection = () => {
   };
 
   return (
-      <section className="hero-layout" style={{ backgroundImage: "url('/img/banner/banner-bg-1.png')" }}>
+      <section className="hero-layout" style={{ backgroundImage: "url('/assets/img/bg/testi-slider-bg1.png')" }}>
         <div className="hero-mask">
           <div className="hero-bottom">
             <div className="container">
@@ -200,82 +170,19 @@ const HeroSection = () => {
                     </div>
                   </div>
 
-                  {/* Points of Interest Dropdown */}
+                  {/* Points of Interest Dropdown - Using our new component */}
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                    <div className="form-group dropdown-container">
-                      <label>
-                        <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" />
-                        Points of Interest
-                      </label>
-                      <div className="position-relative">
-                        <button
-                            type="button"
-                            className="form-control text-start d-flex justify-content-between align-items-center"
-                            onClick={() => setShowPOIDropdown(!showPOIDropdown)}
-                            disabled={!city || availablePOIs.length === 0}
-                        >
-                        <span>
-                          {selectedPOIs.length === 0
-                              ? "Select points of interest"
-                              : `${selectedPOIs.length} POI(s) selected`}
-                        </span>
-                          <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
-                        </button>
-
-                        {showPOIDropdown && availablePOIs.length > 0 && (
-                            <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow" style={{ maxHeight: "200px", overflowY: "auto" }}>
-                              {availablePOIs.map((poi) => (
-                                  <div
-                                      key={poi.id}
-                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
-                                      onClick={() => togglePOI(poi.id)}
-                                      style={{ cursor: "pointer" }}
-                                  >
-                                    <div className="form-check mb-0">
-                                      <input
-                                          type="checkbox"
-                                          className="form-check-input"
-                                          checked={selectedPOIs.includes(poi.id)}
-                                          onChange={() => {}}
-                                          id={`poi-${poi.id}`}
-                                      />
-                                      <label className="form-check-label" htmlFor={`poi-${poi.id}`}>
-                                        {poi.name}
-                                      </label>
-                                    </div>
-                                  </div>
-                              ))}
-                            </div>
-                        )}
-                      </div>
-
-                      {/* Display selected POIs */}
-                      {selectedPOIs.length > 0 && (
-                          <div className="mt-2 d-flex flex-wrap">
-                            {selectedPOIs.map(poiId => {
-                              const poi = availablePOIs.find(p => p.id === poiId);
-                              return poi ? (
-                                  <span
-                                      key={poiId}
-                                      className="badge bg-info me-1 mb-1 d-flex align-items-center"
-                                  >
-                              {poi.name}
-                                    <button
-                                        type="button"
-                                        className="btn-close btn-close-white ms-2"
-                                        onClick={() => togglePOI(poiId)}
-                                    ></button>
-                            </span>
-                              ) : null;
-                            })}
-                          </div>
-                      )}
-                    </div>
+                    <PointsOfInterestSection
+                        selectedPOIs={selectedPOIs}
+                        setSelectedPOIs={setSelectedPOIs}
+                        city={city}
+                        disabled={!city}
+                    />
                   </div>
 
                   {/* Language Selection Dropdown */}
                   <div className="col-lg-6 col-md-6 col-sm-6 col-12">
-                    <div className="form-group dropdown-container">
+                    <div className="form-group language-dropdown-container">
                       <label>
                         <FontAwesomeIcon icon={faLanguage} className="me-2" />
                         Languages

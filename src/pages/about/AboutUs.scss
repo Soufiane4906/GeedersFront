@@ -1,0 +1,238 @@
+.about-us-page {
+  padding-top: 60px;
+  padding-bottom: 30px;
+
+  .sec-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--title-color);
+    font-family: var(--title-font);
+  }
+
+  .sec-line {
+    height: 2px;
+    width: 80px;
+    background-color: var(--theme-color);
+    margin: 0 auto 20px;
+  }
+
+  .about-content {
+    margin-bottom: 40px;
+
+    .title-area {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--title-color);
+    }
+
+    p {
+      color: var(--body-color);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+  }
+
+  .company-info {
+    background-color: var(--bg-color1);
+    padding: 25px;
+    border-radius: 10px;
+
+    h4 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--title-color);
+    }
+
+    p {
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
+  }
+
+  // Image Box Styles
+  .image-box1 {
+    margin: 0 0 40px;
+    position: relative;
+
+    .img1 {
+      border-radius: 25% 0 25% 0;
+    }
+
+    .media-box1,
+    .media-box2 {
+      width: 260px;
+      border-radius: 10px;
+      outline: 15px solid var(--white-color);
+      background-color: var(--theme-color);
+      padding: 45px 40px 45px;
+      position: absolute;
+      right: 0;
+      top: -55px;
+      z-index: 0;
+
+      .media-info {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--white-color);
+        font-family: var(--body-font);
+        margin-bottom: 5px;
+      }
+
+      .media-text {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        color: var(--white-color);
+      }
+    }
+
+    .media-box1 {
+      background-color: var(--theme-color);
+      bottom: unset;
+      right: -5px;
+      top: -55px;
+    }
+
+    .media-box2 {
+      background-color: var(--theme-color2);
+      bottom: -55px;
+      top: unset;
+      right: 125px;
+    }
+  }
+
+  // Contact Box Styles
+  .contact-box {
+    background-color: var(--white-color);
+    border: 1px solid var(--theme-color);
+    border-radius: 10px;
+    margin-top: 30px;
+    padding: 30px 25px;
+    padding-left: 110px;
+    position: relative;
+
+    .contact-box_icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      transition: .5s ease-in-out;
+      background-color: var(--theme-color);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--white-color);
+      position: absolute;
+      left: 30px;
+    }
+
+    .contact-box__title {
+      margin-bottom: 5px;
+    }
+
+    .contact-box__text {
+      margin-bottom: -5px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 2;
+      font-family: var(--body-font);
+      color: var(--title-color);
+    }
+
+    &:hover {
+      .contact-box_icon {
+        background-color: var(--theme-color2);
+      }
+    }
+  }
+
+  // Responsive Styles
+  @media (max-width: 992px) {
+    .sec-title {
+      font-size: 36px;
+    }
+
+    .image-box1 {
+      display: flex;
+      flex-wrap: wrap;
+      margin: {
+        top: 0;
+        bottom: 30px;
+      }
+
+      .media-box1,
+      .media-box2 {
+        width: 45%;
+        padding: 15px;
+        height: fit-content;
+        border: none;
+        text-align: center;
+        margin-top: 20px;
+        position: relative;
+        right: auto;
+        top: auto;
+        bottom: auto;
+
+        .media-info {
+          font-size: 30px;
+        }
+
+        .media-text {
+          font-size: 18px;
+        }
+      }
+
+      .media-box2 {
+        margin-left: 20px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 40px;
+
+    .sec-title {
+      font-size: 32px;
+    }
+
+    .about-content {
+      .title-area {
+        font-size: 24px;
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding-top: 30px;
+
+    .sec-title {
+      font-size: 28px;
+    }
+
+    .about-content {
+      .title-area {
+        font-size: 22px;
+      }
+    }
+
+    .company-info {
+      padding: 20px;
+    }
+
+    .image-box1 {
+      .media-box1,
+      .media-box2 {
+        .media-info {
+          font-size: 24px;
+        }
+
+        .media-text {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
