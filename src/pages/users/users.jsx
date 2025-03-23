@@ -60,7 +60,7 @@ function Users() {
           <div className="right">
             <span className="sortBy">Sort by</span>
             <span className="sortType">
-              {sort === "sales" ? "Best Guide" : "Newest"}
+              {sort === "sales" ? "Best Ambassador" : "Newest"}
             </span>
             <img src="./img/down.png" alt="" onClick={() => setOpen(!open)} />
             {open && (
