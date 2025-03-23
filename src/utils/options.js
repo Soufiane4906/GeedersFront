@@ -123,7 +123,39 @@ export const availableLanguages = [
     { code: "tr", name: "Türkçe" },
     { code: "vi", name: "Tiếng Việt" }
 ];
+// Add this to your options.js file
 
+export const pointsOfInterest = [
+    // Paris, France
+    { id: "eiffel_tower", name: "Eiffel Tower", country: "France", city: "Paris" },
+    { id: "louvre", name: "Louvre Museum", country: "France", city: "Paris" },
+    { id: "notre_dame", name: "Notre Dame Cathedral", country: "France", city: "Paris" },
+    { id: "arc_de_triomphe", name: "Arc de Triomphe", country: "France", city: "Paris" },
+    { id: "montmartre", name: "Montmartre", country: "France", city: "Paris" },
+
+    // London, UK
+    { id: "big_ben", name: "Big Ben", country: "UK", city: "London" },
+    { id: "london_eye", name: "London Eye", country: "UK", city: "London" },
+    { id: "tower_bridge", name: "Tower Bridge", country: "UK", city: "London" },
+    { id: "british_museum", name: "British Museum", country: "UK", city: "London" },
+    { id: "buckingham_palace", name: "Buckingham Palace", country: "UK", city: "London" },
+
+    // New York, USA
+    { id: "times_square", name: "Times Square", country: "USA", city: "New York" },
+    { id: "central_park", name: "Central Park", country: "USA", city: "New York" },
+    { id: "statue_liberty", name: "Statue of Liberty", country: "USA", city: "New York" },
+    { id: "empire_state", name: "Empire State Building", country: "USA", city: "New York" },
+    { id: "brooklyn_bridge", name: "Brooklyn Bridge", country: "USA", city: "New York" },
+
+    // Rome, Italy
+    { id: "colosseum", name: "Colosseum", country: "Italy", city: "Rome" },
+    { id: "vatican", name: "Vatican City", country: "Italy", city: "Rome" },
+    { id: "trevi_fountain", name: "Trevi Fountain", country: "Italy", city: "Rome" },
+    { id: "pantheon", name: "Pantheon", country: "Italy", city: "Rome" },
+    { id: "spanish_steps", name: "Spanish Steps", country: "Italy", city: "Rome" },
+
+    // Add more POIs for other cities as needed
+];
 export const languageOptions = [
     { value: "English", label: "🇬🇧 English" },
     { value: "French", label: "🇫🇷 French" },

@@ -1,94 +1,483 @@
+/* Theme Variables */
+:root {
+  --theme-color: #ff681a;
+  --theme-color2: #37d4d9;
+  --secondary-color: #111330;
+  --title-color: #1c1c1c;
+  --body-color: #505050;
+  --smoke-color: #f7f7f7;
+  --black-color: #000000;
+  --white-color: #ffffff;
+  --yellow-color: #fec624;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --border-color: #ffccb1;
+  --bg-color1: #fff5f0;
+  --bg-color2: #f5f5f5;
+}
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap');
+
+.single-order-container {
+  font-family: 'Jost', sans-serif;
+  max-width: 1220px;
+  margin: 2rem auto;
+  padding: 0 30px;
+}
+
 .single-order {
-  .header {
-    text-align: center;
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
-  }
 
-  .contact-info {
-    p {
-      font-size: 1rem;
-      color: #333;
-      margin: 0.5rem 0;
+    h1 {
+      color: var(--title-color);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .actions {
       display: flex;
-      align-items: center;
-      font-weight: bold;
+      gap: 1rem;
 
-      svg {
-        margin-right: 0.5rem;
-        color: #007bff;
+      button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+
+        &.btn-pdf {
+          background-color: var(--theme-color);
+          color: var(--white-color);
+
+          &:hover {
+            background-color: darken(#ff681a, 10%);
+          }
+        }
+
+        &.btn-back {
+          background-color: var(--secondary-color);
+          color: var(--white-color);
+
+          &:hover {
+            background-color: lighten(#111330, 10%);
+          }
+        }
       }
     }
   }
 
   .order-details {
-    .card {
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+    background-color: var(--white-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 3rem;
 
-      &:hover {
-        transform: scale(1.02);
-      }
+    .order-banner {
+      background-color: var(--theme-color);
+      color: var(--white-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
 
-      .card-header {
-        background-color: #007bff;
-        color: #fff;
-        padding: 1rem;
-        border-bottom: 1px solid #007bff;
-      }
-
-      .card-body {
-        padding: 2rem;
-      }
-
-      .table {
-        margin-bottom: 0;
-        th {
-          background-color: #f1f1f1;
+      .logo-area {
+        .company-logo {
+          font-size: 1.8rem;
+          font-weight: 700;
         }
-        td, th {
-          text-align: left;
+      }
+
+      .order-id {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+
+        span {
+          font-size: 0.85rem;
+          display: block;
+        }
+
+        strong {
+          font-size: 1.2rem;
+          font-weight: 600;
         }
       }
     }
 
-    .card:nth-of-type(2) {
-      .card-header {
-        background-color: #28a745;
-      }
-    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
 
-    .text-center {
-      margin-top: 2rem;
+      .info-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-      .btn {
-        &.btn-primary {
-          background-color: #007bff;
-          border-color: #007bff;
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
 
-          &:hover {
-            background-color: #0056b3;
-            border-color: #004494;
+        .card-header {
+          padding: 1.25rem 1.5rem;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+          h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--title-color);
+            text-align: center;
           }
         }
 
-        &.btn-secondary {
-          background-color: #6c757d;
-          border-color: #6c757d;
+        .card-body {
+          padding: 1.5rem;
+        }
 
-          &:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
+        &.order-info {
+          .card-header {
+            background-color: var(--bg-color1);
+            color: var(--theme-color);
+            border-bottom: 2px solid var(--theme-color);
           }
+
+          .info-grid {
+            display: grid;
+            gap: 1.25rem;
+
+            .info-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-bottom: 1px dashed var(--border-color);
+              padding-bottom: 0.75rem;
+
+              &:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+              }
+
+              .info-label {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--body-color);
+                font-weight: 500;
+
+                .icon {
+                  color: var(--theme-color);
+                }
+              }
+
+              .info-value {
+                font-weight: 600;
+                color: var(--title-color);
+
+                &.price {
+                  color: var(--theme-color);
+                  font-size: 1.1rem;
+                }
+
+                &.status {
+                  padding: 0.35rem 0.75rem;
+                  border-radius: 4px;
+                  font-size: 0.85rem;
+
+                  &.completed {
+                    background-color: rgba(40, 167, 69, 0.1);
+                    color: var(--success-color);
+                  }
+
+                  &.pending {
+                    background-color: rgba(254, 198, 36, 0.1);
+                    color: var(--yellow-color);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        &.ambassador-info {
+          .card-header {
+            background-color: var(--secondary-color);
+            color: var(--white-color);
+          }
+
+          .ambassador-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .ambassador-img {
+              position: relative;
+              margin-bottom: 1.5rem;
+
+              .profile-photo {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--theme-color2);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+              }
+
+              .verification-badge {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 0.85rem;
+
+                &.verified {
+                  background-color: var(--theme-color2);
+                  color: var(--white-color);
+                }
+
+                &.not-verified {
+                  background-color: var(--error-color);
+                  color: var(--white-color);
+                }
+              }
+            }
+
+            .ambassador-details {
+              text-align: center;
+              width: 100%;
+
+              .ambassador-name {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: var(--title-color);
+                margin-bottom: 1rem;
+              }
+
+              .contact-info {
+                margin-bottom: 1.5rem;
+
+                p {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 0.5rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--body-color);
+
+                  .icon {
+                    color: var(--theme-color2);
+                  }
+                }
+              }
+
+              .ambassador-bio {
+                background-color: var(--bg-color2);
+                padding: 1.25rem;
+                border-radius: 8px;
+
+                h4 {
+                  font-size: 1.1rem;
+                  color: var(--title-color);
+                  margin-top: 0;
+                  margin-bottom: 0.75rem;
+                }
+
+                p {
+                  color: var(--body-color);
+                  margin: 0;
+                  line-height: 1.6;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .footer-note {
+      text-align: center;
+      padding: 1.5rem 2rem;
+      background-color: var(--bg-color1);
+      border-top: 1px solid var(--border-color);
+
+      p {
+        margin: 0;
+
+        &:first-child {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--theme-color);
+        }
+
+        &.small {
+          font-size: 0.85rem;
+          color: var(--body-color);
+          margin-top: 0.5rem;
         }
       }
     }
   }
 }
 
+/* Loading & Error States */
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+
+  p {
+    margin-top: 1rem;
+    color: var(--body-color);
+  }
+}
+
+.loading-container {
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 104, 26, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--theme-color);
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+}
+
+.error-container {
+  .error-icon {
+    font-size: 2.5rem;
+    color: var(--error-color);
+  }
+
+  .btn-retry {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background-color: var(--theme-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken(#ff681a, 10%);
+    }
+  }
+}
+
+/* PDF Specific Styles */
+.generating-pdf {
+  .order-banner {
+    background-color: var(--theme-color) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .card-header {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .footer-note {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .info-value.status {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .single-order {
+    .order-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .actions {
+        width: 100%;
+
+        button {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    }
+
+    .order-details {
+      .order-banner {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
+
+/* Print Styles */
 @media print {
-  .pdf-button {
-    display: none;
+  .single-order-container {
+    margin: 0;
+    padding: 0;
+  }
+
+  .single-order {
+    .order-header {
+      display: none;
+    }
+
+    .order-details {
+      box-shadow: none;
+      margin: 0;
+
+      .order-banner {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .content-grid {
+        display: block;
+
+        .info-card {
+          margin-bottom: 2rem;
+          box-shadow: none;
+          page-break-inside: avoid;
+
+          &:hover {
+            transform: none;
+          }
+        }
+      }
+    }
   }
 }
-
