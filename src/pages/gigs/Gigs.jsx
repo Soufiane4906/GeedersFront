@@ -6,7 +6,6 @@ import newRequest from "../../utils/newRequest";
 import { useLocation } from "react-router-dom";
 import { format, parseISO } from 'date-fns';
 import Loading from "../../components/loading/Loading";
-import InteractiveMap from "../../components/InteractiveMap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,9 +16,12 @@ import {
   faLanguage,
   faMapMarkerAlt,
   faFilter,
-  faSearch
+  faSearch,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
-import { topVisitedCities, availableLanguages, pointsOfInterest } from "../../utils/options.js";
+import { availableLanguages } from "../../utils/options.js";
+
+
 
 const formatDate = (dateString) => {
   const parsedDate = parseISO(dateString);
@@ -63,40 +65,74 @@ function Gigs() {
       poiParam ? poiParam.split(',') : []
   );
   const [showPOIDropdown, setShowPOIDropdown] = useState(false);
-  const [availablePOIs, setAvailablePOIs] = useState([]);
 
-  // Get all unique countries from topVisitedCities
-  const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();
+  // New POI options with icons - moved from PointsOfInterestSection
+  const pointsOfInterestOptions = [
+    { id: "business", name: "Business", icon: "./img/icons8-b2b-50.png" },
+    { id: "administration", name: "Administration", icon: "./img/icons8-administration.png" },
+    { id: "museum", name: "Museum", icon: "./img/icons8-museum.png" },
+    { id: "beach", name: "Beach", icon: "./img/icons8-beach.png" },
+    { id: "nightclub", name: "Night Club", icon: "./img/icons8-night-club.png" },
+    { id: "park", name: "Park", icon: "./img/icons8-park.png" },
+    { id: "shoppingmall", name: "Shopping Mall", icon: "./img/icons8-shopping-mall.png" },
+    { id: "theatre", name: "Theatre", icon: "./img/icons8-theatre.png" },
+    { id: "amusementpark", name: "Amusement Park", icon: "./img/icons8-amusement-park.png" },
+    { id: "restaurant", name: "Restaurant", icon: "./img/icons8-restaurant.png" },
+    { id: "hiking", name: "Hiking", icon: "./img/icons8-hiking.png" },
+  ];
+
+  // Get all unique countries from topVisitedCities - Replaced with direct API call
+  const [countries, setCountries] = useState([]);
+
+  // Fetch countries
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const res = await newRequest.get('/gigs/countries');
+        const uniqueCountries = [...new Set(res.data.map(item => item))].sort();
+        setCountries(uniqueCountries);
+      } catch (err) {
+        console.error("Error fetching countries:", err);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   // Update cities list when country changes
   useEffect(() => {
     if (country) {
-      const filteredCities = topVisitedCities
-          .filter(item => item.country === country)
-          .map(item => item.city)
-          .sort();
+      const fetchCities = async () => {
+        try {
+          const res = await newRequest.get(`/gigs/cities?country=${country}`);
+          setCities(res.data.sort());
+        } catch (err) {
+          console.error("Error fetching cities:", err);
+        }
+      };
 
-      setCities(filteredCities);
+      fetchCities();
     } else {
       setCities([]);
     }
   }, [country]);
 
-  // Update POI list when country and city are selected
+  // Close POI dropdown when clicking outside
   useEffect(() => {
-    if (country && city) {
-      const filteredPOIs = pointsOfInterest
-          .filter(poi => poi.country === country && poi.city === city)
-          .map(poi => ({
-            id: poi.id,
-            name: poi.name
-          }));
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.poi-dropdown-container')) {
+        setShowPOIDropdown(false);
+      }
+      if (!e.target.closest('.language-dropdown-container')) {
+        setShowLanguageDropdown(false);
+      }
+    };
 
-      setAvailablePOIs(filteredPOIs);
-    } else {
-      setAvailablePOIs([]);
-    }
-  }, [country, city]);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["gigs", sort, country, city, startDateParam, endDateParam, languagesParam, poiParam],
@@ -118,14 +154,6 @@ function Gigs() {
       return newRequest.get(queryString).then((res) => res.data);
     },
   });
-
-  const locations = data ? data.map(gig => ({
-    _id: gig._id,
-    title: gig.title,
-    latitude: gig.latitude,
-    longitude: gig.longitude,
-    description: gig.desc,
-  })) : [];
 
   const reSort = (type) => {
     setSort(type);
@@ -303,8 +331,8 @@ function Gigs() {
                 </div>
 
                 <div className="filter-row">
-                  {/* Points of Interest Dropdown */}
-                  <div className="filter-item">
+                  {/* Points of Interest Selection - Using structure from PointsOfInterestSection */}
+                  <div className="filter-item poi-dropdown-container">
                     <label>
                       <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" />
                       Points of Interest
@@ -314,25 +342,25 @@ function Gigs() {
                           type="button"
                           className="form-control text-start d-flex justify-content-between align-items-center"
                           onClick={() => setShowPOIDropdown(!showPOIDropdown)}
-                          disabled={!city || availablePOIs.length === 0}
+                          disabled={!city}
                       >
                     <span>
                       {selectedPOIs.length === 0
                           ? "Select points of interest"
                           : `${selectedPOIs.length} POI(s) selected`}
                     </span>
-                        <span className="dropdown-toggle"></span>
+                        <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
                       </button>
 
-                      {showPOIDropdown && availablePOIs.length > 0 && (
-                          <div className="dropdown-menu show">
-                            {availablePOIs.map((poi) => (
+                      {showPOIDropdown && (
+                          <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow poi-options-container">
+                            {pointsOfInterestOptions.map((poi) => (
                                 <div
                                     key={poi.id}
-                                    className="dropdown-item"
+                                    className="d-flex align-items-center px-3 py-2 poi-option"
                                     onClick={() => togglePOI(poi.id)}
                                 >
-                                  <div className="form-check">
+                                  <div className="form-check mb-0 d-flex align-items-center">
                                     <input
                                         type="checkbox"
                                         className="form-check-input"
@@ -340,6 +368,9 @@ function Gigs() {
                                         onChange={() => {}}
                                         id={`poi-${poi.id}`}
                                     />
+                                    <div className="poi-icon-container mx-2">
+                                      <img src={poi.icon} alt={poi.name} width="24" height="24" />
+                                    </div>
                                     <label className="form-check-label" htmlFor={`poi-${poi.id}`}>
                                       {poi.name}
                                     </label>
@@ -352,17 +383,21 @@ function Gigs() {
 
                     {/* Display selected POIs */}
                     {selectedPOIs.length > 0 && (
-                        <div className="selected-items">
+                        <div className="mt-2 d-flex flex-wrap">
                           {selectedPOIs.map(poiId => {
-                            const poi = availablePOIs.find(p => p.id === poiId);
+                            const poi = pointsOfInterestOptions.find(p => p.id === poiId);
                             return poi ? (
-                                <span key={poiId} className="selected-badge">
-                          {poi.name}
+                                <span
+                                    key={poiId}
+                                    className="badge bg-info me-1 mb-1 d-flex align-items-center poi-badge"
+                                >
+                          <img src={poi.icon} alt={poi.name} width="16" height="16" className="me-1" />
+                                  {poi.name}
                                   <button
                                       type="button"
-                                      className="badge-close"
+                                      className="btn-close btn-close-white ms-2"
                                       onClick={() => togglePOI(poiId)}
-                                  >×</button>
+                                  ></button>
                         </span>
                             ) : null;
                           })}
@@ -371,7 +406,7 @@ function Gigs() {
                   </div>
 
                   {/* Language Selection Dropdown */}
-                  <div className="filter-item">
+                  <div className="filter-item language-dropdown-container">
                     <label>
                       <FontAwesomeIcon icon={faLanguage} className="me-2" />
                       Languages
@@ -387,18 +422,18 @@ function Gigs() {
                           ? "Select languages"
                           : `${selectedLanguages.length} language(s) selected`}
                     </span>
-                        <span className="dropdown-toggle"></span>
+                        <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
                       </button>
 
                       {showLanguageDropdown && (
-                          <div className="dropdown-menu show">
+                          <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow language-options-container">
                             {availableLanguages.map((lang) => (
                                 <div
                                     key={lang.code}
-                                    className="dropdown-item"
+                                    className="d-flex align-items-center px-3 py-2 language-option"
                                     onClick={() => toggleLanguage(lang.code)}
                                 >
-                                  <div className="form-check">
+                                  <div className="form-check mb-0 d-flex align-items-center">
                                     <input
                                         type="checkbox"
                                         className="form-check-input"
@@ -418,17 +453,20 @@ function Gigs() {
 
                     {/* Display selected languages */}
                     {selectedLanguages.length > 0 && (
-                        <div className="selected-items">
+                        <div className="mt-2 d-flex flex-wrap">
                           {selectedLanguages.map(code => {
                             const lang = availableLanguages.find(l => l.code === code);
                             return lang ? (
-                                <span key={code} className="selected-badge lang-badge">
+                                <span
+                                    key={code}
+                                    className="badge bg-info me-1 mb-1 d-flex align-items-center language-badge"
+                                >
                           {lang.name}
                                   <button
                                       type="button"
-                                      className="badge-close"
+                                      className="btn-close btn-close-white ms-2"
                                       onClick={() => toggleLanguage(code)}
-                                  >×</button>
+                                  ></button>
                         </span>
                             ) : null;
                           })}
@@ -478,7 +516,7 @@ function Gigs() {
                 <p>{noResultsMessage}</p>
             )}
           </div>
-          {data && data.length > 0 && <InteractiveMap locations={locations} />}
+          {/* Removed the InteractiveMap component */}
         </div>
       </div>
   );
