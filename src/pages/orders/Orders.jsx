@@ -15,6 +15,8 @@ const Orders = () => {
     queryFn: () => newRequest.get(`/orders`).then((res) => res.data),
   });
 
+  console.log(data);
+
   const handleContact = async (order) => {
     const AmbassadorId = order.AmbassadorId;
     const GuestId = order.GuestId;

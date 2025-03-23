@@ -1,4 +1,3 @@
-// WysiwygEditor.jsx - Create this as a new component
 import React, { useState, useRef } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,10 +10,26 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
     const editorRef = useRef(null);
     const [activeStyles, setActiveStyles] = useState([]);
 
+    const saveSelection = () => {
+        let sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            return sel.getRangeAt(0);
+        }
+        return null;
+    };
+
+    const restoreSelection = (range) => {
+        let sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    };
+
     const execCommand = (command, value = null) => {
+        const range = saveSelection(); // Sauvegarde la position du curseur
         document.execCommand(command, false, value);
         updateActiveStyles();
         saveContent();
+        if (range) restoreSelection(range); // Restaure la position du curseur après l'édition
     };
 
     const updateActiveStyles = () => {
@@ -32,7 +47,7 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
 
     const saveContent = () => {
         if (editorRef.current) {
-            onChange({ target: { name: 'content', value: editorRef.current.innerHTML } });
+            onChange({ target: { name: 'desc', value: editorRef.current.innerHTML } });
         }
     };
 
@@ -41,113 +56,37 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
         saveContent();
     };
 
-    const insertLink = () => {
-        const url = prompt('Enter URL:');
-        if (url) {
-            execCommand('createLink', url);
-        }
-    };
-
-    const insertImage = () => {
-        const url = prompt('Enter image URL:');
-        if (url) {
-            execCommand('insertImage', url);
-        }
-    };
-
-    const toggleHeading = () => {
-        const selection = window.getSelection();
-        const range = selection.getRangeAt(0);
-        const selectedText = range.toString();
-
-        if (selectedText) {
-            if (document.queryCommandState('formatBlock') && document.queryCommandValue('formatBlock') === 'h3') {
-                execCommand('formatBlock', 'p');
-            } else {
-                execCommand('formatBlock', 'h3');
-            }
-        }
+    const handleInput = () => {
+        saveContent();
     };
 
     return (
         <div className="wysiwyg-editor">
             <div className="editor-toolbar">
-                <button
-                    type="button"
-                    className={activeStyles.includes('bold') ? 'active' : ''}
-                    onClick={() => execCommand('bold')}
-                >
+                <button type="button" className={activeStyles.includes('bold') ? 'active' : ''} onClick={() => execCommand('bold')}>
                     <FontAwesomeIcon icon={faBold} />
                 </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('italic') ? 'active' : ''}
-                    onClick={() => execCommand('italic')}
-                >
+                <button type="button" className={activeStyles.includes('italic') ? 'active' : ''} onClick={() => execCommand('italic')}>
                     <FontAwesomeIcon icon={faItalic} />
                 </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('underline') ? 'active' : ''}
-                    onClick={() => execCommand('underline')}
-                >
+                <button type="button" className={activeStyles.includes('underline') ? 'active' : ''} onClick={() => execCommand('underline')}>
                     <FontAwesomeIcon icon={faUnderline} />
                 </button>
-                <button
-                    type="button"
-                    onClick={toggleHeading}
-                >
-                    <FontAwesomeIcon icon={faHeading} />
-                </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('ul') ? 'active' : ''}
-                    onClick={() => execCommand('insertUnorderedList')}
-                >
+                <button type="button" className={activeStyles.includes('ul') ? 'active' : ''} onClick={() => execCommand('insertUnorderedList')}>
                     <FontAwesomeIcon icon={faListUl} />
                 </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('ol') ? 'active' : ''}
-                    onClick={() => execCommand('insertOrderedList')}
-                >
+                <button type="button" className={activeStyles.includes('ol') ? 'active' : ''} onClick={() => execCommand('insertOrderedList')}>
                     <FontAwesomeIcon icon={faListOl} />
-                </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('left') ? 'active' : ''}
-                    onClick={() => execCommand('justifyLeft')}
-                >
-                    <FontAwesomeIcon icon={faAlignLeft} />
-                </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('center') ? 'active' : ''}
-                    onClick={() => execCommand('justifyCenter')}
-                >
-                    <FontAwesomeIcon icon={faAlignCenter} />
-                </button>
-                <button
-                    type="button"
-                    className={activeStyles.includes('right') ? 'active' : ''}
-                    onClick={() => execCommand('justifyRight')}
-                >
-                    <FontAwesomeIcon icon={faAlignRight} />
-                </button>
-                <button type="button" onClick={insertLink}>
-                    <FontAwesomeIcon icon={faLink} />
-                </button>
-                <button type="button" onClick={insertImage}>
-                    <FontAwesomeIcon icon={faImage} />
                 </button>
             </div>
             <div
                 ref={editorRef}
                 className="editor-content"
                 contentEditable
-                dangerouslySetInnerHTML={{ __html: value }}
+                suppressContentEditableWarning={true}
+                onInput={handleInput}
                 onKeyUp={handleKeyUp}
-                onBlur={saveContent}
+                dangerouslySetInnerHTML={{ __html: value }}
                 data-placeholder={placeholder}
             ></div>
         </div>

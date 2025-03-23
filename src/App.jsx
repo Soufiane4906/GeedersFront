@@ -21,6 +21,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 //botstrap
+import './toastStyles.scss';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SingleOrder from "./pages/singleorder/SingleOrder";
@@ -38,7 +40,7 @@ function App() {
             <Outlet />
           </Suspense>
         </main>
-        <ToastContainer />
+        <ToastContainer position="bottom-right" autoClose={3000} />
       </QueryClientProvider>
     </div>
   );

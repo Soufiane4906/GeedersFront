@@ -316,31 +316,6 @@ const Add = () => {
                     )}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="shortDesc">
-                      <FontAwesomeIcon icon={faInfoCircle} className="icon" />
-                      Short Description about yourself <span className="required-star">*</span>
-                    </label>
-                    {/* Replace textarea with WYSIWYG editor */}
-                    <WysiwygEditor
-                        value={formData.shortDesc}
-                        onChange={(e) => {
-                          setFormData(prev => ({
-                            ...prev,
-                            shortDesc: e.target.value
-                          }));
-                          if (e.target.value) {
-                            setValidationErrors(prev => ({ ...prev, shortDesc: "" }));
-                          }
-                        }}
-                        placeholder="Share a bit about yourself, your expertise, and why travelers should choose you as their guide..."
-                    />
-                    {validationErrors.shortDesc && (
-                        <div className="error-message">
-                          <FontAwesomeIcon icon={faExclamationTriangle} /> {validationErrors.shortDesc}
-                        </div>
-                    )}
-                  </div>
                   <div className="button-group">
                     <button className="btn next-btn" onClick={nextStep}>
                       Next <FontAwesomeIcon icon={faCheck} className="ms-2" />

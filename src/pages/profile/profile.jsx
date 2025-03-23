@@ -52,9 +52,8 @@ const Profile = () => {
   const handleUpdatePassword = async (passwords) => {
     try {
       await newRequest.put(`/users/${currentUser._id}/update-password`, passwords);
-      toast.success('Password updated successfully!');
     } catch (err) {
-      toast.error('Failed to update password.');
+      toast.error(err.response?.data || "Failed to update password.");
     }
   };
 
@@ -279,25 +278,7 @@ const ProfileEdit = ({ user, onUpdate }) => {
             required
           />
         </Form.Group>
-        <Form.Group>
-          <Form.Label>Photo de profil</Form.Label>
-          <Form.Control type="file" name="img" onChange={handleFileChange} />
-        </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Carte d'identité Recto</Form.Label>
-          <Form.Control type="file" name="imgRecto" onChange={handleFileChange} />
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Carte d'identité Verso</Form.Label>
-          <Form.Control type="file" name="imgVerso" onChange={handleFileChange} />
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Passeport</Form.Label>
-          <Form.Control type="file" name="imgPassport" onChange={handleFileChange} />
-        </Form.Group>
         <Form.Group as={Col} md="6">
           <Form.Label><FaFileAlt /> Languages</Form.Label>
           <Select
@@ -454,21 +435,28 @@ const ProfilePassword = ({ onUpdatePassword }) => {
       toast.error("Both fields are required.");
       return;
     }
-    await onUpdatePassword(passwords);
+
+    try {
+      await onUpdatePassword(passwords);
+      toast.success("Password updated successfully!");
+      setPasswords({ oldPassword: "", newPassword: "" }); // Réinitialise les champs
+    } catch (err) {
+      toast.error(err.response?.data || "Failed to update password.");
+    }
   };
 
   return (
       <form className="profile-password" onSubmit={handleSubmit}>
         <h2>Change Password</h2>
         <div className="form-group">
-          <label htmlFor="oldPassword"><FaLock /> Old Password</label>
+          <label htmlFor="oldPassword"><FaLock /> Current Password</label>
           <input
               name="oldPassword"
               type="password"
               className="form-control"
               value={passwords.oldPassword}
               onChange={handleChange}
-              placeholder="Current Password"
+              placeholder="Enter current password"
               required
           />
         </div>
@@ -480,11 +468,11 @@ const ProfilePassword = ({ onUpdatePassword }) => {
               className="form-control"
               value={passwords.newPassword}
               onChange={handleChange}
-              placeholder="New Password"
+              placeholder="Enter new password"
               required
           />
         </div>
-        <button type="submit" className="btn btn-primary mt-3">Change Password</button>
+        <button type="submit" className="btn btn-primary mt-3">Update Password</button>
       </form>
   );
 };
