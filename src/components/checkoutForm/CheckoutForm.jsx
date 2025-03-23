@@ -60,7 +60,7 @@ const CheckoutForm = () => {
       elements,
       confirmParams: {
        // return_url: "https://BlaBlaTrip.com/success",
-        return_url: "http://localhost:5173/success",
+        return_url: "https://www.blablatrip.com/success",
       },
     });
 
