@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background: var(--theme-color, #ff681a);
+  background:#e15810;
   padding-inline: 1rem;
   transition: all 0.3s ease;
 
@@ -25,15 +25,23 @@
   .logo {
     font-size: 32px;
     font-weight: bold;
-    width: 22%;
+    background: white;
+    margin-left: 4rem;
+
+    border-radius: 20px 20px 20px 5px; /* Top-left, top-right, bottom-right, bottom-left */
 
     .link {
       text-decoration: none;
     }
 
     img {
-      max-height: 70px;
+      max-height: 87px;
       transition: transform 0.3s ease;
+      background: white;
+      padding: 4px;
+      font-size: 32px;
+      font-weight: 700;
+      border-radius: 20px 20px 20px 5px; /* Top-left, top-right, bottom-right, bottom-left */
 
       &:hover {
         transform: scale(1.05);

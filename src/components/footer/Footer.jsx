@@ -50,7 +50,6 @@ const Footer = () => {
                     <div className="footer-logo">
                       <Link to="/"><BlaBlaTripLogo /></Link>
                     </div>
-                    <p className="footer-text">Curabitur aliquet quam id dui bandit posuere blandit.</p>
                     <div className="social-style1">
                       <a href="#"><i className="fab fa-facebook-f"></i></a>
                       <a href="#"><i className="fab fa-instagram"></i></a>
