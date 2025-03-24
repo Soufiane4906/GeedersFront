@@ -1,219 +1,444 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import newRequest from '../../../utils/newRequest.js';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import newRequest from "../../../utils/newRequest";
+import "./AdminCountries.scss";
 
 const AdminCountries = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [countries, setCountries] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [cities, setCities] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('all'); // all, guests, ambassadors, admins
-    const [searchQuery, setSearchQuery] = useState('');
+
+    // Form states
+    const [countryName, setCountryName] = useState("");
+    const [cityName, setCityName] = useState("");
+    const [touristPlaceName, setTouristPlaceName] = useState("");
+    const [touristPlaceDesc, setTouristPlaceDesc] = useState("");
+    const [selectedCity, setSelectedCity] = useState(null);
+
+    // Edit states
+    const [editMode, setEditMode] = useState({
+        city: false,
+        touristPlace: false
+    });
+    const [editingCityId, setEditingCityId] = useState(null);
+    const [editingTouristPlaceId, setEditingTouristPlaceId] = useState(null);
+
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-        if (!currentUser || !currentUser.isAdmin) {
-            navigate("/login");
-            return;
-        }
-
-        fetchUsers();
-    }, [navigate]);
-
-    const fetchUsers = async () => {
+    // Fetch all countries
+    const fetchCountries = async () => {
+        setIsLoading(true);
         try {
-            setLoading(true);
-            const response = await newRequest.get("/adminUsers/users");
-            setUsers(response.data);
-            setLoading(false);
+            const response = await newRequest.get("/countries");
+            setCountries(response.data);
         } catch (err) {
-            console.error("Error fetching users:", err);
-            setError("Failed to load users");
-            setLoading(false);
+            setError(err.response?.data || "Something went wrong");
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleVerifyUser = async (userId, isVerified) => {
+    // Fetch cities for a specific country
+    const fetchCities = async (countryId) => {
+        if (!countryId) return;
+
+        setIsLoading(true);
         try {
-            await newRequest.patch(`/adminUsers/users/${userId}/verify`, { isVerified });
-            fetchUsers(); // Refresh the user list
+            const response = await newRequest.get(`/cities?countryId=${countryId}`);
+            setCities(response.data);
         } catch (err) {
-            console.error("Error updating user verification status:", err);
-            setError("Failed to update verification status");
+            setError(err.response?.data || "Could not fetch cities");
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleDeleteUser = async (userId) => {
-        if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-            try {
-                await newRequest.delete(`/adminUsers/users/${userId}`);
-                fetchUsers(); // Refresh the user list
-            } catch (err) {
-                console.error("Error deleting user:", err);
-                setError("Failed to delete user");
+    // Create new country
+    const handleCreateCountry = async (e) => {
+        e.preventDefault();
+        if (!countryName) return;
+
+        setIsLoading(true);
+        try {
+            const response = await newRequest.post("/countries", { name: countryName });
+            setCountries([...countries, response.data]);
+            setCountryName("");
+        } catch (err) {
+            setError(err.response?.data || "Failed to create country");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Create or update city
+    const handleSubmitCity = async (e) => {
+        e.preventDefault();
+        if (!cityName || !selectedCountry) return;
+
+        setIsLoading(true);
+        try {
+            if (editMode.city && editingCityId) {
+                // Update existing city
+                const response = await newRequest.put(
+                    `/cities/${selectedCountry._id}/${editingCityId}`,
+                    { name: cityName }
+                );
+                setCities(cities.map(city =>
+                    city._id === editingCityId ? response.data : city
+                ));
+                setEditMode({...editMode, city: false});
+                setEditingCityId(null);
+            } else {
+                // Create new city
+                const response = await newRequest.post(
+                    `/cities/${selectedCountry._id}`,
+                    { name: cityName }
+                );
+                setCities([...cities, response.data]);
             }
-        }
-    };
-
-    const filteredUsers = users.filter(user => {
-        // Apply type filter
-        if (filter === 'guests' && !user.isAmbassador && !user.isAdmin) return true;
-        if (filter === 'ambassadors' && user.isAmbassador) return true;
-        if (filter === 'admins' && user.isAdmin) return true;
-        if (filter === 'all') return true;
-        return false;
-    }).filter(user => {
-        // Apply search query
-        if (!searchQuery) return true;
-        const query = searchQuery.toLowerCase();
-        return (
-            user.username?.toLowerCase().includes(query) ||
-            user.email?.toLowerCase().includes(query) ||
-            user.firstName?.toLowerCase().includes(query) ||
-            user.lastName?.toLowerCase().includes(query) ||
-            user.country?.toLowerCase().includes(query)
-        );
-    });
-
-    const handleUserTypeChange = async (userId, isAmbassador, isAdmin) => {
-        try {
-            await newRequest.patch(`/adminUsers/users/${userId}/type`, {
-                isAmbassador,
-                isAdmin,
-                userType: isAdmin ? 'admin' : (isAmbassador ? 'ambassador' : 'guest')
-            });
-            fetchUsers(); // Refresh the user list
+            setCityName("");
         } catch (err) {
-            console.error("Error updating user type:", err);
-            setError("Failed to update user type");
+            setError(err.response?.data || "Failed to save city");
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    if (loading) return <div className="admin-loading">Loading users...</div>;
-    if (error) return <div className="admin-error">{error}</div>;
+    // Start editing a city
+    const handleEditCity = (city) => {
+        setCityName(city.name);
+        setEditMode({...editMode, city: true});
+        setEditingCityId(city._id);
+    };
+
+    // Cancel editing
+    const handleCancelEdit = (type) => {
+        if (type === 'city') {
+            setEditMode({...editMode, city: false});
+            setEditingCityId(null);
+            setCityName("");
+        } else if (type === 'touristPlace') {
+            setEditMode({...editMode, touristPlace: false});
+            setEditingTouristPlaceId(null);
+            setTouristPlaceName("");
+            setTouristPlaceDesc("");
+        }
+    };
+
+    // Add or update tourist place
+    const handleSubmitTouristPlace = async (e) => {
+        e.preventDefault();
+        if (!touristPlaceName || !selectedCountry || !selectedCity) return;
+
+        setIsLoading(true);
+        try {
+            if (editMode.touristPlace && editingTouristPlaceId) {
+                // Update existing tourist place
+                await newRequest.put(
+                    `/countries/${selectedCountry._id}/${selectedCity._id}/tourist-places/${editingTouristPlaceId}`,
+                    {
+                        name: touristPlaceName,
+                        description: touristPlaceDesc
+                    }
+                );
+                setEditMode({...editMode, touristPlace: false});
+                setEditingTouristPlaceId(null);
+            } else {
+                // Add new tourist place
+                await newRequest.post(
+                    `/countries/${selectedCountry._id}/${selectedCity._id}/tourist-places`,
+                    {
+                        name: touristPlaceName,
+                        description: touristPlaceDesc
+                    }
+                );
+            }
+
+            // Refresh cities to see the updated tourist places
+            fetchCities(selectedCountry._id);
+            setTouristPlaceName("");
+            setTouristPlaceDesc("");
+        } catch (err) {
+            setError(err.response?.data || "Failed to save tourist place");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Start editing a tourist place
+    const handleEditTouristPlace = (place) => {
+        setTouristPlaceName(place.name);
+        setTouristPlaceDesc(place.description || "");
+        setEditMode({...editMode, touristPlace: true});
+        setEditingTouristPlaceId(place._id);
+    };
+
+    // Delete tourist place
+    const handleDeleteTouristPlace = async (placeId) => {
+        if (!window.confirm("Are you sure you want to delete this tourist place?")) return;
+
+        setIsLoading(true);
+        try {
+            await newRequest.delete(
+                `/countries/${selectedCountry._id}/${selectedCity._id}/tourist-places/${placeId}`
+            );
+            // Refresh cities to see the updated tourist places
+            fetchCities(selectedCountry._id);
+        } catch (err) {
+            setError(err.response?.data || "Failed to delete tourist place");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Delete country
+    const handleDeleteCountry = async (countryId) => {
+        if (!window.confirm("Are you sure you want to delete this country?")) return;
+
+        setIsLoading(true);
+        try {
+            await newRequest.delete(`/countries/${countryId}`);
+            setCountries(countries.filter(country => country._id !== countryId));
+            if (selectedCountry && selectedCountry._id === countryId) {
+                setSelectedCountry(null);
+                setCities([]);
+            }
+        } catch (err) {
+            setError(err.response?.data || "Failed to delete country");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Delete city
+    const handleDeleteCity = async (countryId, cityId) => {
+        if (!window.confirm("Are you sure you want to delete this city?")) return;
+
+        setIsLoading(true);
+        try {
+            await newRequest.delete(`/cities/${countryId}/${cityId}`);
+            setCities(cities.filter(city => city._id !== cityId));
+            if (selectedCity && selectedCity._id === cityId) {
+                setSelectedCity(null);
+            }
+        } catch (err) {
+            setError(err.response?.data || "Failed to delete city");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Handle country selection
+    const handleCountrySelect = (country) => {
+        setSelectedCountry(country);
+        fetchCities(country._id);
+        setSelectedCity(null);
+        resetFormStates();
+    };
+
+    // Handle city selection
+    const handleCitySelect = (city) => {
+        setSelectedCity(city);
+        resetFormStates();
+    };
+
+    // Reset form states
+    const resetFormStates = () => {
+        setCityName("");
+        setTouristPlaceName("");
+        setTouristPlaceDesc("");
+        setEditMode({city: false, touristPlace: false});
+        setEditingCityId(null);
+        setEditingTouristPlaceId(null);
+    };
+
+    // View gigs by country
+    const viewGigsByCountry = (countryName) => {
+        navigate(`/gigs?country=${countryName}`);
+    };
+
+    // View ambassadors by country
+    const viewAmbassadorsByCountry = (countryName) => {
+        navigate(`/ambassadors?country=${countryName}`);
+    };
+
+    useEffect(() => {
+        fetchCountries();
+    }, []);
 
     return (
-        <div className="admin-users">
-            <div className="container">
-                <div className="admin-header">
-                    <h1>User Management</h1>
-                    <button className="back-btn" onClick={() => navigate('/admin')}>
-                        Back to Dashboard
-                    </button>
-                </div>
+        <div className="admin-countries">
+            <h1>Manage Countries, Cities, and Tourist Places</h1>
 
-                <div className="filters-container">
-                    <div className="search-container">
+            {error && <div className="error">{error}</div>}
+            {isLoading && <div className="loading">Loading...</div>}
+
+            <div className="content-wrapper">
+                {/* Countries Section */}
+                <div className="countries-section">
+                    <h2>Countries</h2>
+
+                    <form onSubmit={handleCreateCountry} className="form-container">
                         <input
                             type="text"
-                            placeholder="Search users..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="search-input"
+                            placeholder="Country Name"
+                            value={countryName}
+                            onChange={(e) => setCountryName(e.target.value)}
                         />
-                    </div>
+                        <button type="submit" disabled={isLoading}>
+                            Add Country
+                        </button>
+                    </form>
 
-                    <div className="filter-buttons">
-                        <button
-                            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-                            onClick={() => setFilter('all')}
-                        >
-                            All Users
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'guests' ? 'active' : ''}`}
-                            onClick={() => setFilter('guests')}
-                        >
-                            Guests
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'ambassadors' ? 'active' : ''}`}
-                            onClick={() => setFilter('ambassadors')}
-                        >
-                            Ambassadors
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'admins' ? 'active' : ''}`}
-                            onClick={() => setFilter('admins')}
-                        >
-                            Admins
-                        </button>
-                    </div>
-                </div>
-
-                <div className="users-table-container">
-                    <table className="users-table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Type</th>
-                            <th>Country</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {filteredUsers.map(user => (
-                            <tr key={user._id}>
-                                <td>{user._id.substring(0, 8)}...</td>
-                                <td>{user.username}</td>
-                                <td>{`${user.firstName || ''} ${user.lastName || ''}`}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <select
-                                        value={user.isAdmin ? 'admin' : (user.isAmbassador ? 'ambassador' : 'guest')}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            handleUserTypeChange(
-                                                user._id,
-                                                value === 'ambassador',
-                                                value === 'admin'
-                                            );
-                                        }}
-                                    >
-                                        <option value="guest">Guest</option>
-                                        <option value="ambassador">Ambassador</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                </td>
-                                <td>{user.country || 'N/A'}</td>
-                                <td>
-                    <span className={`status-badge ${user.isVerified ? 'verified' : 'unverified'}`}>
-                      {user.isVerified ? 'Verified' : 'Unverified'}
-                    </span>
-                                </td>
-                                <td className="actions-cell">
-                                    <button
-                                        className={`verify-btn ${user.isVerified ? 'unverify' : 'verify'}`}
-                                        onClick={() => handleVerifyUser(user._id, !user.isVerified)}
-                                    >
-                                        {user.isVerified ? 'Unverify' : 'Verify'}
-                                    </button>
-                                    <button
-                                        className="view-btn"
-                                        onClick={() => navigate(`/adminUsers/users/${user._id}`)}
-                                    >
-                                        View
-                                    </button>
+                    <div className="countries-list">
+                        {countries.map(country => (
+                            <div
+                                key={country._id}
+                                className={`country-item ${selectedCountry?._id === country._id ? 'active' : ''}`}
+                            >
+                                <div className="country-info" onClick={() => handleCountrySelect(country)}>
+                                    <span>{country.name}</span>
+                                </div>
+                                <div className="country-actions">
+                                    <button onClick={() => viewGigsByCountry(country.name)}>View Gigs</button>
+                                    <button onClick={() => viewAmbassadorsByCountry(country.name)}>View Ambassadors</button>
                                     <button
                                         className="delete-btn"
-                                        onClick={() => handleDeleteUser(user._id)}
+                                        onClick={() => handleDeleteCountry(country._id)}
                                     >
                                         Delete
                                     </button>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         ))}
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
 
-                {filteredUsers.length === 0 && (
-                    <div className="no-results">No users found matching your criteria</div>
+                {/* Cities Section */}
+                {selectedCountry && (
+                    <div className="cities-section">
+                        <h2>Cities in {selectedCountry.name}</h2>
+
+                        <form onSubmit={handleSubmitCity} className="form-container">
+                            <input
+                                type="text"
+                                placeholder="City Name"
+                                value={cityName}
+                                onChange={(e) => setCityName(e.target.value)}
+                            />
+                            <div className="form-buttons">
+                                <button type="submit" disabled={isLoading}>
+                                    {editMode.city ? 'Update City' : 'Add City'}
+                                </button>
+                                {editMode.city && (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCancelEdit('city')}
+                                        className="cancel-btn"
+                                    >
+                                        Cancel
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+
+                        <div className="cities-list">
+                            {cities.map(city => (
+                                <div
+                                    key={city._id}
+                                    className={`city-item ${selectedCity?._id === city._id ? 'active' : ''}`}
+                                >
+                                    <div className="city-info" onClick={() => handleCitySelect(city)}>
+                                        <span>{city.name}</span>
+                                        <span className="tourist-places-count">
+                                            {city.touristPlaces?.length || 0} tourist places
+                                        </span>
+                                    </div>
+                                    <div className="city-actions">
+                                        <button
+                                            className="edit-btn"
+                                            onClick={() => handleEditCity(city)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="delete-btn"
+                                            onClick={() => handleDeleteCity(selectedCountry._id, city._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Tourist Places Section */}
+                {selectedCity && (
+                    <div className="tourist-places-section">
+                        <h2>Tourist Places in {selectedCity.name}</h2>
+
+                        <form onSubmit={handleSubmitTouristPlace} className="form-container">
+                            <input
+                                type="text"
+                                placeholder="Tourist Place Name"
+                                value={touristPlaceName}
+                                onChange={(e) => setTouristPlaceName(e.target.value)}
+                            />
+                            <textarea
+                                placeholder="Description"
+                                value={touristPlaceDesc}
+                                onChange={(e) => setTouristPlaceDesc(e.target.value)}
+                            />
+                            <div className="form-buttons">
+                                <button type="submit" disabled={isLoading}>
+                                    {editMode.touristPlace ? 'Update Tourist Place' : 'Add Tourist Place'}
+                                </button>
+                                {editMode.touristPlace && (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCancelEdit('touristPlace')}
+                                        className="cancel-btn"
+                                    >
+                                        Cancel
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+
+                        <div className="tourist-places-list">
+                            {selectedCity.touristPlaces?.map((place, index) => (
+                                <div key={place._id || index} className="tourist-place-item">
+                                    <div className="tourist-place-header">
+                                        <h3>{place.name}</h3>
+                                        <div className="tourist-place-actions">
+                                            <button
+                                                className="edit-btn"
+                                                onClick={() => handleEditTouristPlace(place)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="delete-btn"
+                                                onClick={() => handleDeleteTouristPlace(place._id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {place.description && <p>{place.description}</p>}
+                                </div>
+                            ))}
+                            {selectedCity.touristPlaces?.length === 0 && (
+                                <div className="empty-message">
+                                    No tourist places yet. Add one using the form above.
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
