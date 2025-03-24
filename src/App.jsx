@@ -32,16 +32,16 @@ import { ProtectedUserRoute, ProtectedAdminRoute } from "./components/ProtectedR
 
 // Admin components
 import AdminNavbar from "./components/AdminNavbar/AdminNavbar";
-import AdminDashboard from "./pages/admin/dashboard/AdminDashboard";
-import AdminGigs from "./pages/admin/gigs/AdminGigs";
-import AdminUsers from "./pages/admin/users/AdminUsers";
-import AdminGigDetails from "./pages/admin/gigs/AdminGigDetails";
-import AdminGigEdit from "./pages/admin/gigs/AdminGigEdit";
-import AdminUserDetails from "./pages/admin/users/AdminUserDetails";
-import AdminOrders from "./pages/admin/orders/AdminOrders";
-import AdminOrderDetails from "./pages/admin/orders/AdminOrderDetails";
-import AdminVerifications from "./pages/admin/verifications/AdminVerifications";
-import AdminCountries from "./pages/admin/countries/AdminCountries";
+import AdminDashboard from "./pages/Admin/dashboard/AdminDashboard";
+import AdminGigs from "./pages/Admin/gigs/AdminGigs";
+import AdminUsers from "./pages/Admin/users/AdminUsers";
+import AdminGigDetails from "./pages/Admin/gigs/AdminGigDetails";
+import AdminGigEdit from "./pages/Admin/gigs/AdminGigEdit";
+import AdminUserDetails from "./pages/Admin/users/AdminUserDetails";
+import AdminOrders from "./pages/Admin/orders/AdminOrders";
+import AdminOrderDetails from "./pages/Admin/orders/AdminOrderDetails";
+import AdminVerifications from "./pages/Admin/verifications/AdminVerifications";
+import AdminCountries from "./pages/Admin/countries/AdminCountries";
 
 function App() {
   const queryClient = new QueryClient();
