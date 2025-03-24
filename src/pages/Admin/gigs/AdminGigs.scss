@@ -1,0 +1,225 @@
+.admin-gigs {
+  padding: 40px 0;
+
+  .container {
+    max-width: var(--main-container);
+    margin: 0 auto;
+    padding: 0 var(--container-gutters);
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h1 {
+      color: var(--secondary-color);
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background-color: var(--secondary-color);
+      color: var(--white-color);
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: darken(#111330, 10%);
+      }
+    }
+  }
+
+  .filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+
+      .search-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+
+        &:focus {
+          outline: none;
+          border-color: var(--theme-color);
+        }
+      }
+    }
+
+    .country-filter {
+      .country-select {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: white;
+        min-width: 200px;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          border-color: var(--theme-color);
+        }
+      }
+    }
+  }
+
+  .gigs-table-container {
+    overflow-x: auto;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
+
+  .gigs-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: var(--secondary-color);
+      color: white;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+
+      button {
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .view-btn {
+        background-color: #e6f7ff;
+        color: #1890ff;
+
+        &:hover {
+          background-color: #bae7ff;
+        }
+      }
+
+      .edit-btn {
+        background-color: #f6ffed;
+        color: #52c41a;
+
+        &:hover {
+          background-color: #d9f7be;
+        }
+      }
+
+      .delete-btn {
+        background-color: #fff1f0;
+        color: #ff4d4f;
+
+        &:hover {
+          background-color: #ffccc7;
+        }
+      }
+    }
+  }
+
+  .featured-toggle {
+    display: flex;
+    align-items: center;
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      cursor: pointer;
+      height: 16px;
+      width: 16px;
+    }
+
+    label {
+      cursor: pointer;
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 30px;
+    color: #888;
+    font-size: 18px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: var(--secondary-color);
+  }
+
+  .admin-error {
+    text-align: center;
+    padding: 30px;
+    color: #ff4d4f;
+    font-size: 18px;
+    background-color: #fff1f0;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .filters-container {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .search-container {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .country-filter {
+        width: 100%;
+
+        .country-select {
+          width: 100%;
+        }
+      }
+    }
+
+    .admin-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+
+      .back-btn {
+        align-self: flex-start;
+      }
+    }
+  }
+}

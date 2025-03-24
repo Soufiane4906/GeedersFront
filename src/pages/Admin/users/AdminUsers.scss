@@ -1,0 +1,224 @@
+.admin-users {
+  padding: 40px 0;
+
+  .container {
+    max-width: var(--main-container);
+    margin: 0 auto;
+    padding: 0 var(--container-gutters);
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h1 {
+      color: var(--secondary-color);
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background-color: var(--secondary-color);
+      color: var(--white-color);
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: darken(#111330, 10%);
+      }
+    }
+  }
+
+  .filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+
+      .search-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+
+        &:focus {
+          outline: none;
+          border-color: var(--theme-color);
+        }
+      }
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      .filter-btn {
+        background-color: var(--smoke-color);
+        color: var(--body-color);
+        border: none;
+        border-radius: 5px;
+        padding: 12px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: darken(#f7f7f7, 5%);
+        }
+
+        &.active {
+          background-color: var(--theme-color);
+          color: var(--white-color);
+        }
+      }
+    }
+  }
+
+  .users-table-container {
+    overflow-x: auto;
+    background-color: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+  }
+
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: var(--smoke-color);
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+
+    tr:hover {
+      background-color: rgba(255, 104, 26, 0.05);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-size: 14px;
+
+      &.verified {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+      }
+
+      &.unverified {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--error-color);
+      }
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 5px;
+
+      button {
+        border: none;
+        border-radius: 5px;
+        padding: 8px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .verify-btn {
+        &.verify {
+          background-color: var(--success-color);
+          color: white;
+
+          &:hover {
+            background-color: darken(#28a745, 10%);
+          }
+        }
+
+        &.unverify {
+          background-color: var(--yellow-color);
+          color: #333;
+
+          &:hover {
+            background-color: darken(#fec624, 10%);
+          }
+        }
+      }
+
+      .view-btn {
+        background-color: var(--theme-color2);
+        color: white;
+
+        &:hover {
+          background-color: darken(#37d4d9, 10%);
+        }
+      }
+
+      .delete-btn {
+        background-color: var(--error-color);
+        color: white;
+
+        &:hover {
+          background-color: darken(#dc3545, 10%);
+        }
+      }
+    }
+  }
+
+  .no-results {
+    padding: 30px;
+    text-align: center;
+    background-color: var(--smoke-color);
+    border-radius: 10px;
+    color: var(--body-color);
+    font-size: 18px;
+  }
+
+  select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: var(--theme-color);
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-users {
+    padding: 20px 0;
+
+    .filters-container {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .search-container {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+}

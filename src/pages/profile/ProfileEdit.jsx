@@ -70,7 +70,6 @@ const ProfileEdit = ({ user, onUpdate }) => {
 
         try {
             await onUpdate(formData);
-            toast.success("Profile updated successfully!");
         } catch (err) {
             toast.error("Failed to update profile. Please try again.");
             console.error("Update error:", err);
