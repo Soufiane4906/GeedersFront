@@ -1,0 +1,183 @@
+// Variables
+$primary-color: #3498db;
+$secondary-color: #2ecc71;
+$danger-color: #e74c3c;
+$background-color: #f4f6f7;
+$text-color: #2c3e50;
+$border-radius: 8px;
+$transition-speed: 0.3s;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin button-base {
+  padding: 10px 15px;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all $transition-speed ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.admin-pois {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: $background-color;
+  min-height: 100vh;
+
+  // Loading and Error States
+  &__loading,
+  &__error {
+    @include flex-center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  // Section Title
+  .section-title {
+    text-align: center;
+    color: $text-color;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  // Form Styling
+  .form-container {
+    background-color: white;
+    border-radius: $border-radius;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: $border-radius;
+      transition: border-color $transition-speed ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 15px;
+
+      .btn {
+        @include button-base;
+        flex-grow: 1;
+
+        &-primary {
+          background-color: $primary-color;
+          color: white;
+        }
+
+        &-secondary {
+          background-color: #f1f3f4;
+          color: $text-color;
+        }
+      }
+    }
+  }
+
+  // POI List Styling
+  .pois-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+
+    .poi-item {
+      background-color: white;
+      border-radius: $border-radius;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform $transition-speed ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .poi-header {
+        .poi-image {
+          width: 100%;
+          height: 250px;
+          object-fit: cover;
+        }
+
+        h3 {
+          padding: 15px;
+          margin: 0;
+          background-color: #f9f9f9;
+        }
+
+        .poi-actions {
+          display: flex;
+
+          .btn {
+            @include button-base;
+            flex-grow: 1;
+            margin: 10px;
+
+            &-edit {
+              background-color: $primary-color;
+              color: white;
+            }
+
+            &-delete {
+              background-color: $danger-color;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    .empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #777;
+      padding: 50px;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: 768px) {
+  .admin-pois {
+    .form-container {
+      padding: 20px;
+
+      .form-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    .pois-list {
+      grid-template-columns: 1fr;
+    }
+  }
+}

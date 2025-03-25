@@ -1,24 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import newRequest from "../../utils/newRequest";
+import { toast } from 'react-toastify';
 
 const PointsOfInterestSection = ({ selectedPOIs, setSelectedPOIs, city, disabled = false }) => {
     const [showPOIDropdown, setShowPOIDropdown] = useState(false);
+    const [pointsOfInterestOptions, setPointsOfInterestOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // New POI options with icons
-    const pointsOfInterestOptions = [
-        { id: "business", name: "Business", icon: "./img/icons8-b2b-50.png" },
-        { id: "administration", name: "Administration", icon: "./img/icons8-administration.png" },
-        { id: "museum", name: "Museum", icon: "./img/icons8-museum.png" },
-        { id: "beach", name: "Beach", icon: "./img/icons8-beach.png" },
-        { id: "nightclub", name: "Night Club", icon: "./img/icons8-night-club.png" },
-        { id: "park", name: "Park", icon: "./img/icons8-park.png" },
-        { id: "shoppingmall", name: "Shopping Mall", icon: "./img/icons8-shopping-mall.png" },
-        { id: "theatre", name: "Theatre", icon: "./img/icons8-theatre.png" },
-        { id: "amusementpark", name: "Amusement Park", icon: "./img/icons8-amusement-park.png" },
-        { id: "restaurant", name: "Restaurant", icon: "./img/icons8-restaurant.png" },
-        { id: "hiking", name: "Hiking", icon: "./img/icons8-hiking.png" },
-    ];
+    // Fetch POIs from backend
+    const fetchPOIs = async () => {
+        setIsLoading(true);
+        try {
+            const response = await newRequest.get("/pois");
+            const fetchedPOIs = response.data.pois.map(poi => ({
+                id: poi._id,
+                name: poi.name,
+                icon: poi.image
+            }));
+            setPointsOfInterestOptions(fetchedPOIs);
+            setIsLoading(false);
+        } catch (err) {
+            setError(err.message || 'Failed to fetch Points of Interest');
+            setIsLoading(false);
+            toast.error('Failed to load Points of Interest');
+        }
+    };
+
+    // Fetch POIs on component mount
+    useEffect(() => {
+        fetchPOIs();
+    }, []);
 
     // Toggle POI selection
     const togglePOI = (poiId) => {
@@ -45,6 +59,21 @@ const PointsOfInterestSection = ({ selectedPOIs, setSelectedPOIs, city, disabled
         };
     }, []);
 
+    // Loading and error states
+    if (isLoading) return (
+        <div className="form-group">
+            <label>Points of Interest</label>
+            <div>Loading Points of Interest...</div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="form-group">
+            <label>Points of Interest</label>
+            <div className="text-danger">{error}</div>
+        </div>
+    );
+
     return (
         <div className="form-group poi-dropdown-container">
             <label>
@@ -58,11 +87,11 @@ const PointsOfInterestSection = ({ selectedPOIs, setSelectedPOIs, city, disabled
                     onClick={() => setShowPOIDropdown(!showPOIDropdown)}
                     disabled={disabled}
                 >
-          <span>
-            {selectedPOIs.length === 0
-                ? "Select points of interest"
-                : `${selectedPOIs.length} POI(s) selected`}
-          </span>
+                    <span>
+                        {selectedPOIs.length === 0
+                            ? "Select points of interest"
+                            : `${selectedPOIs.length} POI(s) selected`}
+                    </span>
                     <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
                 </button>
 
@@ -105,14 +134,14 @@ const PointsOfInterestSection = ({ selectedPOIs, setSelectedPOIs, city, disabled
                                 key={poiId}
                                 className="badge bg-info me-1 mb-1 d-flex align-items-center poi-badge"
                             >
-                <img src={poi.icon} alt={poi.name} width="16" height="16" className="me-1" />
+                                <img src={poi.icon} alt={poi.name} width="16" height="16" className="me-1" />
                                 {poi.name}
                                 <button
                                     type="button"
                                     className="btn-close btn-close-white ms-2"
                                     onClick={() => togglePOI(poiId)}
                                 ></button>
-              </span>
+                            </span>
                         ) : null;
                     })}
                 </div>

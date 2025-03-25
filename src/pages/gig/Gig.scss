@@ -1,110 +1,96 @@
 .gig {
   .container {
-    padding: 20px;
     display: flex;
-    flex-wrap: wrap;
     gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
 
     .left {
-      flex: 1;
-      max-width: 70%;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(255, 123, 0, 0.1); 
-      padding: 20px;
+      flex: 2;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
 
-      @media (max-width: 768px) {
-        max-width: 100%;
-        padding: 15px;
-      }
-
-      .breadcrumbs {
-        font-size: 0.9rem;
-        color: #666;
+      .gig-header {
         margin-bottom: 20px;
+
+        .breadcrumbs {
+          color: #666;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        h1 {
+          color: #333;
+          font-size: 1.8rem;
+          margin-top: 10px;
+        }
       }
 
-      .user {
+      .user-profile {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
-        
-        @media (max-width: 768px) {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
 
-        .pp {
-          width: 60px;
-          height: 60px;
+        .avatar {
+          width: 80px;
+          height: 80px;
           border-radius: 50%;
           object-fit: cover;
           margin-right: 15px;
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: scale(1.1);
-          }
         }
 
-        .stars {
+        .rating {
           display: flex;
           align-items: center;
-          color: #ff7b00; // Changed to orange
-          font-size: 1.2rem;
+          color: #FFC107;
+
+          svg {
+            margin-right: 3px;
+          }
 
           span {
             margin-left: 5px;
-            font-size: 1rem;
-            color: #333;
+            color: #666;
           }
         }
       }
 
-      .Ambassador {
-        .box {
-          padding: 15px;
-          background-color: #fff8f0;
-          border-radius: 8px;
-          margin-bottom: 20px;
+      .additional-details {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
 
-          .items {
+        .detail-section {
+          margin-bottom: 15px;
+
+          h3 {
+            color: #333;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            
-            @media (max-width: 768px) {
-              flex-direction: column;
-              gap: 10px;
-            }
+            align-items: center;
+            gap: 10px;
+          }
+        }
 
-            .item {
-              display: flex;
-              align-items: center;
-              margin-bottom: 10px;
-              
-              @media (max-width: 480px) {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-              }
+        .detail-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
 
-              .title {
-                font-weight: bold;
-                margin-right: 5px;
-                color: #ff7b00; // Orange text
-              }
+          .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #555;
 
-              .desc {
-                display: flex;
-                align-items: center;
-
-                svg {
-                  margin-right: 5px;
-                  color: #181818; // Orange icons
-                }
-              }
+            svg {
+              color: #FFC107;
             }
           }
         }
@@ -113,140 +99,90 @@
 
     .right {
       flex: 1;
-      max-width: 30%;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(255, 123, 0, 0.1); // Orange shadow
-      padding: 20px;
-      
-      @media (max-width: 768px) {
-        max-width: 100%;
-        padding: 15px;
-      }
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
 
-      .headerTitle {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 6rem;
-        width: 100%;
-        box-shadow: 1px 1px 14px 2px #ff7b00; // Changed to orange
-        font-weight: 700;
-        text-align: center;
-        background: linear-gradient(45deg, #ff7b00, #fff); // Changed to orange
-        border-radius: 13px;
-        margin-bottom: 20px;
-      }
-
-      .price {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-
-        h3 {
-          font-size: 1.2rem;
-          margin-bottom: 5px;
+      .booking-section {
+        .section-title {
+          text-align: center;
+          color: #333;
+          margin-bottom: 20px;
         }
 
-        h2 {
-          font-size: 2rem;
-          color: #ff7b00; // Changed to orange
-        }
-      }
+        .price-summary {
+          text-align: center;
+          margin-bottom: 20px;
 
-      .vehicle-select,
-      .hours-select,
-      .privacy,
-      .booking-info {
-        margin-bottom: 20px;
+          .price-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-        h3 {
-          font-size: 1.2rem;
-          margin-bottom: 10px;
-          color: #181818; // Orange headings
-        }
+            span {
+              font-size: 2rem;
+              color: #FFC107;
+              font-weight: bold;
+            }
 
-        input[type="checkbox"] {
-          margin-right: 10px;
-          accent-color: #181818; // Orange checkboxes
-        }
-
-        input[type="number"] {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #181818; // Light orange border
-          border-radius: 4px;
-          font-size: 1rem;
-          
-          &:focus {
-            outline: none;
-            border-color: #181818;
-            box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+            small {
+              color: #666;
+            }
           }
         }
 
-        select {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #181818; // Light orange border
-          border-radius: 4px;
-          font-size: 1rem;
-          
-          &:focus {
-            outline: none;
-            border-color: #ff7b00;
-            box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+        .booking-options {
+          > div {
+            margin-bottom: 15px;
+
+            h3 {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              color: #333;
+            }
+
+            select, input {
+              width: 100%;
+              padding: 10px;
+              border: 1px solid #ddd;
+              border-radius: 6px;
+            }
+          }
+
+          .privacy-agreement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+
+            input[type="checkbox"] {
+              accent-color: #FFC107;
+            }
           }
         }
-      }
 
-      .btn {
-        width: 100%;
-        padding: 10px;
-        font-size: 1.2rem;
-        color: #fff;
-        background-color: #ff7b00; // Changed to orange
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+        .booking-actions {
+          .book-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #FFC107;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            transition: background-color 0.3s;
 
-        &:hover {
-          background-color: #e56b00; // Darker orange on hover
+            &:hover:not(:disabled) {
+              background-color: #FFD54F;
+            }
+
+            &:disabled {
+              background-color: #e0e0e0;
+              cursor: not-allowed;
+            }
+          }
         }
-
-        &:disabled {
-          background-color: #ffcc99; // Light orange for disabled
-          cursor: not-allowed;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-      padding: 10px;
-      gap: 15px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .container {
-      padding: 8px;
-      
-      .left, .right {
-        padding: 12px;
-      }
-      
-      .headerTitle {
-        height: 4rem;
-        font-size: 0.9rem;
-      }
-      
-      .price h2 {
-        font-size: 1.6rem;
       }
     }
   }

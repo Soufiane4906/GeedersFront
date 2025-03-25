@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Add.scss";
 import WysiwygEditor from "../../components/WysiwygEditor.jsx";
+import PointsOfInterestSection from "../../components/PointsOfInterestSection/PointsOfInterestSection.jsx";
 
 const Add = () => {
   const [step, setStep] = useState(1);
@@ -47,16 +48,29 @@ const Add = () => {
     features: [],
     poi: [],
   });
-
   const [validationErrors, setValidationErrors] = useState({});
   const [cities, setCities] = useState([]);
   const [showCity, setShowCity] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
   const navigate = useNavigate();
-
   // Extract unique countries from topVisitedCities
   const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();
+  const [pointsOfInterest, setPointsOfInterest] = useState([]);
+// Fetch POIs when city is selected
+  useEffect(() => {
+    const fetchPOIs = async () => {
+      try {
+        const response = await newRequest.get("/pois");
+        setPointsOfInterest(response.data.pois || []);
+      } catch (error) {
+        console.error("Failed to fetch POIs", error);
+      }
+    };
 
+    if (formData.city) {
+      fetchPOIs();
+    }
+  }, [formData.city]);
   const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
     setFormData((prevData) => ({
@@ -221,7 +235,7 @@ const Add = () => {
       <div className="add-gig-container">
         <div className="add-gig-wrapper">
           <div className="section-title">
-            <h2>Add New Gig</h2>
+            <h2>Add New Availability</h2>
             <p>Create your new service offering for travelers</p>
           </div>
 
@@ -509,7 +523,7 @@ const Add = () => {
                           startDate={selectedDates[0]}
                           endDate={selectedDates[selectedDates.length - 1]}
                           className="custom-datepicker"
-                      />
+                       showMonthYearDropdown/>
                     </div>
                     {validationErrors.availabilityTimes && (
                         <div className="error-message">
@@ -630,29 +644,13 @@ const Add = () => {
                     <label htmlFor="pointsOfInterest">
                       <FontAwesomeIcon icon={faMapMarkedAlt} className="icon" /> Points of Interest
                     </label>
-                    <div className="poi-grid">
-                      {pointsOfInterestOptions.map((poi) => (
-                          <div
-                              key={poi.name}
-                              className={`poi-item ${selectedPointsOfInterest.includes(poi.name) ? 'active' : ''}`}
-                              onClick={() => handlePoiChange(poi.name)}
-                          >
-                            <div className="poi-checkbox">
-                              <input
-                                  type="checkbox"
-                                  checked={selectedPointsOfInterest.includes(poi.name)}
-                                  onChange={() => {}}
-                                  id={`poi-${poi.name}`}
-                              />
-                              <label htmlFor={`poi-${poi.name}`} className="checkbox-label"></label>
-                            </div>
-                            <div className="poi-content">
-                              <img src={poi.icon} alt={poi.name} className="poi-icon" />
-                              <span className="poi-name">{poi.name}</span>
-                            </div>
-                          </div>
-                      ))}
-                    </div>
+                    <PointsOfInterestSection
+                        selectedPOIs={selectedPointsOfInterest}
+                        setSelectedPOIs={setSelectedPointsOfInterest}
+                        city={formData.city}
+                        pointsOfInterest={pointsOfInterest}
+                        disabled={!formData.city}
+                    />
                   </div>
 
                   <div className="button-group">

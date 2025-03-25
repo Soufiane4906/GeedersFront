@@ -2,9 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import newRequest from '../../utils/newRequest';
-import { FaMapMarkerAlt, FaStar, FaRegFlag, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
+import {
+  FaMapMarkerAlt,
+  FaStar,
+  FaRegFlag,
+  FaRegCalendarAlt,
+  FaRegClock,
+  FaLanguage,
+  FaInfoCircle,
+  FaMoneyBillWave
+} from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar } from '@fortawesome/free-solid-svg-icons';
+import { faCar, faUsers, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import Reviews from '../../components/reviews/Reviews';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,13 +35,21 @@ function Gig() {
 
   const currentUserId = currentUser._id;
 
-  const { isLoading, error, data } = useQuery({
+  const {
+    isLoading,
+    error,
+    data: gigData
+  } = useQuery({
     queryKey: ["gig", id],
     queryFn: () => newRequest.get(`/gigs/single/${id}`).then((res) => res.data),
   });
 
-  const userId = data?.userId;
-  const { isLoading: isLoadingUser, error: errorUser, data: dataUser } = useQuery({
+  const userId = gigData?.userId;
+  const {
+    isLoading: isLoadingUser,
+    error: errorUser,
+    data: userData
+  } = useQuery({
     queryKey: ["user", userId],
     queryFn: () => newRequest.get(`/users/${userId}`).then((res) => res.data),
     enabled: !!userId,
@@ -44,6 +61,21 @@ function Gig() {
     calculateTotalPrice(hours, vehicle);
   };
 
+  const calculateStarRating = (totalStars, starNumber) => {
+    // Ensure we have valid numbers and avoid NaN
+    const rating = totalStars && starNumber
+        ? Math.round(totalStars / starNumber)
+        : 0;
+
+    // Limit star rating between 0 and 5
+    return Math.min(Math.max(rating, 0), 5);
+  };
+
+  // In the rendering section, replace the existing star rating with:
+  const starRating = calculateStarRating(gigData?.totalStars, gigData?.starNumber);
+
+
+
   const handleHoursChange = (e) => {
     const selectedHours = parseInt(e.target.value, 10) || 1;
     setHours(selectedHours);
@@ -52,20 +84,20 @@ function Gig() {
 
   const calculateTotalPrice = (hours, vehicle) => {
     let additionalPrice = 0;
-    if (vehicle === 'car' && data?.carPrice) {
-      additionalPrice = data.carPrice;
-    } else if (vehicle === 'moto' && data?.scooterPrice) {
-      additionalPrice = data.scooterPrice;
+    if (vehicle === 'car' && gigData?.carPrice) {
+      additionalPrice = gigData.carPrice;
+    } else if (vehicle === 'moto' && gigData?.scooterPrice) {
+      additionalPrice = gigData.scooterPrice;
     }
-    const newTotalPrice = data?.price * hours + additionalPrice;
+    const newTotalPrice = gigData?.price * hours + additionalPrice;
     setTotalPrice(newTotalPrice);
   };
 
   useEffect(() => {
-    if (data?.price) {
+    if (gigData?.price) {
       calculateTotalPrice(hours, selectedVehicle);
     }
-  }, [data, selectedVehicle, hours]);
+  }, [gigData, selectedVehicle, hours]);
 
   const handleConfirmBooking = () => {
     if (!currentUser) {
@@ -73,13 +105,14 @@ function Gig() {
           <div>
             You need to have an account to book.
             <br />
-            <a href="/login" >Login</a> or
+            <a href="/login">Login</a> or
             <a href="/register"> Register</a>
           </div>,
           { autoClose: false }
       );
       return;
     }
+
 
     if (!privacyAccepted) {
       toast.error("Please accept the privacy conditions.");
@@ -90,11 +123,11 @@ function Gig() {
       id,
       totalPrice,
       GuestId: currentUserId,
-      price: data?.price,
-      city: data?.city,
-      country: data?.country,
-      carPrice: data?.carPrice || 0,
-      scooterPrice: data?.scooterPrice || 0,
+      price: gigData?.price,
+      city: gigData?.city,
+      country: gigData?.country,
+      carPrice: gigData?.carPrice || 0,
+      scooterPrice: gigData?.scooterPrice || 0,
       hours,
       selectedVehicle,
     }));
@@ -110,139 +143,127 @@ function Gig() {
       <div className="gig container">
         <div className="container">
           <div className="left">
-          <span className="breadcrumbs">
-            <FaMapMarkerAlt /> {data?.country} {">"} {data?.city}
-          </span>
-            {isLoadingUser ? (
-                "Loading..."
-            ) : errorUser ? (
-                "Something went wrong!"
-            ) : (
-                <div className="user">
-                  <img
-                      className="pp"
-                      src={dataUser?.img || "/img/noavatar.jpg"}
-                      alt={dataUser?.username || "User Avatar"}
-                  />
-                  <span className="ml-3">{dataUser?.username}</span>
-                  {!isNaN(data?.totalStars / data?.starNumber) && (
-                      <div className="stars">
-                        {Array(Math.round(data.totalStars / data.starNumber))
-                            .fill()
-                            .map((_, i) => (
-                                <FaStar key={i} />
-                            ))}
-                        <span>{Math.round(data.totalStars / data.starNumber)}</span>
-                      </div>
-                  )}
-                </div>
-            )}
-            <h2>About This Post</h2>
-            <p>{data?.shortDesc}</p>
-            {isLoadingUser ? (
-                "Loading..."
-            ) : errorUser ? (
-                "Something went wrong!"
-            ) : (
-                <div className="Ambassador">
-                  <h2>About The Ambassador</h2>
-                  <div className="user">
-                    <div className="info"></div>
-                  </div>
-                  <div className="box">
-                    <div className="items">
-                      <div className="item">
-                        <span className="title">From</span>
-                        <span className="desc">
-                      <FaRegFlag /> {dataUser?.country}
-                    </span>
-                      </div>
-                      <div className="item">
-                        <span className="title">Member since</span>
-                        <span className="desc">
-                      <FaRegCalendarAlt /> Aug 2022
-                    </span>
-                      </div>
-                      <div className="item">
-                        <span className="title">Avg. response time</span>
-                        <span className="desc">
-                      <FaRegClock /> 4 hours
-                    </span>
-                      </div>
-                      <div className="item">
-                        <span className="title">Last Tour</span>
-                        <span className="desc">
-                      <FaRegCalendarAlt /> 1 day
-                    </span>
-                      </div>
-                      <div className="item">
-                        <span className="title">Languages</span>
-                        <span className="desc">
-                      {dataUser?.languages?.join(", ")}
-                    </span>
-                      </div>
-                    </div>
-                    <hr />
-                    <p>{dataUser?.desc}</p>
+            <div className="gig-header">
+            <span className="breadcrumbs">
+              <FaMapMarkerAlt /> {gigData?.country} {">"} {gigData?.city}
+            </span>
+              <h1>{gigData?.title}</h1>
+            </div>
+
+            <div className="gig-details">
+              <div className="user-profile">
+                <img
+                    className="avatar"
+                    src={userData?.img || "/img/noavatar.jpg"}
+                    alt={userData?.username || "User Avatar"}
+                />
+                <div className="user-info">
+                  <h3>{userData?.username}</h3>
+                  <div className="rating">
+                    {Array.from({length: starRating}, (_, i) => (
+                        <FaStar key={i}/>
+                    ))}
+                    <span>{starRating}</span>
                   </div>
                 </div>
-            )}
+              </div>
+
+              <div className="additional-details">
+                <div className="detail-section">
+                  <h3><FaInfoCircle/> Experience Details</h3>
+                  <p>{gigData?.shortDesc}</p>
+                </div>
+
+                <div className="detail-grid">
+                  <div className="detail-item">
+                    <FaRegFlag /> <strong>Country:</strong> {gigData?.country}
+                  </div>
+                  <div className="detail-item">
+                    <FaLanguage /> <strong>Languages:</strong> {userData?.languages?.join(", ")}
+                  </div>
+                  <div className="detail-item">
+                    <FontAwesomeIcon icon={faUsers} /> <strong>Group Size:</strong> {gigData?.groupSize || 'Not specified'}
+                  </div>
+                  <div className="detail-item">
+                    <FaMoneyBillWave /> <strong>Base Price:</strong> ${gigData?.price}/hour
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <Reviews gigId={id} />
           </div>
+
           <div className="right">
-            <h2 className="headerTitle">Booking Information</h2>
-            <div className="price">
-              <h3>Total Price:</h3>
-              <h2>$ {totalPrice.toFixed(2)}</h2>
-            </div>
-            <div className="vehicle-select">
-              <h3>
-                <FontAwesomeIcon icon={faCar} style={{ marginInlineEnd: '10px' }} />
-                With Transport Option:
-              </h3>
-              <select onChange={handleVehicleChange}>
-                <option value="">None</option>
-                <option value="car" disabled={!data?.carPrice}>
-                  Car (+${data?.carPrice || "not available"})
-                </option>
-                <option value="moto" disabled={!data?.scooterPrice}>
-                  Moto (+${data?.scooterPrice || "not available"})
-                </option>
-              </select>
-            </div>
-            <div className="hours-select">
-              <h3>Number of Hours:</h3>
-              <input
-                  type="number"
-                  min="1"
-                  max="7"
-                  value={hours}
-                  onChange={handleHoursChange}
-              />
-            </div>
-            <div className="privacy">
-              <input
-                  type="checkbox"
-                  name="check"
-                  id="check" // Add this
-                  checked={privacyAccepted}
-                  onChange={() => setPrivacyAccepted(!privacyAccepted)}
-              />
-              <label htmlFor="check">I accept all privacy conditions</label>
-            </div>
-            <div className="booking-info">
-              <h3>Booking Details</h3>
-              <p>
-                Payment will be made directly to the Ambassador. If the tour is canceled
-                by the Ambassador, please contact us for a refund.
-              </p>
-              <button
-                  className="btn btn-success"
-                  disabled={!privacyAccepted}
-                  onClick={handleConfirmBooking}
-              >
-                Confirm Booking
-              </button>
+            <div className="booking-section">
+              <h2 className="section-title">Book Your Experience</h2>
+
+              <div className="price-summary">
+                <h3>Total Price</h3>
+                <div className="price-display">
+                  <span>$ {totalPrice.toFixed(2)}</span>
+                  <small>for {hours} hour(s)</small>
+                </div>
+              </div>
+
+              <div className="booking-options">
+                <div className="transport-option">
+                  <h3>
+                    <FontAwesomeIcon icon={faCar} /> Transport Option
+                  </h3>
+                  <select
+                      onChange={handleVehicleChange}
+                      disabled={!gigData?.carPrice && !gigData?.scooterPrice}
+                  >
+                    <option value="">No Transport</option>
+                    {gigData?.carPrice && (
+                        <option value="car">
+                          Car (+${gigData.carPrice})
+                        </option>
+                    )}
+                    {gigData?.scooterPrice && (
+                        <option value="moto">
+                          Moto (+${gigData.scooterPrice})
+                        </option>
+                    )}
+                  </select>
+                </div>
+
+                <div className="hours-selection">
+                  <h3>
+                    <FontAwesomeIcon icon={faCalendarCheck} /> Duration
+                  </h3>
+                  <input
+                      type="number"
+                      min="1"
+                      max="7"
+                      value={hours}
+                      onChange={handleHoursChange}
+                  />
+                </div>
+
+                <div className="privacy-agreement">
+                  <input
+                      type="checkbox"
+                      id="privacy-check"
+                      checked={privacyAccepted}
+                      onChange={() => setPrivacyAccepted(!privacyAccepted)}
+                  />
+                  <label htmlFor="privacy-check">
+                    I accept privacy conditions and tour guidelines
+                  </label>
+                </div>
+              </div>
+
+              <div className="booking-actions">
+                <button
+                    className="book-button"
+                    disabled={!privacyAccepted}
+                    onClick={handleConfirmBooking}
+                >
+                  Confirm Booking
+                </button>
+              </div>
             </div>
           </div>
         </div>

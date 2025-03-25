@@ -42,6 +42,7 @@ import AdminOrders from "./pages/Admin/orders/AdminOrders";
 import AdminOrderDetails from "./pages/Admin/orders/AdminOrderDetails";
 import AdminVerifications from "./pages/Admin/verifications/AdminVerifications";
 import AdminCountries from "./pages/Admin/countries/AdminCountries";
+import AdminPOIs from "./pages/Admin/pois/AdminPOIs.jsx";
 
 function App() {
   const queryClient = new QueryClient();
@@ -213,7 +214,12 @@ function App() {
               path: "countries",
               element: <AdminCountries />,
             },
+            {
+              path: "pois",
+              element: <AdminPOIs/>
+            }
           ],
+
         },
       ],
     },

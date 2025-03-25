@@ -15,6 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { topVisitedCities, availableLanguages } from "../../utils/options.js";
 import PointsOfInterestSection from "../PointsOfInterestSection/PointsOfInterestSection"; // Import the new component
 import "./Hero.scss";
+import newRequest from "../../utils/newRequest";
 
 // Extract unique countries
 const countries = [...new Set(topVisitedCities.map(item => item.country))].sort();
@@ -30,6 +31,7 @@ const HeroSection = () => {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [selectedPOIs, setSelectedPOIs] = useState([]);
   const navigate = useNavigate();
+  const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
   // Handle country change
   const handleCountryChange = (e) => {
@@ -53,6 +55,21 @@ const HeroSection = () => {
     const selectedCity = e.target.value;
     setCity(selectedCity);
   };
+  useEffect(() => {
+    const fetchPOIs = async () => {
+      try {
+        const response = await newRequest.get("/pois");
+        setPointsOfInterest(response.data.pois || []);
+      } catch (error) {
+        console.error("Failed to fetch POIs", error);
+      }
+    };
+
+    if (city) {
+      fetchPOIs();
+    }
+  }, [city]);
+
 
   // Toggle language selection
   const toggleLanguage = (languageCode) => {
@@ -176,6 +193,7 @@ const HeroSection = () => {
                         selectedPOIs={selectedPOIs}
                         setSelectedPOIs={setSelectedPOIs}
                         city={city}
+                        pointsOfInterest={pointsOfInterest}
                         disabled={!city}
                     />
                   </div>

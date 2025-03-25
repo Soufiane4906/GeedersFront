@@ -2,7 +2,17 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./AdminNavbar.scss";
-import { FaUserCircle, FaHome, FaUsers, FaCalendarAlt, FaShoppingCart, FaCheckCircle, FaGlobe, FaSignOutAlt } from "react-icons/fa";
+import {
+    FaUserCircle,
+    FaHome,
+    FaUsers,
+    FaCalendarAlt,
+    FaShoppingCart,
+    FaCheckCircle,
+    FaGlobe,
+    FaSignOutAlt,
+    FaSmile
+} from "react-icons/fa";
 
 const AdminNavbar = () => {
     const navigate = useNavigate();
@@ -50,6 +60,9 @@ const AdminNavbar = () => {
                     </Link>
                     <Link to="/admin/countries" className="nav-link">
                         <FaGlobe /> Countries
+                    </Link>
+                    <Link to="/admin/pois" className="nav-link">
+                        <FaSmile /> Pois
                     </Link>
                 </div>
 
