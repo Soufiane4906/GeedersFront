@@ -12,6 +12,12 @@ import {
   FaUserPlus,
   FaMapMarkerAlt,
   FaBars,
+  FaUsers,
+  FaHome,
+  FaShoppingCart,
+  FaCheckCircle,
+  FaGlobe,
+  FaSmile
 } from "react-icons/fa";
 
 function Navbar() {
@@ -65,12 +71,20 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const adminLinks = [
+    { path: "/admin", icon: <FaHome />, text: "Dashboard" },
+    { path: "/admin/users", icon: <FaUsers />, text: "Users" },
+    { path: "/admin/gigs", icon: <FaCalendarAlt />, text: "Services" },
+    { path: "/admin/orders", icon: <FaShoppingCart />, text: "Orders" },
+    { path: "/admin/verifications", icon: <FaCheckCircle />, text: "Verifications" },
+    { path: "/admin/countries", icon: <FaGlobe />, text: "Countries" },
+    { path: "/admin/pois", icon: <FaSmile />, text: "POIs" }
+  ];
 
   return (
-    <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
+      <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
         <div className="logo">
-            <BlaBlaTripLogo />
-
+          <BlaBlaTripLogo />
         </div>
         <div className="links">
           {currentUser ? (
@@ -115,11 +129,15 @@ function Navbar() {
               </div>
             </div>
           ) : (
-            <>
-              <Link to="/login" className="link">
-                <button className="login">Get Started</button>
-              </Link>
-            </>
+              <div className="auth-links">
+                <Link to="/login" className="signin">
+                  <FaSignInAlt /> Sign In
+                </Link>
+                <span className="divider">|</span>
+                <Link to="/register" className="signup">
+                  <FaUserPlus /> Sign Up
+                </Link>
+              </div>
           )}
         </div>
       </div>

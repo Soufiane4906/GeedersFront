@@ -95,7 +95,7 @@ function Featured() {
         <div className="container">
           <div className="left">
             <h1>
-              Discover the perfect  for your adventure
+              Discover the perfect Ambassador for your adventure
             </h1>
             <div className="search-container">
               <div className="select">
@@ -135,11 +135,12 @@ function Featured() {
                     value={languageOptions.filter((option) =>
                         selectedLanguages.includes(option.value)
                     )}
+                    placeholder="Select languages for barrier-free communication"
                 />
               </div>
               <div className="additional-fields">
                 <p>
-                  <FontAwesomeIcon icon={faCar} /> With Vehicle Options?
+                  <FontAwesomeIcon icon={faCar} /> Need Transportation?
                 </p>
                 <div className="radio-buttons">
                   <label>
@@ -193,14 +194,14 @@ function Featured() {
                     </>
                 ) : (
                     <>
-                      <FontAwesomeIcon icon={faChevronDown} /> More Details
+                      <FontAwesomeIcon icon={faChevronDown} /> Your Interests
                     </>
                 )}
               </button>
               {showPointsOfInterest && (
                   <div className="points-of-interest">
                     <p className="p-poi">
-                      <FontAwesomeIcon icon={faMapPin} /> Points of Interest
+                      <FontAwesomeIcon icon={faMapPin} /> Select Your Interests
                     </p>
                     <div className="poi-options">
                       {pointsOfInterestOptions.map((poi) => (
@@ -227,7 +228,7 @@ function Featured() {
                   </div>
               )}
               <button className="search-button" onClick={handleSubmit}>
-                Search 
+                Find Your Ambassador
               </button>
             </div>
           </div>

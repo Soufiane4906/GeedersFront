@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FaUserCircle,
     FaEnvelope,
@@ -8,10 +8,50 @@ import {
     FaLanguage,
     FaPhone,
     FaIdCard,
-    FaCreditCard
+    FaCreditCard,
+    FaQuoteLeft,
+    FaQuoteRight
 } from 'react-icons/fa';
+import newRequest from "../../utils/newRequest.js";
 
 const ProfileDetail = ({ user }) => {
+    const [languages, setLanguages] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Fetch languages from API
+    useEffect(() => {
+        const fetchLanguages = async () => {
+            setIsLoading(true);
+            try {
+                const languagesResponse = await newRequest.get("/languages");
+                setLanguages(languagesResponse.data || []);
+            } catch (error) {
+                console.error("Failed to fetch languages", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchLanguages();
+    }, []);
+
+    // Function to get flag URL from language flag code
+    const getFlagUrl = (flagCode) => {
+        // If it's already a full URL, return it
+        if (flagCode?.startsWith('http')) {
+            return flagCode;
+        }
+
+        // Otherwise, assume it's a country code and build the flag URL
+        const code = flagCode?.toLowerCase();
+        return code ? `https://flagcdn.com/w320/${code}.png` : '';
+    };
+
+    // Get language details by ID
+    const getLanguageById = (languageId) => {
+        return languages.find(lang => lang._id === languageId) || { langue: languageId, flag: null };
+    };
+
     return (
         <div className="profile-detail">
             <h2>Profile Details</h2>
@@ -46,44 +86,68 @@ const ProfileDetail = ({ user }) => {
                     <span className="value">{user.isAmbassador ? 'Ambassador' : 'Guest'}</span>
                 </div>
 
-                <div className="info-item">
-                    <FaLanguage className="icon" />
-                    <span className="label">Languages:</span>
-                    <span className="value">
-            {user.languages && user.languages.length > 0
-                ? user.languages.join(', ')
-                : 'None specified'}
-          </span>
-                </div>
-
-                <div className="info-item">
+                <div className="info-item phone-item">
                     <FaPhone className="icon" />
                     <span className="label">Phone:</span>
                     <span className="value">{user.phone || 'Not specified'}</span>
                 </div>
 
-                <div className="info-item">
-                    <FaIdCard className="icon" />
-                    <span className="label">Description:</span>
-                    <span className="value">{user.desc || 'No description provided'}</span>
-                </div>
-
-                <div className="info-item">
+                <div className="info-item payment-item">
                     <FaCreditCard className="icon" />
                     <span className="label">Payment Method:</span>
                     <span className="value">{user.paymentMethod || 'Not specified'}</span>
                 </div>
 
                 {user.paymentMethod && (
-                    <div className="info-item">
+                    <div className="info-item account-item">
                         <FaCreditCard className="icon" />
                         <span className="label">Account Number:</span>
                         <span className="value">
-              {user.accountNumber ? '••••' + user.accountNumber.slice(-4) : 'Not provided'}
-            </span>
+                            {user.accountNumber ? '••••' + user.accountNumber.slice(-4) : 'Not provided'}
+                        </span>
                     </div>
                 )}
             </div>
+
+            {/* Languages with flags - new section */}
+            <div className="languages-section">
+                <h3><FaLanguage className="section-icon" /> Languages</h3>
+                {isLoading ? (
+                    <div className="loading-languages">Loading languages...</div>
+                ) : user.languages && user.languages.length > 0 ? (
+                    <div className="language-flags-container">
+                        {user.languages.map(langId => {
+                            const language = getLanguageById(langId);
+                            return (
+                                <div key={langId} className="language-badge">
+                                    {language.flag && (
+                                        <img
+                                            src={getFlagUrl(language.flag)}
+                                            alt={language.langue}
+                                            className="language-flag"
+                                        />
+                                    )}
+                                    <span className="language-name">{language.langue}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="no-languages">No languages specified</div>
+                )}
+            </div>
+
+            {/* Description with cool styling */}
+            {user.desc && (
+                <div className="description-section">
+                    <h3><FaIdCard className="section-icon" /> About Me</h3>
+                    <div className="description-content">
+                        <FaQuoteLeft className="quote-icon quote-left" />
+                        <div className="description-text">{user.desc}</div>
+                        <FaQuoteRight className="quote-icon quote-right" />
+                    </div>
+                </div>
+            )}
 
             <div className="identity-verification-section">
                 <h3>Identity Verification</h3>

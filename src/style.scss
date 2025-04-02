@@ -4510,7 +4510,7 @@ Version: 1.0.0
   }
   .hero-layout .hero-form {
     background-color: var(--white-color);
-    padding: 30px 30px 0px;
+    padding: 30px 30px 30px;
     border-radius: 15px;
     position: relative;
     z-index: 1;
@@ -4707,7 +4707,7 @@ Version: 1.0.0
       margin-right: 0;
     }
     .hero-layout .hero-mask {
-      padding-bottom: 80px;
+      padding-bottom: 185px !important;
     }
     .hero-layout .hero-bottom {
       margin-top: 70px;

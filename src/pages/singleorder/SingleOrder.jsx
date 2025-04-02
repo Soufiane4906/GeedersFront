@@ -18,6 +18,7 @@ const SingleOrder = () => {
 
   const generatePDF = () => {
     const element = document.getElementById('pdf-content');
+    if (!element) return;
 
     // Add PDF generation class to apply specific styles for PDF
     element.classList.add('generating-pdf');
@@ -26,12 +27,25 @@ const SingleOrder = () => {
       scale: 2,
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      logging: false, // Disable logging for better performance
+      onclone: (document) => {
+        // Ensure colors appear in the PDF by adding necessary styles
+        const style = document.createElement('style');
+        style.innerHTML = `
+          .order-banner { background-color: #ff681a !important; }
+          .verification-badge.verified { background-color: #37d4d9 !important; }
+          .verification-badge.not-verified { background-color: #dc3545 !important; }
+          .status.completed { background-color: rgba(40, 167, 69, 0.1) !important; color: #28a745 !important; }
+          .status.pending { background-color: rgba(254, 198, 36, 0.1) !important; color: #fec624 !important; }
+        `;
+        document.head.appendChild(style);
+      }
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210; // A4 size width in mm
-      const pageHeight = 295; // A4 size height in mm
+      const pageHeight = 295; // A4 size height in mm (slightly reduced to avoid page cut)
       const imgHeight = canvas.height * imgWidth / canvas.width;
       let heightLeft = imgHeight;
       let position = 0;
@@ -48,6 +62,7 @@ const SingleOrder = () => {
       pdf.addImage(imgData, 'JPEG', 0, 20, imgWidth, imgHeight);
       heightLeft -= (pageHeight - 20);
 
+      // Add additional pages if content doesn't fit on one page
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
@@ -80,6 +95,10 @@ const SingleOrder = () => {
 
       // Remove the PDF generation class
       element.classList.remove('generating-pdf');
+    }).catch(err => {
+      console.error("Error generating PDF:", err);
+      alert("Failed to generate PDF. Please try again.");
+      element.classList.remove('generating-pdf');
     });
   };
 
@@ -93,14 +112,31 @@ const SingleOrder = () => {
   if (error) return (
       <div className="error-container">
         <div className="error-icon">❌</div>
-        <p>Error loading order details. Please try again.</p>
+        <p>Error loading order details: {error.message || "Please try again."}</p>
         <button className="btn-retry" onClick={() => window.location.reload()}>Retry</button>
       </div>
   );
 
+  // Safely access nested properties
+  const orderData = data?.order || {};
+  const ambassadorData = data?.Ambassador || {};
+
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    if (!dateString) return "N/A";
+    try {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  // Determine vehicle option
+  const getVehicleOption = () => {
+    if (!orderData.options) return "None";
+    if (orderData.options.car) return "Car";
+    if (orderData.options.scooter) return "Scooter";
+    return "None";
   };
 
   return (
@@ -112,7 +148,7 @@ const SingleOrder = () => {
               <button className="btn-pdf" onClick={generatePDF}>
                 <FaFilePdf /> Export as PDF
               </button>
-              <button className="btn-back" onClick={() => navigate("/orders")}>
+              <button className="btn-back" onClick={() => navigate("/user/orders")}>
                 Back to Orders
               </button>
             </div>
@@ -139,32 +175,32 @@ const SingleOrder = () => {
                   <div className="info-grid">
                     <div className="info-item">
                       <div className="info-label"><FaFilePdf className="icon" /> Title</div>
-                      <div className="info-value">{data.order.title}</div>
+                      <div className="info-value">{orderData.title || "N/A"}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaDollarSign className="icon" /> Total Price</div>
-                      <div className="info-value price">${data.order.totalprice}</div>
+                      <div className="info-value price">${orderData.totalprice || "0"}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaClock className="icon" /> Duration</div>
-                      <div className="info-value">{data.order.duration} hours</div>
+                      <div className="info-value">{orderData.duration || "0"} hours</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaMapMarkerAlt className="icon" /> Location</div>
-                      <div className="info-value">{data.order.location || "N/A"}</div>
+                      <div className="info-value">{orderData.location || "N/A"}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaCar className="icon" /> Vehicle Option</div>
-                      <div className="info-value">{data.order.options?.car ? "Car" : data.order.options?.scooter ? "Scooter" : "None"}</div>
+                      <div className="info-value">{getVehicleOption()}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaCalendarAlt className="icon" /> Order Date</div>
-                      <div className="info-value">{formatDate(data.order.createdAt)}</div>
+                      <div className="info-value">{formatDate(orderData.createdAt)}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label"><FaCheck className="icon" /> Status</div>
-                      <div className={`info-value status ${data.order.isCompleted ? "completed" : "pending"}`}>
-                        {data.order.isCompleted ? "Completed" : "Pending"}
+                      <div className={`info-value status ${orderData.isCompleted ? "completed" : "pending"}`}>
+                        {orderData.isCompleted ? "Completed" : "Pending"}
                       </div>
                     </div>
                   </div>
@@ -180,25 +216,28 @@ const SingleOrder = () => {
                   <div className="ambassador-profile">
                     <div className="ambassador-img">
                       <img
-                          src={data.Ambassador.img || "https://via.placeholder.com/150"}
-                          alt={data.Ambassador.username}
+                          src={ambassadorData.img || "https://via.placeholder.com/150"}
+                          alt={ambassadorData.username || "Ambassador"}
                           className="profile-photo"
+                          onError={(e) => {
+                            e.target.src = "https://via.placeholder.com/150";
+                          }}
                       />
-                      <div className={`verification-badge ${data.Ambassador.isVerified ? "verified" : "not-verified"}`}>
-                        {data.Ambassador.isVerified ? "✓" : "✗"}
+                      <div className={`verification-badge ${ambassadorData.isVerified ? "verified" : "not-verified"}`}>
+                        {ambassadorData.isVerified ? "✓" : "✗"}
                       </div>
                     </div>
                     <div className="ambassador-details">
-                      <h3 className="ambassador-name">{data.Ambassador.username}</h3>
+                      <h3 className="ambassador-name">{ambassadorData.username || "Unknown Ambassador"}</h3>
                       <div className="contact-info">
-                        <p><FaEnvelope className="icon" /> {data.Ambassador.email}</p>
-                        <p><FaPhone className="icon" /> {data.Ambassador.phone || "Not provided"}</p>
-                        <p><FaMapMarkerAlt className="icon" /> {data.Ambassador.city}, {data.Ambassador.country}</p>
-                        <p><FaLanguage className="icon" /> {data.Ambassador.spokenLanguages || "Not specified"}</p>
+                        <p><FaEnvelope className="icon" /> {ambassadorData.email || "Email not provided"}</p>
+                        <p><FaPhone className="icon" /> {ambassadorData.phone || "Phone not provided"}</p>
+                        <p><FaMapMarkerAlt className="icon" /> {ambassadorData.city || "City"}, {ambassadorData.country || "Country"}</p>
+                        <p><FaLanguage className="icon" /> {ambassadorData.spokenLanguages || "Not specified"}</p>
                       </div>
                       <div className="ambassador-bio">
                         <h4>About Ambassador</h4>
-                        <p>{data.Ambassador.desc || "No description available."}</p>
+                        <p>{ambassadorData.desc || "No description available."}</p>
                       </div>
                     </div>
                   </div>

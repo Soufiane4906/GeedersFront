@@ -27,6 +27,7 @@ import {
   faMotorcycle
 } from "@fortawesome/free-solid-svg-icons";
 import { availableLanguages } from "../../utils/options.js";
+import Footer from "../../components/footer/Footer.jsx";
 
 const formatDate = (dateString) => {
   try {
@@ -781,7 +782,7 @@ function Gigs() {
                     </div>
                 ) : (
                     <div className="no-results">
-                      <img src="/img/no-results.svg" alt="Pas de résultats" className="no-results-img" />
+                      <img src="/img/img_no_result.png" alt="Pas de résultats" className="no-results-img" />
                       <p>{noResultsMessage}</p>
                     </div>
                 )}
@@ -789,7 +790,13 @@ function Gigs() {
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <Footer />
       </div>
+
   );
 }
 

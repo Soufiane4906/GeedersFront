@@ -20,17 +20,22 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-step-progress-bar/styles.css";
 import { ProgressBar, Step } from "react-step-progress-bar";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { topVisitedCities } from "../../utils/options.js";
-import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
-import "./Add.scss";
+import "./EditGig.scss";
 import WysiwygEditor from "../../components/WysiwygEditor.jsx";
 import PointsOfInterestSection from "../../components/PointsOfInterestSection/PointsOfInterestSection.jsx";
 
-const Add = () => {
+function EditGig() {
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const initialGigData = location.state?.gigData;
+
   const [step, setStep] = useState(1);
   const [selectedDates, setSelectedDates] = useState([]);
   const [formData, setFormData] = useState({
@@ -42,7 +47,7 @@ const Add = () => {
     carPrice: 0,
     hasScooter: "",
     scooterPrice: 0,
-    availabilityTimes: selectedDates,
+    availabilityTimes: [],
     shortDesc: "",
     price: 0,
     features: [],
@@ -51,21 +56,58 @@ const Add = () => {
 
   const [validationErrors, setValidationErrors] = useState({});
   const [cities, setCities] = useState([]);
-  const [countries, setCountries] = useState([]); // Nouveau state pour les pays
+  const [countries, setCountries] = useState([]);
   const [showCity, setShowCity] = useState(false);
   const [selectedPointsOfInterest, setSelectedPointsOfInterest] = useState([]);
-  const navigate = useNavigate();
   const [pointsOfInterest, setPointsOfInterest] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Ajouter un état de chargement
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Load gig data
+  const { isLoading: isLoadingGig } = useQuery({
+    queryKey: ["gigDetails", id],
+    queryFn: async () => {
+      if (initialGigData) return initialGigData;
+      const res = await newRequest.get(`/gigs/${id}`);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setFormData({
+        ...data,
+        hasCar: data.hasCar.toString(),
+        hasScooter: data.hasScooter.toString()
+      });
 
-  // Récupérer les pays depuis l'API au chargement du composant
+      if (data.availabilityTimes && data.availabilityTimes.length > 0) {
+        // Convert string dates to Date objects
+        const dates = data.availabilityTimes.map(date =>
+            typeof date === 'string' ? new Date(date) : date
+        );
+        setSelectedDates(dates);
+      }
+
+      if (data.poi && data.poi.length > 0) {
+        setSelectedPointsOfInterest(data.poi);
+      }
+    },
+    enabled: !!id
+  });
+
+  // Fetch countries
   useEffect(() => {
     const fetchCountries = async () => {
       setIsLoading(true);
       try {
         const response = await newRequest.get("/countries");
         setCountries(response.data || []);
+
+        // If we have a country in formData, fetch cities for that country
+        if (formData.country) {
+          const country = response.data.find(c => c.name === formData.country);
+          if (country) {
+            setShowCity(true);
+            fetchCitiesForCountry(country._id);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch countries", error);
         toast.error("Failed to load countries");
@@ -75,7 +117,7 @@ const Add = () => {
     };
 
     fetchCountries();
-  }, []);
+  }, [formData.country]);
 
   // Fetch POIs when city is selected
   useEffect(() => {
@@ -93,29 +135,6 @@ const Add = () => {
     }
   }, [formData.city]);
 
-  const handleCountryChange = (e) => {
-    const selectedCountryId = e.target.value;
-
-    // Trouver le pays sélectionné dans la liste des pays
-    const selectedCountry = countries.find(country => country._id === selectedCountryId);
-
-    setFormData((prevData) => ({
-      ...prevData,
-      country: selectedCountry ? selectedCountry.name : "",
-      countryId: selectedCountryId, // Stocker l'ID du pays pour les requêtes API
-      city: "",
-    }));
-
-    setShowCity(true);
-
-    // Récupérer les villes pour le pays sélectionné depuis l'API
-    fetchCitiesForCountry(selectedCountryId);
-
-    // Clear country validation error if country is selected
-    if (selectedCountryId) {
-      setValidationErrors(prev => ({ ...prev, country: "" }));
-    }
-  };
   // Fetch cities for a country
   const fetchCitiesForCountry = async (countryId) => {
     if (!countryId) return;
@@ -132,16 +151,38 @@ const Add = () => {
     }
   };
 
+  const handleCountryChange = (e) => {
+    const selectedCountryId = e.target.value;
+
+    // Find the selected country in the list of countries
+    const selectedCountry = countries.find(country => country._id === selectedCountryId);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      country: selectedCountry ? selectedCountry.name : "",
+      countryId: selectedCountryId,
+      city: "",
+    }));
+
+    setShowCity(true);
+    fetchCitiesForCountry(selectedCountryId);
+
+    // Clear country validation error if country is selected
+    if (selectedCountryId) {
+      setValidationErrors(prev => ({ ...prev, country: "" }));
+    }
+  };
+
   const handleCityChange = (e) => {
     const selectedCityId = e.target.value;
 
-    // Trouver la ville sélectionnée dans la liste des villes
+    // Find the selected city in the list of cities
     const selectedCity = cities.find(city => city._id === selectedCityId);
 
     setFormData((prevData) => ({
       ...prevData,
       city: selectedCity ? selectedCity.name : "",
-      cityId: selectedCityId // Stocker l'ID de la ville pour les requêtes API
+      cityId: selectedCityId
     }));
 
     // Clear city validation error if city is selected
@@ -150,14 +191,11 @@ const Add = () => {
     }
   };
 
-
-
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
     }));
 
     // Clear validation error for the field being changed
@@ -256,7 +294,22 @@ const Add = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  // Mutation for updating the gig
+  const mutation = useMutation({
+    mutationFn: (updatedGigData) => {
+      return newRequest.put(`/gigs/${id}`, updatedGigData);
+    },
+    onSuccess: () => {
+      toast.success("Gig updated successfully!");
+      navigate("/myGigs");
+    },
+    onError: (error) => {
+      toast.error("Error updating gig: " + (error.response?.data?.message || error.message));
+      console.error("Full error details:", error);
+    }
+  });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateStep(step)) {
@@ -265,118 +318,37 @@ const Add = () => {
     }
 
     try {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-      // Créer un nouvel objet sans les champs countryId et cityId
+      // Create a new object without countryId and cityId
       const { countryId, cityId, ...gigDataWithoutIds } = formData;
 
-      const gigData = {
+      const updatedGigData = {
         ...gigDataWithoutIds,
-        userId: currentUser._id,
         availabilityTimes: selectedDates,
         poi: selectedPointsOfInterest
       };
 
-      await newRequest.post("/gigs", gigData);
-      toast.success("Gig created successfully!");
-      navigate("/myGigs");
+      mutation.mutate(updatedGigData);
     } catch (error) {
-      toast.error("Error creating gig: " + (error.response?.data?.message || error.message));
+      toast.error("Error preparing data: " + error.message);
       console.error("Full error details:", error);
     }
   };
 
-  // Modifier la section du formulaire pour le pays et la ville
-  const renderLocationStep = () => (
-      <div className="form-step">
-        <div className="row">
-          <div className="col-md-6">
-            <div className="form-group">
-              <label htmlFor="country">
-                <FontAwesomeIcon icon={faGlobe} className="icon" />
-                Country <span className="required-star">*</span>
-              </label>
-              {isLoading ? (
-                  <div className="loading-indicator">Loading countries...</div>
-              ) : (
-                  <select
-                      name="country"
-                      value={formData.countryId || ""}
-                      onChange={handleCountryChange}
-                      className={`form-control ${validationErrors.country ? 'is-invalid' : ''}`}
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((country) => (
-                        <option key={country._id} value={country._id}>
-                          {country.name}
-                        </option>
-                    ))}
-                  </select>
-              )}
-              {validationErrors.country && (
-                  <div className="error-message">
-                    <FontAwesomeIcon icon={faExclamationTriangle} /> {validationErrors.country}
-                  </div>
-              )}
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="form-group">
-              <label htmlFor="city">
-                <FontAwesomeIcon icon={faCity} className="icon" />
-                City <span className="required-star">*</span>
-              </label>
-              {isLoading ? (
-                  <div className="loading-indicator">Loading cities...</div>
-              ) : (
-                  <select
-                      name="city"
-                      value={formData.cityId || ""}
-                      onChange={handleCityChange}
-                      disabled={!showCity || cities.length === 0}
-                      className={`form-control ${validationErrors.city ? 'is-invalid' : ''}`}
-                  >
-                    <option value="">Select City</option>
-                    {cities.map((city) => (
-                        <option key={city._id} value={city._id}>
-                          {city.name}
-                        </option>
-                    ))}
-                  </select>
-              )}
-              {validationErrors.city && (
-                  <div className="error-message">
-                    <FontAwesomeIcon icon={faExclamationTriangle} /> {validationErrors.city}
-                  </div>
-              )}
-              {showCity && cities.length === 0 && !isLoading && (
-                  <div className="info-message">
-                    No cities available for this country
-                  </div>
-              )}
-            </div>
-          </div>
+  if (isLoadingGig) {
+    return (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading gig details...</p>
         </div>
-
-        <div className="button-group">
-          <button className="btn back-btn" onClick={prevStep}>
-            Back
-          </button>
-          <button className="btn next-btn" onClick={nextStep}>
-            Next <FontAwesomeIcon icon={faCheck} className="ms-2" />
-          </button>
-        </div>
-      </div>
-  );
-
+    );
+  }
 
   return (
       <div className="add-gig-container">
         <div className="add-gig-wrapper">
           <div className="section-title">
-            <h2>Add New Availability</h2>
-            <p>Create your new service offering for travelers</p>
+            <h2>Edit Your Availability</h2>
+            <p>Update your service offering for travelers</p>
           </div>
 
           <ToastContainer position="top-right" autoClose={5000} />
@@ -444,12 +416,11 @@ const Add = () => {
                     )}
                   </div>
 
-              <div className="form-group">
+                  <div className="form-group">
                     <label htmlFor="desc">
                       <FontAwesomeIcon icon={faInfoCircle} className="icon" />
                       Description <span className="required-star">*</span>
                     </label>
-                    {/* Replace textarea with WYSIWYG editor */}
                     <WysiwygEditor
                         value={formData.desc}
                         onChange={(e) => {
@@ -478,7 +449,88 @@ const Add = () => {
                 </div>
             )}
 
-            {step === 2 && renderLocationStep()}
+            {step === 2 && (
+                <div className="form-step">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label htmlFor="country">
+                          <FontAwesomeIcon icon={faGlobe} className="icon" />
+                          Country <span className="required-star">*</span>
+                        </label>
+                        {isLoading ? (
+                            <div className="loading-indicator">Loading countries...</div>
+                        ) : (
+                            <select
+                                name="country"
+                                value={formData.countryId || ""}
+                                onChange={handleCountryChange}
+                                className={`form-control ${validationErrors.country ? 'is-invalid' : ''}`}
+                            >
+                              <option value="">Select Country</option>
+                              {countries.map((country) => (
+                                  <option key={country._id} value={country._id}>
+                                    {country.name}
+                                  </option>
+                              ))}
+                            </select>
+                        )}
+                        {validationErrors.country && (
+                            <div className="error-message">
+                              <FontAwesomeIcon icon={faExclamationTriangle} /> {validationErrors.country}
+                            </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label htmlFor="city">
+                          <FontAwesomeIcon icon={faCity} className="icon" />
+                          City <span className="required-star">*</span>
+                        </label>
+                        {isLoading ? (
+                            <div className="loading-indicator">Loading cities...</div>
+                        ) : (
+                            <select
+                                name="city"
+                                value={formData.cityId || ""}
+                                onChange={handleCityChange}
+                                disabled={!showCity || cities.length === 0}
+                                className={`form-control ${validationErrors.city ? 'is-invalid' : ''}`}
+                            >
+                              <option value="">Select City</option>
+                              {cities.map((city) => (
+                                  <option key={city._id} value={city._id}>
+                                    {city.name}
+                                  </option>
+                              ))}
+                            </select>
+                        )}
+                        {validationErrors.city && (
+                            <div className="error-message">
+                              <FontAwesomeIcon icon={faExclamationTriangle} /> {validationErrors.city}
+                            </div>
+                        )}
+                        {showCity && cities.length === 0 && !isLoading && (
+                            <div className="info-message">
+                              No cities available for this country
+                            </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="button-group">
+                    <button className="btn back-btn" onClick={prevStep}>
+                      Back
+                    </button>
+                    <button className="btn next-btn" onClick={nextStep}>
+                      Next <FontAwesomeIcon icon={faCheck} className="ms-2" />
+                    </button>
+                  </div>
+                </div>
+            )}
 
             {step === 3 && (
                 <div className="form-step">
@@ -595,7 +647,8 @@ const Add = () => {
                           startDate={selectedDates[0]}
                           endDate={selectedDates[selectedDates.length - 1]}
                           className="custom-datepicker"
-                       showMonthYearDropdown/>
+                          showMonthYearDropdown
+                      />
                     </div>
                     {validationErrors.availabilityTimes && (
                         <div className="error-message">
@@ -713,7 +766,9 @@ const Add = () => {
                   </div>
 
                   <div className="form-group">
-
+                    <label htmlFor="pointsOfInterest">
+                      <FontAwesomeIcon icon={faMapMarkedAlt} className="icon" /> Points of Interest
+                    </label>
                     <PointsOfInterestSection
                         selectedPOIs={selectedPointsOfInterest}
                         setSelectedPOIs={setSelectedPointsOfInterest}
@@ -727,8 +782,12 @@ const Add = () => {
                     <button className="btn back-btn" onClick={prevStep}>
                       Back
                     </button>
-                    <button className="btn submit-btn" onClick={handleSubmit}>
-                      Create Gig <FontAwesomeIcon icon={faCheck} className="ms-2" />
+                    <button
+                        className="btn submit-btn"
+                        onClick={handleSubmit}
+                        disabled={mutation.isLoading}
+                    >
+                      {mutation.isLoading ? "Updating..." : "Save Changes"} <FontAwesomeIcon icon={faCheck} className="ms-2" />
                     </button>
                   </div>
                 </div>
@@ -737,21 +796,6 @@ const Add = () => {
         </div>
       </div>
   );
-};
+}
 
-export default Add;
-
-// POI options
-const pointsOfInterestOptions = [
-  { name: "Business", icon: "./img/icons8-b2b-50.png" },
-  { name: "Administration", icon: "./img/icons8-administration.png" },
-  { name: "Museum", icon: "https://img.icons8.com/ios/50/000000/museum.png" },
-  { name: "Beach", icon: "https://img.icons8.com/ios/50/000000/beach.png" },
-  { name: "Night Club", icon: "https://img.icons8.com/?size=100&id=60357&format=png&color=000000" },
-  { name: "Park", icon: "https://img.icons8.com/?size=100&id=7XFQqoCVoosj&format=png&color=000000" },
-  { name: "Shopping Mall", icon: "https://img.icons8.com/ios/50/000000/shopping-mall.png" },
-  { name: "Theatre", icon: "https://img.icons8.com/?size=100&id=zbPYzShUWkkU&format=png&color=000000" },
-  { name: "Amusement Park", icon: "https://img.icons8.com/?size=100&id=25053&format=png&color=000000" },
-  { name: "Restaurant", icon: "https://img.icons8.com/ios/50/000000/restaurant.png" },
-  { name: "Hiking", icon: "https://img.icons8.com/?size=100&id=9844&format=png&color=000000" },
-];
+export default EditGig;

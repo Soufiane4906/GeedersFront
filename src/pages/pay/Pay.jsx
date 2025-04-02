@@ -41,6 +41,8 @@ const Pay = () => {
     }
   };
 
+
+
   useEffect(() => {
     fetchBookingDetailsAndMakeRequest();
   }, []);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,10 +14,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { availableLanguages } from "../../utils/options.js";
-import PointsOfInterestSection from "../PointsOfInterestSection/PointsOfInterestSection";
+// Remove import of availableLanguages since we'll fetch from API
+// import { availableLanguages } from "../../utils/options.js";
 import "./Hero.scss";
 import newRequest from "../../utils/newRequest";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+// Image paths - make sure these are correct
+const images = [
+  "/assets/img/hero/freepik__a-collection-of-colorful-travel-stamps-with-variou__39091.jpeg",
+  "/assets/img/hero/freepik__a-collection-of-colorful-travel-stamps-with-variou__39092.jpeg",
+  "/assets/img/hero/freepik__a-collection-of-colorful-travel-stamps-with-variou__39093.jpeg",
+  "/assets/img/hero/freepik__a-collection-of-colorful-travel-stamps-with-variou__39094.jpeg",
+  "/assets/img/hero/v660-mon-04-travelbadge.jpg"
+];
 
 const HeroSection = () => {
   // States for form fields
@@ -25,10 +37,12 @@ const HeroSection = () => {
   const [city, setCity] = useState("");
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
-  const [showCity, setShowCity] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [languages, setLanguages] = useState([]); // Add state for languages from API
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [selectedPOIs, setSelectedPOIs] = useState([]);
   const [hasCar, setHasCar] = useState(false);
@@ -38,94 +52,125 @@ const HeroSection = () => {
   const [showPoiDropdown, setShowPoiDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sliderLoaded, setSliderLoaded] = useState(false);
 
-  // Fetch countries on component mount
+  // Improved slider settings
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 800,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    fade: true,
+    cssEase: 'linear',
+    lazyLoad: 'ondemand',
+    beforeChange: () => setSliderLoaded(true),
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false
+        }
+      }
+    ]
+  };
+
+  // Fetch countries and languages on component mount
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await newRequest.get("/countries");
-        setCountries(response.data);
+        // Fetch countries
+        const countriesResponse = await newRequest.get("/countries");
+        setCountries(countriesResponse.data);
+
+        // Fetch languages
+        const languagesResponse = await newRequest.get("/languages");
+        setLanguages(languagesResponse.data || []);
       } catch (error) {
-        console.error("Failed to fetch countries", error);
-        setError("Failed to load countries");
+        console.error("Failed to fetch initial data", error);
+        setError("Failed to load initial data");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCountries();
+    fetchData();
   }, []);
 
-  // Handle country change
-  const handleCountryChange = async (e) => {
-    const selectedCountryName = e.target.value;
-    setCountry(selectedCountryName);
-    setShowCity(true);
+  // Function to get flag URL from language flag code - similar to AdminLanguages
+  const getFlagUrl = (flagCode) => {
+    // If it's already a full URL, return it
+    if (flagCode?.startsWith('http')) {
+      return flagCode;
+    }
+
+    // Otherwise, assume it's a country code and build the flag URL
+    const code = flagCode?.toLowerCase();
+    return code ? `https://flagcdn.com/w320/${code}.png` : '';
+  };
+
+  // Handle country selection
+  const handleCountrySelect = (countryId, countryName) => {
+    setCountry(countryName);
     setCity("");
     setSelectedPOIs([]);
+    fetchCitiesForCountry(countryId);
+    setShowCountryDropdown(false);
+  };
 
-    // Clear cities when country changes
-    setCities([]);
-
-    // Find the selected country object
-    const selectedCountryObj = countries.find(c => c.name === selectedCountryName);
-
-    if (selectedCountryObj) {
-      try {
-        setIsLoading(true);
-        const response = await newRequest.get(`/cities?countryId=${selectedCountryObj._id}`);
-        setCities(response.data);
-      } catch (error) {
-        console.error("Failed to fetch cities", error);
-        setError("Failed to load cities");
-      } finally {
-        setIsLoading(false);
-      }
+  // Fetch cities for a country
+  const fetchCitiesForCountry = async (countryId) => {
+    try {
+      setIsLoading(true);
+      const response = await newRequest.get(`/cities?countryId=${countryId}`);
+      setCities(response.data);
+    } catch (error) {
+      console.error("Failed to fetch cities", error);
+      setError("Failed to load cities");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Handle city change
-  const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    setCity(selectedCity);
+  // Handle city selection
+  const handleCitySelect = (cityName) => {
+    setCity(cityName);
     setSelectedPOIs([]);
+    setShowCityDropdown(false);
+    fetchPOIsForCity(cityName);
   };
 
   // Fetch POIs when city is selected
-  useEffect(() => {
-    const fetchPOIs = async () => {
-      if (!city) return;
+  const fetchPOIsForCity = async (cityName) => {
+    if (!cityName) return;
 
-      try {
-        setIsLoading(true);
-        const response = await newRequest.get("/pois");
-        setPointsOfInterest(response.data.pois || []);
-      } catch (error) {
-        console.error("Failed to fetch POIs", error);
-        setError("Failed to load points of interest");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (city) {
-      fetchPOIs();
+    try {
+      setIsLoading(true);
+      const response = await newRequest.get("/pois");
+      setPointsOfInterest(response.data.pois || []);
+    } catch (error) {
+      console.error("Failed to fetch POIs", error);
+      setError("Failed to load points of interest");
+    } finally {
+      setIsLoading(false);
     }
-  }, [city]);
+  };
 
   // Toggle language selection
-  const toggleLanguage = (languageCode) => {
+  const toggleLanguage = (languageId) => {
     setSelectedLanguages(prevSelected => {
-      if (prevSelected.includes(languageCode)) {
-        return prevSelected.filter(code => code !== languageCode);
+      if (prevSelected.includes(languageId)) {
+        return prevSelected.filter(id => id !== languageId);
       } else {
-        return [...prevSelected, languageCode];
+        return [...prevSelected, languageId];
       }
     });
   };
 
-  // Toggle POI selection - using _id as unique identifier
+  // Toggle POI selection
   const togglePOI = (poiId) => {
     setSelectedPOIs(prevSelected => {
       if (prevSelected.includes(poiId)) {
@@ -144,6 +189,12 @@ const HeroSection = () => {
       }
       if (!e.target.closest('.poi-dropdown-container')) {
         setShowPoiDropdown(false);
+      }
+      if (!e.target.closest('.country-dropdown-container')) {
+        setShowCountryDropdown(false);
+      }
+      if (!e.target.closest('.city-dropdown-container')) {
+        setShowCityDropdown(false);
       }
     };
 
@@ -202,6 +253,18 @@ const HeroSection = () => {
     return poi && poi.image ? poi.image : null;
   };
 
+  // Helper function to get language name by ID
+  const getLanguageNameById = (languageId) => {
+    const language = languages.find(l => l._id === languageId);
+    return language ? language.langue : languageId;
+  };
+
+  // Helper function to get language flag by ID
+  const getLanguageFlagById = (languageId) => {
+    const language = languages.find(l => l._id === languageId);
+    return language ? getFlagUrl(language.flag) : null;
+  };
+
   // Handle checkbox click directly
   const handleCheckboxClick = (e, id, type) => {
     e.stopPropagation();
@@ -212,58 +275,158 @@ const HeroSection = () => {
     }
   };
 
+  // Image loading error handler
+  const handleImageError = (index) => {
+    console.error(`Failed to load image at index ${index}`);
+    // You could set a fallback image here
+  };
+
   return (
-      <section className="hero-layout" style={{ backgroundImage: "url('/assets/img/bg/testi-slider-bg1.png')" }}>
+      <section className="hero-layout">
+        {/* Image Slider with Error Handling */}
+        <div className="slider-container">
+          <Slider {...settings}>
+            {images.map((img, index) => (
+                <div key={index} className="slide-item">
+                  <img
+                      src={img}
+                      alt={`Travel destination ${index + 1}`}
+                      onError={() => handleImageError(index)}
+                      className="slide-image"
+                  />
+                </div>
+            ))}
+          </Slider>
+        </div>
+
         <div className="hero-mask">
           <div className="hero-bottom">
             <div className="container">
               <form className="hero-form">
                 <div className="row">
-
-                  {/* Country Selection */}
+                  {/* Country Selection - Now with Checkboxes */}
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                    <div className="form-group">
+                    <div className="form-group country-dropdown-container">
                       <label>
                         <FontAwesomeIcon icon={faGlobe} className="me-2"/>
                         Where to?
                       </label>
-                      <select
-                          required
-                          onChange={handleCountryChange}
-                          className="form-select"
-                          value={country}
-                      >
-                        <option value="">Select Country</option>
-                        {countries.map((countryItem) => (
-                            <option key={countryItem._id} value={countryItem.name}>
-                              {countryItem.name}
-                            </option>
-                        ))}
-                      </select>
+                      <div className="position-relative">
+                        <button
+                            type="button"
+                            className="form-control text-start d-flex justify-content-between align-items-center"
+                            onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                        >
+                        <span className="truncate">
+                          {country || "Select Country"}
+                        </span>
+                          <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle"/>
+                        </button>
+
+                        {showCountryDropdown && (
+                            <div
+                                className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                                style={{maxHeight: "200px", overflowY: "auto"}}
+                            >
+                              {isLoading ? (
+                                  <div className="text-center py-3">Loading countries...</div>
+                              ) : (
+                                  countries.map((countryItem) => (
+                                      <div
+                                          key={countryItem._id}
+                                          className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                          onClick={() => handleCountrySelect(countryItem._id, countryItem.name)}
+                                      >
+                                        <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                          <input
+                                              type="checkbox"
+                                              className="form-check-input"
+                                              checked={country === countryItem.name}
+                                              onChange={() => {}}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCountrySelect(countryItem._id, countryItem.name);
+                                              }}
+                                              id={`country-${countryItem._id}`}
+                                          />
+                                          <label
+                                              className="form-check-label ms-2 w-100"
+                                              htmlFor={`country-${countryItem._id}`}
+                                          >
+                                            {countryItem.name}
+                                          </label>
+                                        </div>
+                                      </div>
+                                  ))
+                              )}
+                            </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {/* City Selection */}
+                  {/* City Selection - Now with Checkboxes */}
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
-                    <div className="form-group">
+                    <div className="form-group city-dropdown-container">
                       <label>
                         <FontAwesomeIcon icon={faCity} className="me-2"/>
                         Select City
                       </label>
-                      <select
-                          required
-                          onChange={handleCityChange}
-                          disabled={!showCity || cities.length === 0}
-                          className="form-select"
-                          value={city}
-                      >
-                        <option value="">Select City</option>
-                        {cities.map((cityItem) => (
-                            <option key={cityItem._id} value={cityItem.name}>
-                              {cityItem.name}
-                            </option>
-                        ))}
-                      </select>
+                      <div className="position-relative">
+                        <button
+                            type="button"
+                            className="form-control text-start d-flex justify-content-between align-items-center"
+                            onClick={() => country && setShowCityDropdown(!showCityDropdown)}
+                            disabled={!country || cities.length === 0}
+                        >
+                        <span className="truncate">
+                          {city || "Select City"}
+                        </span>
+                          <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle"/>
+                        </button>
+
+                        {showCityDropdown && (
+                            <div
+                                className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                                style={{maxHeight: "200px", overflowY: "auto"}}
+                            >
+                              {isLoading ? (
+                                  <div className="text-center py-3">Loading cities...</div>
+                              ) : (
+                                  cities.map((cityItem) => (
+                                      <div
+                                          key={cityItem._id}
+                                          className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                          onClick={() => handleCitySelect(cityItem.name)}
+                                      >
+                                        <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                          <input
+                                              type="checkbox"
+                                              className="form-check-input"
+                                              checked={city === cityItem.name}
+                                              onChange={() => {}}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCitySelect(cityItem.name);
+                                              }}
+                                              id={`city-${cityItem._id}`}
+                                          />
+                                          <label
+                                              className="form-check-label ms-2 w-100"
+                                              htmlFor={`city-${cityItem._id}`}
+                                          >
+                                            {cityItem.name}
+                                          </label>
+                                        </div>
+                                      </div>
+                                  ))
+                              )}
+                              {!isLoading && cities.length === 0 && (
+                                  <div className="text-center py-3">No cities available</div>
+                              )}
+                            </div>
+                        )}
+                      </div>
                       {isLoading && <div className="loading-indicator">Loading...</div>}
                     </div>
                   </div>
@@ -287,7 +450,7 @@ const HeroSection = () => {
                     </div>
                   </div>
 
-                  {/* Points of Interest Dropdown - Improved Implementation */}
+                  {/* Points of Interest Dropdown */}
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div className="form-group poi-dropdown-container">
                       <label>
@@ -298,15 +461,15 @@ const HeroSection = () => {
                         <button
                             type="button"
                             className="form-control text-start d-flex justify-content-between align-items-center"
-                            onClick={() => setShowPoiDropdown(!showPoiDropdown)}
+                            onClick={() => city && setShowPoiDropdown(!showPoiDropdown)}
                             disabled={!city}
                             tabIndex={0}
                         >
-        <span className="truncate">
-          {selectedPOIs.length === 0
-              ? "Select points of interest"
-              : `${selectedPOIs.length} POI(s) selected`}
-        </span>
+                        <span className="truncate">
+                          {selectedPOIs.length === 0
+                              ? "Select points of interest"
+                              : `${selectedPOIs.length} POI(s) selected`}
+                        </span>
                           <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle"/>
                         </button>
 
@@ -364,16 +527,16 @@ const HeroSection = () => {
                                       key={poiId}
                                       className="badge bg-info me-1 mb-1 d-flex align-items-center poi-badge"
                                   >
-              {poiImage && (
-                  <img src={poiImage} alt="" width="16" height="16" className="me-1"/>
-              )}
+                              {poiImage && (
+                                  <img src={poiImage} alt="" width="16" height="16" className="me-1"/>
+                              )}
                                     <span className="poi-name">{getPoiNameById(poiId)}</span>
-              <button
-                  type="button"
-                  className="btn-close btn-close-white ms-2"
-                  onClick={() => togglePOI(poiId)}
-              ></button>
-            </span>
+                              <button
+                                  type="button"
+                                  className="btn-close btn-close-white ms-2"
+                                  onClick={() => togglePOI(poiId)}
+                              ></button>
+                            </span>
                               );
                             })}
                           </div>
@@ -381,7 +544,7 @@ const HeroSection = () => {
                     </div>
                   </div>
 
-                  {/* Language Selection Dropdown with Flags */}
+                  {/* Language Selection Dropdown with Flags - Now from API */}
                   <div className="col-lg-4 col-md-6 col-sm-6 col-12">
                     <div className="form-group language-dropdown-container">
                       <label>
@@ -405,31 +568,41 @@ const HeroSection = () => {
                         {showLanguageDropdown && (
                             <div
                                 className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
-                                style={{maxHeight: "200px", overflowY: "auto"}}>
-                              {availableLanguages.map((lang) => (
-                                  <div
-                                      key={lang.code}
-                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
-                                      onClick={() => toggleLanguage(lang.code)}
-                                  >
-                                    <div className="form-check mb-0 w-100 d-flex align-items-center">
-                                      <input
-                                          type="checkbox"
-                                          className="form-check-input"
-                                          checked={selectedLanguages.includes(lang.code)}
-                                          onChange={(e) => {
-                                          }}
-                                          onClick={(e) => handleCheckboxClick(e, lang.code, 'language')}
-                                          id={`lang-${lang.code}`}
-                                      />
-                                      <label className="form-check-label ms-2 w-100" htmlFor={`lang-${lang.code}`}>
-                                        <span
-                                            className={`flag-icon flag-icon-${lang.code.slice(0, 2).toLowerCase()} me-2`}></span>
-                                        {lang.name}
-                                      </label>
-                                    </div>
-                                  </div>
-                              ))}
+                                style={{maxHeight: "200px", overflowY: "auto"}}
+                            >
+                              {isLoading ? (
+                                  <div className="text-center py-3">Loading languages...</div>
+                              ) : (
+                                  languages.map((lang) => (
+                                      <div
+                                          key={lang._id}
+                                          className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                          onClick={() => toggleLanguage(lang._id)}
+                                      >
+                                        <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                          <input
+                                              type="checkbox"
+                                              className="form-check-input"
+                                              checked={selectedLanguages.includes(lang._id)}
+                                              onChange={(e) => handleCheckboxClick(e, lang._id, 'language')}
+                                              id={`lang-${lang._id}`}
+                                          />
+                                          <label className="form-check-label ms-2 w-100 d-flex align-items-center" htmlFor={`lang-${lang._id}`}>
+                                            <img
+                                                src={getFlagUrl(lang.flag)}
+                                                alt={lang.langue}
+                                                className="me-2"
+                                                style={{ width: '20px', height: 'auto' }}
+                                            />
+                                            {lang.langue}
+                                          </label>
+                                        </div>
+                                      </div>
+                                  ))
+                              )}
+                              {!isLoading && languages.length === 0 && (
+                                  <div className="text-center py-3">No languages available</div>
+                              )}
                             </div>
                         )}
                       </div>
@@ -437,22 +610,30 @@ const HeroSection = () => {
                       {/* Display selected languages with flags */}
                       {selectedLanguages.length > 0 && (
                           <div className="mt-2 d-flex flex-wrap selected-languages">
-                            {selectedLanguages.map(code => {
-                              const lang = availableLanguages.find(l => l.code === code);
-                              return lang ? (
+                            {selectedLanguages.map(languageId => {
+                              const flagUrl = getLanguageFlagById(languageId);
+                              return (
                                   <span
-                                      key={code}
+                                      key={languageId}
                                       className="badge bg-primary me-1 mb-1 d-flex align-items-center"
                                   >
-                              <span className={`flag-icon flag-icon-${code.slice(0, 2).toLowerCase()} me-1`}></span>
-                              <span className="lang-name">{lang.name}</span>
+                              {flagUrl && (
+                                  <img
+                                      src={flagUrl}
+                                      alt=""
+                                      width="16"
+                                      height="16"
+                                      className="me-1"
+                                  />
+                              )}
+                                    <span className="lang-name">{getLanguageNameById(languageId)}</span>
                               <button
                                   type="button"
                                   className="btn-close btn-close-white ms-2"
-                                  onClick={() => toggleLanguage(code)}
+                                  onClick={() => toggleLanguage(languageId)}
                               ></button>
                             </span>
-                              ) : null;
+                              );
                             })}
                           </div>
                       )}
@@ -501,7 +682,7 @@ const HeroSection = () => {
                   <div className="col-lg-4 col-md-12 col-sm-12 col-12 d-flex align-items-end">
                     <button type="button" className="vs-btn style4 w-100" onClick={handleSubmit}>
                       <FontAwesomeIcon icon={faSearch} className="me-2"/>
-                      Find Your Adventure
+                      Find Your Ambassador
                     </button>
                   </div>
 
@@ -513,7 +694,6 @@ const HeroSection = () => {
                         </div>
                       </div>
                   )}
-
                 </div>
               </form>
             </div>

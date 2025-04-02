@@ -74,881 +74,567 @@ const Message = () => {
     { code: "ar", name: "Arabic" }
   ];
 
-  // Fetch messages
+  // Fetch messages with error handling
   const { isLoading, error, data } = useQuery({
     queryKey: ["messages", id],
     queryFn: () => newRequest.get(`/messages/${id}`).then(res => res.data),
     refetchInterval: 5000,
+    onError: (error) => {
+      toast.error("Erreur lors du chargement des messages: " + error.message);
+    }
   });
+
+  // Fetch conversation data
+  const { data: conversationData } = useQuery({
+    queryKey: ["conversation", id],
+    queryFn: () => newRequest.get(`/conversations/single/${id}`).then(res => res.data),
+    enabled: !!id,
+  });
+
+  // Mark messages as read
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const unreadMessages = data.filter(
+          (m) => m.userId !== currentUser._id && !m.read
+      );
+
+      if (unreadMessages.length > 0) {
+        markMessageAsRead(id, queryClient);
+      }
+    }
+  }, [data, currentUser._id, id, queryClient]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [data]);
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Mutation for sending messages
-  const mutation = useMutation({
-    mutationFn: (message) => newRequest.post(`/messages`, message),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["messages", id]);
-      scrollToBottom();
-      toast.success("Message sent!", {
-        position: "bottom-right",
-        autoClose: 2000,
-      });
-    },
-  });
-
-  // Mutation for translating messages
-  const translateMutation = useMutation({
-    mutationFn: ({ messageId, targetLanguage }) =>
-        translateMessageUtil(messageId, targetLanguage),
-    onSuccess: (response) => {
-      setTranslatedMessages(prev => ({
-        ...prev,
-        [response.data.messageId]: response.data.translatedText
-      }));
-    },
-  });
-
-  // Scroll to bottom of messages
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  // Mark messages as read when received
+  // Initialize audio recorder
   useEffect(() => {
-    if (data?.messages) {
-      const unreadMessages = data.messages.filter(
-          m => m.userId !== currentUser._id &&
-              m.status !== 'read' &&
-              !m.readBy.some(rb => rb.userId === currentUser._id)
-      );
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            const audioChunks = [];
 
-      unreadMessages.forEach(message => {
-        markMessageAsRead(message._id)
-            .catch(err => console.error("Failed to mark message as read:", err));
-      });
-    }
-  }, [data?.messages, currentUser._id]);
+            mediaRecorder.ondataavailable = (e) => {
+              if (e.data.size > 0) audioChunks.push(e.data);
+            };
 
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (data) {
-      scrollToBottom();
-    }
-  }, [data, scrollToBottom]);
+            mediaRecorder.onstop = () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+              setAudioBlob(audioBlob);
+            };
 
-  // Clean up on component unmount
-  useEffect(() => {
-    return () => {
-      // Clear recording interval
-      if (recordingInterval) {
-        clearInterval(recordingInterval);
-      }
-
-      // Stop audio playing
-      audioPlayer.stop();
-
-      // Stop recording if active
-      if (audioRecorder && audioRecorder.state === "recording") {
-        audioRecorder.stop();
-      }
-    };
-  }, [recordingInterval, audioPlayer, audioRecorder]);
-
-  // Send audio message when recording is stopped
-  useEffect(() => {
-    if (audioBlob && !isRecording) {
-      sendAudioMessage(id, audioBlob, recordingTime)
-          .then(() => {
-            queryClient.invalidateQueries(["messages", id]);
-            scrollToBottom();
-            setAudioBlob(null);
-            toast.success("Audio message sent!", {
-              position: "bottom-right",
-              autoClose: 2000,
-            });
+            setAudioRecorder(mediaRecorder);
           })
-          .catch(err => {
-            toast.error("Failed to send audio message");
-            console.error(err);
+          .catch(error => {
+            console.error("Error accessing microphone:", error);
+            toast.error("Impossible d'accéder au microphone");
           });
     }
-  }, [audioBlob, isRecording, id, queryClient, recordingTime, scrollToBottom]);
+  }, []);
 
-  // Submit text message
-  const handleSubmit = (e) => {
+  // Handle message submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!messageText.trim()) {
-      toast.error("Message cannot be empty");
+
+    if (messageText.trim() === "" && !selectedFile && !audioBlob) {
       return;
     }
 
-    sendTextMessage(id, messageText)
-        .then(() => {
-          queryClient.invalidateQueries(["messages", id]);
-          scrollToBottom();
-          setMessageText("");
-          setShowEmojiPicker(false);
-          toast.success("Message sent!", {
-            position: "bottom-right",
-            autoClose: 2000,
-          });
-        })
-        .catch(err => {
-          toast.error("Failed to send message");
-          console.error(err);
-        });
-  };
-
-  // Handle location sharing
-  const handleShareLocation = () => {
-    if (navigator.geolocation) {
-      toast.info("Getting your location...", {
-        position: "bottom-right",
-        autoClose: 2000,
-      });
-
-      navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // Get address from coordinates if possible
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-                .then(res => res.json())
-                .then(data => {
-                  const address = data.display_name || null;
-                  shareLocation(id, {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                  }, address)
-                      .then(() => {
-                        queryClient.invalidateQueries(["messages", id]);
-                        scrollToBottom();
-                        toast.success("Location shared successfully!", {
-                          position: "bottom-right",
-                          autoClose: 2000,
-                        });
-                      })
-                      .catch(err => {
-                        toast.error("Failed to share location");
-                        console.error(err);
-                      });
-                })
-                .catch(() => {
-                  // Share location without address if geocoding fails
-                  shareLocation(id, {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                  })
-                      .then(() => {
-                        queryClient.invalidateQueries(["messages", id]);
-                        scrollToBottom();
-                        toast.success("Location shared successfully!", {
-                          position: "bottom-right",
-                          autoClose: 2000,
-                        });
-                      })
-                      .catch(err => {
-                        toast.error("Failed to share location");
-                        console.error(err);
-                      });
-                });
-          },
-          (error) => {
-            toast.error("Failed to get your location");
-            console.error(error);
-          }
-      );
-    } else {
-      toast.error("Geolocation is not supported by your browser");
-    }
-  };
-
-  // Start audio recording
-  const startRecording = async () => {
     try {
-      // First check for permission
-      let permissionStatus;
-      try {
-        permissionStatus = await navigator.permissions.query({ name: 'microphone' });
-
-        if (permissionStatus.state === 'denied') {
-          toast.error("Microphone access is blocked. Please enable it in your browser settings.");
-          return;
-        }
-      } catch (permError) {
-        // Some browsers don't support permission query for microphone, proceed anyway
-        console.warn("Couldn't query microphone permission:", permError);
-      }
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      // Try to use specific codec for better compatibility
-      let options = { mimeType: 'audio/webm;codecs=opus' };
-
-      // Test if the codec is supported
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        options = { mimeType: 'audio/webm' }; // Fallback
-
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-          options = {}; // Use browser default
-        }
-      }
-
-      const recorder = new MediaRecorder(stream, options);
-      const chunks = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunks.push(e.data);
-        }
-      };
-
-      recorder.onstop = () => {
-        // Create appropriate audio type
-        const blob = new Blob(chunks, { type: options.mimeType || "audio/webm" });
-        setAudioBlob(blob);
-
-        // Stop all tracks to release microphone
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      recorder.onerror = (event) => {
-        console.error('Recording error:', event.error);
-        toast.error("Error while recording audio");
-        stream.getTracks().forEach(track => track.stop());
-        setIsRecording(false);
-        clearInterval(recordingInterval);
-        setRecordingInterval(null);
-      };
-
-      setAudioRecorder(recorder);
-      recorder.start();
-
-      setIsRecording(true);
-      setRecordingTime(0);
-      const interval = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
-      setRecordingInterval(interval);
-
-      toast.info("Recording started...", {
-        position: "bottom-right",
-        autoClose: 2000,
-        icon: <BiMicrophone className="toast-icon" />,
-      });
-    } catch (err) {
-      // Handle specific permission errors
-      if (err.name === 'NotAllowedError') {
-        toast.error("Microphone access denied. Please allow microphone access.");
-      } else if (err.name === 'NotFoundError') {
-        toast.error("No microphone found on your device.");
+      if (selectedFile) {
+        await handleFileUpload();
+      } else if (audioBlob) {
+        await handleAudioSend();
       } else {
-        toast.error("Could not access microphone");
-        console.error(err);
-      }
-    }
-  };
-
-  // Stop audio recording
-  const stopRecording = () => {
-    if (audioRecorder && audioRecorder.state === "recording") {
-      audioRecorder.stop();
-      clearInterval(recordingInterval);
-      setRecordingInterval(null);
-      setIsRecording(false);
-
-      toast.success("Audio message ready to send", {
-        position: "bottom-right",
-        autoClose: 2000,
-        icon: <AiFillAudio className="toast-icon" />,
-      });
-    }
-  };
-
-  // Cancel audio recording
-  const cancelRecording = () => {
-    if (audioRecorder && audioRecorder.state === "recording") {
-      audioRecorder.stop();
-    }
-
-    clearInterval(recordingInterval);
-    setRecordingInterval(null);
-    setIsRecording(false);
-    setAudioBlob(null);
-
-    toast.info("Recording cancelled", {
-      position: "bottom-right",
-      autoClose: 2000,
-      icon: <AiOutlineClose className="toast-icon" />,
-    });
-  };
-
-  // Format time for display
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Handle emoji selection
-  const handleEmojiClick = (emojiData) => {
-    setMessageText(prev => prev + emojiData.emoji);
-  };
-
-  // Translate message
-  const translateMessage = (messageId) => {
-    if (translateMessageId === messageId) {
-      setTranslateMessageId(null);
-    } else {
-      setTranslateMessageId(messageId);
-      translateMutation.mutate({
-        messageId,
-        targetLanguage
-      });
-    }
-  };
-
-  // Format message timestamp
-  const getMessageTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  // Group messages by date
-  const groupMessagesByDate = (messages) => {
-    if (!messages || messages.length === 0) return {};
-
-    const grouped = {};
-    messages.forEach(message => {
-      const date = new Date(message.createdAt);
-      const dateStr = date.toLocaleDateString();
-
-      if (!grouped[dateStr]) {
-        grouped[dateStr] = [];
+        await sendTextMessage(id, messageText, queryClient);
       }
 
-      grouped[dateStr].push(message);
-    });
-
-    return grouped;
+      // Reset states
+      setMessageText("");
+      setSelectedFile(null);
+      setAudioBlob(null);
+      setShowEmojiPicker(false);
+    } catch (error) {
+     // toast.error("Erreur lors de l'envoi du message");
+      console.error(error);
+    }
   };
 
-  // Format date for display
-  const formatDate = (dateStr) => {
-    const today = new Date().toLocaleDateString();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toLocaleDateString();
-
-    if (dateStr === today) {
-      return "Today";
-    } else if (dateStr === yesterdayStr) {
-      return "Yesterday";
-    } else {
-      return dateStr;
+  // Handle file selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast.error("Le fichier est trop volumineux (max 10MB)");
+        return;
+      }
+      setSelectedFile(file);
     }
   };
 
   // Handle file upload
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const handleFileUpload = async () => {
+    if (!selectedFile) return;
 
-    // Reset the input to allow selecting the same file again
-    e.target.value = null;
-
-    setSelectedFile(file);
-
-    // File size validation (20MB limit)
-    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB in bytes
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error(`File size exceeds the 20MB limit`);
+    try {
+      await uploadFile(id, selectedFile, queryClient);
       setSelectedFile(null);
+    } catch (error) {
+      toast.error("Erreur lors de l'envoi du fichier");
+      console.error(error);
+    }
+  };
+
+  // Handle audio recording
+  const handleRecordToggle = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  // Start recording
+  const startRecording = () => {
+    if (!audioRecorder) {
+      toast.error("Microphone non disponible");
       return;
     }
 
-    toast.info(`Uploading ${file.name}...`, {
-      position: "bottom-right",
-      autoClose: 2000,
-    });
+    try {
+      audioRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
 
-    uploadFile(id, file)
-        .then(() => {
-          queryClient.invalidateQueries(["messages", id]);
-          scrollToBottom();
-          setSelectedFile(null);
+      const interval = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
 
-          toast.success("File sent successfully!", {
-            position: "bottom-right",
-            autoClose: 2000,
-          });
-        })
-        .catch(err => {
-          // Check for specific errors
-          if (err.message && err.message.includes("File size exceeds")) {
-            toast.error(err.message);
-          } else {
-            toast.error("Failed to upload file");
-          }
-          console.error(err);
-          setSelectedFile(null);
-        });
+      setRecordingInterval(interval);
+    } catch (error) {
+      toast.error("Erreur lors du démarrage de l'enregistrement");
+      console.error(error);
+    }
   };
 
-  // Play/pause audio message
-  const toggleAudioPlay = (messageId, fileUrl) => {
-    audioPlayer.play(
-        messageId,
-        fileUrl,
-        // On play
-        () => {
-          setIsPlaying(prev => ({...prev, [messageId]: true}));
-        },
-        // On pause
-        (pausedMessageId) => {
-          if (pausedMessageId) {
-            // If a specific message ID is provided (different message was playing)
-            setIsPlaying(prev => ({...prev, [pausedMessageId]: false}));
-          } else {
-            // Current message was paused
-            setIsPlaying(prev => ({...prev, [messageId]: false}));
-          }
-        },
-        // On ended
-        () => {
-          setIsPlaying(prev => ({...prev, [messageId]: false}));
+  // Stop recording
+  const stopRecording = () => {
+    if (!audioRecorder || audioRecorder.state === "inactive") return;
+
+    try {
+      audioRecorder.stop();
+      setIsRecording(false);
+      clearInterval(recordingInterval);
+    } catch (error) {
+      toast.error("Erreur lors de l'arrêt de l'enregistrement");
+      console.error(error);
+    }
+  };
+
+  // Send recorded audio
+  const handleAudioSend = async () => {
+    if (!audioBlob) return;
+
+    try {
+      await sendAudioMessage(id, audioBlob, recordingTime, queryClient);
+      setAudioBlob(null);
+      setRecordingTime(0);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Cancel audio recording
+  const handleCancelAudio = () => {
+    setAudioBlob(null);
+    setRecordingTime(0);
+    if (isRecording) {
+      stopRecording();
+    }
+  };
+
+  // Handle emoji selection
+  const onEmojiClick = (event, emojiObject) => {
+    setMessageText(prev => prev + emojiObject.emoji);
+  };
+
+  // Handle location sharing
+  const handleShareLocation = async () => {
+    try {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              await shareLocation(id, latitude, longitude, queryClient);
+              toast.success("Localisation partagée");
+            },
+            (error) => {
+              toast.error("Impossible d'obtenir votre localisation");
+              console.error(error);
+            }
+        );
+      } else {
+        toast.error("Géolocalisation non supportée par votre navigateur");
+      }
+    } catch (error) {
+      toast.error("Erreur lors du partage de la localisation");
+      console.error(error);
+    }
+  };
+
+  // Handle message translation
+  const handleTranslateMessage = async (messageId, text) => {
+    try {
+      const translatedText = await translateMessageUtil(text, targetLanguage);
+      setTranslatedMessages(prev => ({
+        ...prev,
+        [messageId]: translatedText
+      }));
+      setTranslateMessageId(messageId);
+    } catch (error) {
+      toast.error("Erreur lors de la traduction");
+      console.error(error);
+    }
+  };
+
+  // Toggle audio playback
+  const toggleAudioPlay = useCallback((audioUrl, messageId) => {
+    if (isPlaying[messageId]) {
+      audioPlayer.pause();
+      setIsPlaying(prev => ({ ...prev, [messageId]: false }));
+    } else {
+      // Stop any currently playing audio
+      Object.keys(isPlaying).forEach(id => {
+        if (isPlaying[id]) {
+          audioPlayer.pause();
+          setIsPlaying(prev => ({ ...prev, [id]: false }));
         }
-    );
-  };
+      });
 
-  // Render audio message UI
-  const renderAudioMessage = (message) => {
-    return (
-        <div className="audio-message">
-          <button
-              className={`audio-play-btn ${isPlaying[message._id] ? 'playing' : ''}`}
-              onClick={() => toggleAudioPlay(message._id, message.fileUrl)}
-              aria-label={isPlaying[message._id] ? "Pause audio" : "Play audio"}
-          >
-            {isPlaying[message._id] ? <BiPause /> : "▶"}
-          </button>
-          <div className="audio-waveform">
-            {Array(15).fill().map((_, i) => (
-                <div
-                    key={i}
-                    className="waveform-bar"
-                    style={{
-                      height: `${10 + Math.random() * 30}px`,
-                      backgroundColor: isPlaying[message._id] ? 'var(--theme-color)' : null
-                    }}
-                ></div>
-            ))}
-          </div>
-          <span className="audio-duration">
-          {message.duration ? formatDuration(message.duration) : '00:00'}
-        </span>
-        </div>
-    );
-  };
+      audioPlayer.play(audioUrl, () => {
+        setIsPlaying(prev => ({ ...prev, [messageId]: false }));
+      });
 
-  // Render message content based on type
-  const renderMessageContent = (message) => {
-    switch (message.type) {
-      case "audio":
-        return renderAudioMessage(message);
-
-      case "location":
-        const mapUrl = message.location?.latitude && message.location?.longitude
-            ? `https://www.openstreetmap.org/?mlat=${message.location.latitude}&mlon=${message.location.longitude}#map=15/${message.location.latitude}/${message.location.longitude}`
-            : null;
-
-        return (
-            <div className="location-message">
-              <MdLocationOn className="location-icon" />
-              <span>{message.location?.address || "Location shared"}</span>
-              {mapUrl && (
-                  <a
-                      href={mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="map-link"
-                  >
-                    <div className="map-preview">
-                      <img
-                          src={`https://staticmap.openstreetmap.de/staticmap.php?center=${message.location.latitude},${message.location.longitude}&zoom=14&size=300x200&maptype=mapnik&markers=${message.location.latitude},${message.location.longitude},red-pushpin`}
-                          alt="Map location"
-                          className="map-image"
-                          loading="lazy"
-                      />
-                    </div>
-                    <span className="view-map">View on map</span>
-                  </a>
-              )}
-            </div>
-        );
-
-      case "image":
-        return (
-            <div className="image-message">
-              <img
-                  src={message.fileUrl}
-                  alt="Shared image"
-                  className="shared-image"
-                  loading="lazy"
-              />
-            </div>
-        );
-
-      case "file":
-        const fileName = message.desc.split("Shared a file: ")[1] || "File";
-        return (
-            <div className="file-message">
-              <MdAttachFile className="file-icon" />
-              <span className="file-name">{fileName}</span>
-              <a
-                  href={message.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="file-download"
-              >
-                Download
-              </a>
-            </div>
-        );
-
-      default: // text message
-        return (
-            <>
-              <p className="message-text">{message.desc}</p>
-              {translatedMessages[message._id] && (
-                  <p className="translated-text">
-                    <AiOutlineTranslation className="translation-icon" />
-                    {translatedMessages[message._id]}
-                  </p>
-              )}
-            </>
-        );
+      setIsPlaying(prev => ({ ...prev, [messageId]: true }));
     }
+  }, [audioPlayer, isPlaying]);
+
+  // Get other user from conversation
+  const getOtherUser = () => {
+    if (!conversationData) return null;
+
+    return conversationData.sellerId === currentUser._id
+        ? conversationData.buyerInfo
+        : conversationData.sellerInfo;
   };
 
-  // Get message delivery status icon
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'read':
-        return <MdCheckCircle className="read-status double-check" />;
-      case 'delivered':
-        return <AiOutlineCheck className="read-status double-check" />;
-      default:
-        return <AiOutlineCheck className="read-status" />;
-    }
-  };
+  const otherUser = getOtherUser();
 
-  const groupedMessages = data?.messages ? groupMessagesByDate(data.messages) : {};
+  if (isLoading) return <div className="loading">Chargement...</div>;
+  if (error) return <div className="error">Erreur lors du chargement des messages</div>;
 
   return (
       <div className="message">
         <div className="container">
           <div className="messages-container">
-            {/* Header with user info */}
+            {/* Chat Header */}
             <div className="chat-header">
               <Link to="/messages" className="back-link">
                 <BiArrowBack />
               </Link>
 
-              {!isLoading && !error && data?.Ambassador && (
+              {otherUser && (
                   <div
                       className="chat-user-info"
                       onClick={() => setShowUserInfo(!showUserInfo)}
                   >
                     <img
-                        src={currentUser._id === data.Ambassador._id
-                            ? data.Guest.img || "https://via.placeholder.com/40"
-                            : data.Ambassador.img || "https://via.placeholder.com/40"}
-                        alt="Chat User"
+                        src={otherUser.img || "/img/noavatar.jpg"}
+                        alt={otherUser.username}
                         className="chat-user-avatar"
                     />
                     <div className="chat-user-details">
-                      <h4>{currentUser._id === data.Ambassador._id
-                          ? data.Guest.username
-                          : data.Ambassador.username}</h4>
-                      <span className="online-status">Online</span>
+                      <h3>{otherUser.username}</h3>
+                      <span>{otherUser.isOnline ? "En ligne" : "Hors ligne"}</span>
                     </div>
                   </div>
               )}
 
               <div className="chat-actions">
                 <button
-                    className="action-btn"
-                    onClick={() => setShowLanguageSelector(!showLanguageSelector)}
-                    aria-label="Translation options"
-                >
-                  <AiOutlineTranslation className="action-icon" />
-                </button>
-                <button
-                    className="action-btn"
+                    className="info-button"
                     onClick={() => setShowUserInfo(!showUserInfo)}
-                    aria-label="User information"
                 >
-                  <AiOutlineInfoCircle className="action-icon" />
+                  <AiOutlineInfoCircle />
                 </button>
               </div>
             </div>
 
-            {/* Language selector dropdown */}
-            {showLanguageSelector && (
-                <div className="language-selector">
-                  <h4>Select translation language</h4>
-                  <ul>
-                    {languages.map(lang => (
-                        <li
-                            key={lang.code}
-                            className={targetLanguage === lang.code ? 'active' : ''}
-                            onClick={() => {
-                              setTargetLanguage(lang.code);
-                              setShowLanguageSelector(false);
-                              toast.info(`Translation language set to ${lang.name}`);
-                            }}
-                        >
-                          {lang.name}
-                        </li>
-                    ))}
-                  </ul>
-                </div>
-            )}
-
-            {/* User info panel */}
-            {showUserInfo && data && (
+            {/* User Info Panel */}
+            {showUserInfo && otherUser && (
                 <div className="user-info-panel">
                   <div className="user-info-header">
-                    <h3>Contact Info</h3>
-                    <button
-                        className="close-info"
-                        onClick={() => setShowUserInfo(false)}
-                        aria-label="Close user info"
-                    >
+                    <h3>Informations</h3>
+                    <button onClick={() => setShowUserInfo(false)}>
                       <AiOutlineClose />
                     </button>
                   </div>
 
                   <div className="user-info-content">
                     <img
-                        src={currentUser._id === data.Ambassador._id
-                            ? data.Guest.img || "https://via.placeholder.com/100"
-                            : data.Ambassador.img || "https://via.placeholder.com/100"}
-                        alt="User profile"
-                        className="user-profile-img"
+                        src={otherUser.img || "/img/noavatar.jpg"}
+                        alt={otherUser.username}
+                        className="user-info-avatar"
                     />
-
-                    <h4>{currentUser._id === data.Ambassador._id
-                        ? data.Guest.username
-                        : data.Ambassador.username}</h4>
-
-                    <div className="user-contact-details">
-                      <div className="contact-item">
-                        <span className="contact-label">Email:</span>
-                        <span className="contact-value">
-                      {currentUser._id === data.Ambassador._id
-                          ? data.Guest.email || "Not available"
-                          : data.Ambassador.email || "Not available"}
+                    <h4>{otherUser.username}</h4>
+                    <p>{otherUser.desc || "Aucune description"}</p>
+                    <div className="user-info-stats">
+                      <div className="stat">
+                        <span className="label">Membre depuis</span>
+                        <span className="value">
+                      {new Date(otherUser.createdAt).toLocaleDateString()}
                     </span>
                       </div>
-
-                      <div className="contact-item">
-                        <span className="contact-label">Phone:</span>
-                        <span className="contact-value">
-                      {currentUser._id === data.Ambassador._id
-                          ? data.Guest.phone || "Not available"
-                          : data.Ambassador.phone || "Not available"}
-                    </span>
+                      <div className="stat">
+                        <span className="label">Évaluation</span>
+                        <span className="value">{otherUser.rating || "N/A"}/5</span>
                       </div>
                     </div>
+
+                    <Link to={`/profile/${otherUser._id}`} className="view-profile-btn">
+                      Voir le profil
+                    </Link>
                   </div>
                 </div>
             )}
 
-            {/* Messages display area */}
+            {/* Messages List */}
             <div className="messages" ref={messageContainerRef}>
-              {isLoading ? (
-                  <div className="loading-bubbles">
-                    <div className="bubble" />
-                    <div className="bubble" />
-                    <div className="bubble" />
-                  </div>
-              ) : error ? (
-                  <div className="error-bubble">{error.message}</div>
-              ) : (
-                  Object.keys(groupedMessages).map(date => (
-                      <div key={date} className="message-group">
-                        <div className="date-separator">
-                          <span>{formatDate(date)}</span>
-                        </div>
+              {data && data.map((m) => (
+                  <div
+                      className={`message-item ${m.userId === currentUser._id ? "owner" : ""}`}
+                      key={m._id}
+                  >
+                    <div className="message-content">
+                      {/* Message content based on type */}
+                      {m.type === 'text' && (
+                          <div className="text-message">
+                            <p>{translatedMessages[m._id] || m.desc}</p>
+                          </div>
+                      )}
 
-                        {groupedMessages[date].map((m) => (
-                            <div
-                                className={`message-bubble ${
-                                    m.userId === currentUser._id ? "current-user" : "other-user"
-                                }`}
-                                key={m._id}
+                      {m.type === 'image' && (
+                          <div className="image-message">
+                            <img src={m.fileUrl} alt="Shared" />
+                          </div>
+                      )}
+
+                      {m.type === 'file' && (
+                          <div className="file-message">
+                            <a href={m.fileUrl} target="_blank" rel="noopener noreferrer">
+                              <MdAttachFile /> {m.desc || "Fichier partagé"}
+                            </a>
+                          </div>
+                      )}
+
+                      {m.type === 'audio' && (
+                          <div className="audio-message">
+                            <button
+                                onClick={() => toggleAudioPlay(m.fileUrl, m._id)}
+                                className="audio-control"
                             >
-                              {m.userId !== currentUser._id && (
-                                  <img
-                                      src={m.user?.img || "https://via.placeholder.com/40"}
-                                      alt="User"
-                                      className="user-avatar"
-                                  />
-                              )}
+                              {isPlaying[m._id] ? <BiPause /> : <AiFillAudio />}
+                            </button>
+                            <div className="audio-waveform"></div>
+                            <span className="audio-duration">
+                        {formatDuration(m.duration || 0)}
+                      </span>
+                          </div>
+                      )}
 
-                              <div className="message-content">
-                                {m.userId !== currentUser._id && (
-                                    <span className="username">{m.user?.username || "User"}</span>
-                                )}
+                      {m.type === 'location' && m.location && (
+                          <div className="location-message">
+                            <a
+                                href={`https://maps.google.com/?q=${m.location.latitude},${m.location.longitude}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                              <MdLocationOn /> Position partagée
+                            </a>
+                          </div>
+                      )}
 
-                                {renderMessageContent(m)}
-
-                                <div className="message-meta">
-                          <span className="message-time">
-                            {getMessageTime(m.createdAt || new Date())}
-                          </span>
-
-                                  {m.userId === currentUser._id && (
-                                      <span className="message-status">
-                              {getStatusIcon(m.status)}
-                            </span>
-                                  )}
-                                </div>
-
-                                {m.userId !== currentUser._id && m.type === 'text' && (
-                                    <div className="message-actions">
-                                      <button
-                                          className={`action-btn ${translateMessageId === m._id ? 'active' : ''}`}
-                                          onClick={() => translateMessage(m._id, m.desc)}
-                                          aria-label={translateMessageId === m._id ? "Cancel translation" : "Translate message"}
-                                      >
-                                        {translateMessageId === m._id ?
-                                            <AiOutlineClose /> :
-                                            <AiOutlineTranslation />
-                                        }
-                                      </button>
-                                    </div>
-                                )}
-                              </div>
-                            </div>
-                        ))}
+                      {/* Message actions */}
+                      <div className="message-actions">
+                        {m.userId !== currentUser._id && (
+                            <button
+                                className="translate-button"
+                                onClick={() => handleTranslateMessage(m._id, m.desc)}
+                            >
+                              <AiOutlineTranslation />
+                            </button>
+                        )}
                       </div>
-                  ))
-              )}
+
+                      {/* Message timestamp */}
+                      <div className="message-time">
+                        {new Date(m.createdAt).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                        {m.userId === currentUser._id && (
+                            <span className="read-status">
+                        {m.read ? <MdCheckCircle className="read" /> : <AiOutlineCheck />}
+                      </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+              ))}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Recording interface */}
-            {isRecording ? (
-                <div className="recording-container">
-                  <div className="recording-indicator">
-                    <span className="recording-pulse"></span>
-                    <span className="recording-time">{formatTime(recordingTime)}</span>
-                  </div>
-                  <div className="recording-actions">
-                    <button
-                        className="cancel-recording"
-                        onClick={cancelRecording}
-                        aria-label="Cancel recording"
-                    >
+            {/* Language Selector */}
+            {showLanguageSelector && (
+                <div className="language-selector">
+                  <div className="language-selector-header">
+                    <h4>Choisir une langue</h4>
+                    <button onClick={() => setShowLanguageSelector(false)}>
                       <AiOutlineClose />
                     </button>
-                    <button
-                        className="stop-recording"
-                        onClick={stopRecording}
-                        aria-label="Stop recording"
-                    >
+                  </div>
+                  <div className="language-list">
+                    {languages.map((lang) => (
+                        <button
+                            key={lang.code}
+                            className={`language-option ${targetLanguage === lang.code ? 'selected' : ''}`}
+                            onClick={() => {
+                              setTargetLanguage(lang.code);
+                              setShowLanguageSelector(false);
+                              if (translateMessageId) {
+                                const message = data.find(m => m._id === translateMessageId);
+                                if (message) {
+                                  handleTranslateMessage(translateMessageId, message.desc);
+                                }
+                              }
+                            }}
+                        >
+                          {lang.name}
+                        </button>
+                    ))}
+                  </div>
+                </div>
+            )}
+
+            {/* Message Input */}
+            <form className="message-input" onSubmit={handleSubmit}>
+              {selectedFile && (
+                  <div className="selected-file">
+                    <span>{selectedFile.name}</span>
+                    <button type="button" onClick={() => setSelectedFile(null)}>
+                      <AiOutlineClose />
+                    </button>
+                  </div>
+              )}
+
+              {audioBlob && !isRecording && (
+                  <div className="recorded-audio">
+                    <span>Audio enregistré ({formatDuration(recordingTime)})</span>
+                    <div className="audio-actions">
+                      <button type="button" onClick={handleCancelAudio}>
+                        <AiOutlineClose />
+                      </button>
+                      <button type="submit">
+                        <MdSend />
+                      </button>
+                    </div>
+                  </div>
+              )}
+
+              {isRecording ? (
+                  <div className="recording-indicator">
+                    <span className="recording-pulse"></span>
+                    <span>Enregistrement... {formatDuration(recordingTime)}</span>
+                    <button type="button" onClick={stopRecording}>
                       <BiStop />
                     </button>
                   </div>
-                </div>
-            ) : (
-                /* Message input form */
-                <form className="message-form" onSubmit={handleSubmit}>
-                  <div className="message-input-container">
-                    <button
-                        type="button"
-                        className="emoji-btn"
-                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        aria-label="Emoji picker"
-                    >
-                      <MdEmojiEmotions />
-                    </button>
+              ) : (
+                  <>
+                    <div className="message-input-actions">
+                      <button
+                          type="button"
+                          className="emoji-button"
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      >
+                        <MdEmojiEmotions />
+                      </button>
 
-                    <textarea
-                        placeholder="Type a message..."
-                        aria-label="Message input"
+                      <button
+                          type="button"
+                          className="attachment-button"
+                          onClick={() => fileInputRef.current.click()}
+                      >
+                        <MdAttachFile />
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                        />
+                      </button>
+
+                      <button
+                          type="button"
+                          className="location-button"
+                          onClick={handleShareLocation}
+                      >
+                        <MdLocationOn />
+                      </button>
+                    </div>
+
+                    <input
+                        type="text"
+                        placeholder="Écrivez un message..."
                         value={messageText}
                         onChange={(e) => setMessageText(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSubmit(e);
-                          }
-                        }}
                     />
 
-                    {/* Hidden file input */}
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        style={{ display: 'none' }}
-                        onChange={handleFileUpload}
-                        accept="image/*,audio/*,video/*,application/*"
-                    />
-
-                    <button
-                        type="button"
-                        className="attach-btn"
-                        onClick={() => fileInputRef.current.click()}
-                        aria-label="Attach file"
-                    >
-                      <MdAttachFile />
-                    </button>
-                  </div>
-
-                  {/* Emoji picker */}
-                  {showEmojiPicker && (
-                      <div className="emoji-picker-container">
-                        <Picker onEmojiClick={handleEmojiClick} />
-                      </div>
-                  )}
-
-                  <div className="message-actions-container">
-                    {/* Location button */}
-                    <button
-                        type="button"
-                        className="location-btn"
-                        onClick={handleShareLocation}
-                        aria-label="Share location"
-                    >
-                      <MdLocationOn />
-                    </button>
-
-                    {/* Send or microphone button */}
-                    {messageText? (
+                    {messageText || selectedFile ? (
                         <button type="submit" className="send-button">
-                          <MdSend className="send-icon" />
+                          <MdSend />
                         </button>
                     ) : (
                         <button
                             type="button"
-                            className="mic-button"
-                            onClick={startRecording}
+                            className={`mic-button ${isRecording ? 'recording' : ''}`}
+                            onClick={handleRecordToggle}
                         >
                           <BiMicrophone />
                         </button>
                     )}
-                  </div>
-                </form>
-            )}
+                  </>
+              )}
+            </form>
+
+            {/*{showEmojiPicker && (*/}
+            {/*    <div className="emoji-picker-container">*/}
+            {/*      <Picker onEmojiClick={onEmojiClick} />*/}
+            {/*    </div>*/}
+            {/*)}*/}
           </div>
         </div>
       </div>

@@ -28,9 +28,7 @@ const UnforgettableCitiesSection = () => {
             <div className="title-area">
               <span className="sec-subtitle">Top Destination</span>
               <h2 className="sec-title h1">Unforgettable Cities</h2>
-              <p className="sec-text">
-                Curabitur aliquet quam id dui posuere blandit. Vivamus magna justo, lacinia eget consectetur sed, convgallis at tellus.
-              </p>
+
             </div>
           </div>
           <div className="col-auto">
@@ -57,7 +55,6 @@ const UnforgettableCitiesSection = () => {
               <a href="destination-details.html">
                 <img src="assets/img/destinations/destinations-1-1.jpg" alt="destination image" />
               </a>
-              <span className="destination-price">$259</span>
               <div className="destination-info">
                 <h4 className="destination-name"><a href="#">Thailand</a></h4>
                 <p className="destination-text">Explore Sea & Get Relax</p>
@@ -69,7 +66,6 @@ const UnforgettableCitiesSection = () => {
               <a href="destination-details.html">
                 <img src="assets/img/destinations/destinations-1-2.jpg" alt="destination image" />
               </a>
-              <span className="destination-price">$369</span>
               <div className="destination-info">
                 <h4 className="destination-name"><a href="#">Japan</a></h4>
                 <p className="destination-text">Explore Sea & Get Relax</p>
@@ -81,7 +77,6 @@ const UnforgettableCitiesSection = () => {
               <a href="destination-details.html">
                 <img src="assets/img/destinations/destinations-1-3.jpg" alt="destination image" />
               </a>
-              <span className="destination-price">$299</span>
               <div className="destination-info">
                 <h4 className="destination-name"><a href="#">Spain</a></h4>
                 <p className="destination-text">Explore Sea & Get Relax</p>
@@ -93,7 +88,6 @@ const UnforgettableCitiesSection = () => {
               <a href="destination-details.html">
                 <img src="assets/img/destinations/destinations-1-8.jpg" alt="destination image" />
               </a>
-              <span className="destination-price">$158</span>
               <div className="destination-info">
                 <h4 className="destination-name"><a href="#">Mexico</a></h4>
                 <p className="destination-text">Explore World & Get Relax</p>

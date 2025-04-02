@@ -50,7 +50,7 @@ const AdminGigs = () => {
             if (countryFilter) params.append('country', countryFilter);
             if (searchQuery) params.append('search', searchQuery);
 
-            const response = await newRequest.get(`/admin/gigs?${params.toString()}`);
+            const response = await newRequest.get(`/gigs/admin?${params.toString()}`);
             setGigs(response.data.gigs);
             setTotalPages(response.data.totalPages);
 
@@ -64,10 +64,9 @@ const AdminGigs = () => {
             setLoading(false);
         }
     };
-
     const fetchStats = async () => {
         try {
-            const response = await newRequest.get('/admin/gigs/stats');
+            const response = await newRequest.get('/gigs/admin/stats');
             setStats(response.data);
         } catch (err) {
             console.error("Error fetching stats:", err);
@@ -149,7 +148,7 @@ const AdminGigs = () => {
 
     const performBulkDelete = async () => {
         try {
-            await newRequest.post('/admin/gigs/bulk-delete', { ids: selectedGigs });
+            await newRequest.post('/gigs/admin/bulk-delete', { ids: selectedGigs });
             setSelectedGigs([]);
             setSelectAll(false);
             fetchGigs();
@@ -161,7 +160,7 @@ const AdminGigs = () => {
 
     const performBulkStatusUpdate = async (isActive) => {
         try {
-            await newRequest.post('/admin/gigs/bulk-status', {
+            await newRequest.post('/gigs/admin/bulk-status', {
                 ids: selectedGigs,
                 isActive
             });
@@ -174,7 +173,7 @@ const AdminGigs = () => {
 
     const performBulkFeaturedUpdate = async (isFeatured) => {
         try {
-            await newRequest.post('/admin/gigs/bulk-featured', {
+            await newRequest.post('/gigs/admin/bulk-featured', {
                 ids: selectedGigs,
                 isFeatured
             });
@@ -190,7 +189,7 @@ const AdminGigs = () => {
         setConfirmMessage(`Are you sure you want to delete "${gig.title}"?`);
         setConfirmAction(() => async () => {
             try {
-                await newRequest.delete(`/admin/gigs/${gig._id}`);
+                await newRequest.delete(`/gigs/admin/${gig._id}`);
                 fetchGigs();
                 fetchStats();
                 setConfirmModalOpen(false);
@@ -203,7 +202,7 @@ const AdminGigs = () => {
 
     const handleStatusToggle = async (gig) => {
         try {
-            await newRequest.patch(`/admin/gigs/${gig._id}/status`, {
+            await newRequest.patch(`/gigs/admin/${gig._id}/status`, {
                 isActive: !gig.isActive
             });
             fetchGigs();
@@ -215,7 +214,7 @@ const AdminGigs = () => {
 
     const handleFeaturedToggle = async (gig) => {
         try {
-            await newRequest.patch(`/admin/gigs/${gig._id}/featured`, {
+            await newRequest.patch(`/gigs/admin/${gig._id}/featured`, {
                 isFeatured: !gig.isFeatured
             });
             fetchGigs();
@@ -230,7 +229,7 @@ const AdminGigs = () => {
     };
 
     const handleEditGig = (gigId) => {
-        navigate(`/admin/gigs/${gigId}/edit`);
+        navigate(`/gigs/admin/${gigId}/edit`);
     };
 
     const renderPagination = () => {

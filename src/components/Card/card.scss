@@ -1,113 +1,95 @@
-.features {
-    padding: 60px 0;
-  
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-  
-      .content {
-        display: flex;
-        align-items: center;
-        gap: 40px;
-  
-        .text {
-          flex: 1;
-  
-          h1 {
-            font-size: 2.6rem;
-            color: #16214a;
-            margin-bottom: 20px;
-          }
-  
-          .title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.3rem;
-            color: #16214a;
-            margin: 20px 0 10px;
-  
-            .check-icon {
-              color: #16214a;
-            }
-          }
-  
-          p {
-            font-size: 1.1rem;
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 20px;
-          }
-        }
-  
-        .image {
-          flex: 1;
-          text-align: right;
-  
-          img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            display: block; // Ensure the image behaves as a block element
-          }
-        }
-      }
-    }
+.features-style1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; // For positioning background
+  height: 380px; // Fixed absolute height for all cards
+  padding: 30px 20px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; // Ensure space between cards on mobile
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Media queries for responsiveness */
-  @media (max-width: 768px) {
-    .features {
-      padding: 40px 0;
-  
-      .container {
-        .content {
-          flex-direction: column;
-  
-          .text {
-            text-align: center;
-  
-            h1 {
-              font-size: 2rem;
-            }
-  
-            .title {
-              justify-content: center;
-            }
-          }
-  
-          .image {
-            text-align: center;
-            margin-top: 20px;
-  
-            img {
-              max-width: 100%; // Adjust image size for smaller screens
-              height: auto; // Maintain aspect ratio
-              margin: 0 auto; // Center the image
-            }
-          }
-        }
-      }
-    }
+}
+
+.features-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.features-style1 .features-image {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
   }
-  
-  @media (max-width: 480px) {
-    .features {
-      .container {
-        .content {
-            .image {
-                display: flex;
-                justify-content: center; /* Center the image container */
-                align-items: center; /* Center the image vertically */
-              }
-              
-              .image img {
-                max-width: 300%; /* Prevents the image from scaling too large */
-                height: auto; /* Maintain aspect ratio */
-                margin: 0 auto; /* Center the image horizontally */
-              }
-        }
-      }
-    }
+}
+
+.features-style1 .features-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.features-style1 .features-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  height: auto;
+}
+
+.features-style1 .features-text {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+  flex-grow: 1; // Take remaining space
+}
+
+/* Ensure content is consistent across all devices */
+@media (max-width: 991px) {
+  .features-style1 {
+    height: 350px; // Slightly smaller height on medium screens
   }
+}
+
+/* Ensure all cards remain equal on mobile */
+@media (max-width: 767px) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .col-md-6 {
+    height: 100%;
+  }
+
+  .features-style1 {
+    height: 320px; // Even smaller on mobile
+    margin-bottom: 20px;
+  }
+}

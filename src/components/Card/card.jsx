@@ -13,6 +13,35 @@ const FeaturesSection = () => {
         element.style.backgroundPosition = "center";
       }
     });
+
+    // Ensure all cards have equal height by matching tallest
+    const equalizeHeights = () => {
+      // Reset heights first
+      document.querySelectorAll('.features-style1').forEach(card => {
+        card.style.height = 'auto';
+      });
+
+      // Find the tallest card
+      let maxHeight = 0;
+      document.querySelectorAll('.features-style1').forEach(card => {
+        const height = card.offsetHeight;
+        maxHeight = Math.max(maxHeight, height);
+      });
+
+      // Apply height to all cards
+      document.querySelectorAll('.features-style1').forEach(card => {
+        card.style.height = `${maxHeight}px`;
+      });
+    };
+
+    // Run on load and resize
+    equalizeHeights();
+    window.addEventListener('resize', equalizeHeights);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', equalizeHeights);
+    };
   }, []);
 
   const features = [
@@ -20,55 +49,56 @@ const FeaturesSection = () => {
       img: "features-1-1.png",
       title: "Special Activities",
       description:
-        "Blablatrip offers exclusive local experiences led by passionate Ambassadors, ensuring every trip is unique and unforgettable.",
+          "Blablatrip offers exclusive local experiences led by passionate Ambassadors, ensuring every trip is unique and unforgettable.",
     },
     {
       img: "features-1-2.png",
       title: "Expert Guidance",
       description:
-        "Get insider knowledge and travel tips from experienced local Ambassadors who know the city like no one else.",
+          "Get insider knowledge and travel tips from experienced local Ambassadors who know the city like no one else.",
     },
     {
       img: "features-1-3.png",
       title: "Seamless Travel Planning",
       description:
-        "Plan and book personalized experiences effortlessly with Blablatrip’s flexible platform that caters to your interests.",
+          "Plan and book personalized experiences effortlessly with Blablatrip's flexible platform that caters to your interests.",
     },
     {
       img: "features-1-4.png",
       title: "Local Coordination",
       description:
-        "Ambassadors manage logistics, transportation, and scheduling to ensure a smooth and hassle-free travel experience.",
+          "Ambassadors manage logistics, transportation, and scheduling to ensure a smooth and hassle-free travel experience.",
     },
   ];
 
   return (
-    <section className="space-extra-bottom">
-      <div className="container">
-        <div className="row">
-          {features.map((feature, index) => (
-            <div className="col-xl-3 col-md-6 col-sm-6 col-12" key={index}>
-              <div className="features-style1">
-                <div
-                  className="features-bg"
-                  data-bg-src="assets/img/shape/features.png"
-                ></div>
-                <div className="features-image">
-                  <img
-                    src={`assets/img/features/${feature.img}`}
-                    alt={feature.title}
-                  />
+
+      <section className="space-extra-bottom">
+        <div className="container">
+          <div className="row feature-card-row">
+            {features.map((feature, index) => (
+                <div className="col-xl-3 col-md-6 col-sm-6 col-12 feature-card-column" key={index}>
+                  <div className="features-style1">
+                    <div
+                        className="features-bg"
+                        data-bg-src="assets/img/shape/features.png"
+                    ></div>
+                    <div className="features-image">
+                      <img
+                          src={`assets/img/features/${feature.img}`}
+                          alt={feature.title}
+                      />
+                    </div>
+                    <div className="features-content">
+                      <h3 className="features-title">{feature.title}</h3>
+                      <p className="features-text">{feature.description}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="features-content">
-                  <h3 className="features-title">{feature.title}</h3>
-                  <p className="features-text">{feature.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
   );
 };
 

@@ -30,11 +30,10 @@ function Home() {
  
         <Hero />
         <TrustedBy />
-        <Card1 />
         <Card />
         
         {/* <FeatureSection /> */}
-        <SpecialOfferSection />
+
         <UnforgettableCitiesSection />
         <Testimonial />
         <Blog />

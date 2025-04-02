@@ -213,3 +213,83 @@
     }
   }
 }
+
+// Add to existing Navbar.scss
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .signin, .signup {
+    color: var(--theme-color);
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    svg {
+      font-size: 16px;
+    }
+  }
+
+  .divider {
+    color: #ff681a;
+    font-weight: 300;
+  }
+}
+
+// Update existing options menu
+.options {
+  .menu-links {
+    max-height: 60vh;
+    overflow-y: auto;
+
+    .link {
+      // Add admin link styling
+      &.admin-link {
+        background: rgba(30,42,120,0.05);
+        color: #1e2a78;
+
+        &:hover {
+          background: rgba(30,42,120,0.1);
+        }
+
+        svg {
+          color: #1e2a78;
+        }
+      }
+    }
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 768px) {
+  .auth-links {
+    gap: 10px;
+
+    .signin, .signup {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+
+    .divider {
+      display: none;
+    }
+  }
+
+  .options .menu-links {
+    max-height: 70vh;
+
+    .link {
+      padding: 10px 15px;
+      font-size: 14px;
+    }
+  }
+}

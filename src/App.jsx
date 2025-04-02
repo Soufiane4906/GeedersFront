@@ -43,6 +43,9 @@ import AdminOrderDetails from "./pages/Admin/orders/AdminOrderDetails";
 import AdminVerifications from "./pages/Admin/verifications/AdminVerifications";
 import AdminCountries from "./pages/Admin/countries/AdminCountries";
 import AdminPOIs from "./pages/Admin/pois/AdminPOIs.jsx";
+import DiscoverMoreStories from "./pages/Stories/DiscoverMoreStories.jsx";
+import ShareStoryPage from "./pages/Stories/ShareStoryPage.jsx";
+import AdminLanguages from "./pages/Admin/languages/AdminLanguages.jsx";
 
 function App() {
   const queryClient = new QueryClient();
@@ -114,6 +117,14 @@ function App() {
           path: "/privacy",
           element: <Privacy />,
         },
+        {
+          path : "/stories",
+          element: <DiscoverMoreStories/>
+        },
+        {
+          path : "/share-story",
+          element: <ShareStoryPage/>
+        }
       ],
     },
     // Protected user routes (accessible only to regular users)
@@ -153,6 +164,7 @@ function App() {
               path: "add",
               element: <Add />,
             },
+
             {
               path: "pay/:id",
               element: <Pay />,
@@ -217,6 +229,10 @@ function App() {
             {
               path: "pois",
               element: <AdminPOIs/>
+            },
+            {
+              path: "languages",
+              element: <AdminLanguages />
             }
           ],
 

@@ -1,8 +1,10 @@
 /* Theme Variables */
 :root {
   --theme-color: #ff681a;
+  --theme-color-dark: #e55500; /* Replaced darken function */
   --theme-color2: #37d4d9;
   --secondary-color: #111330;
+  --secondary-color-light: #242858; /* Replaced lighten function */
   --title-color: #1c1c1c;
   --body-color: #505050;
   --smoke-color: #f7f7f7;
@@ -59,7 +61,7 @@
           color: var(--white-color);
 
           &:hover {
-            background-color: darken(#ff681a, 10%);
+            background-color: var(--theme-color-dark);
           }
         }
 
@@ -68,7 +70,7 @@
           color: var(--white-color);
 
           &:hover {
-            background-color: lighten(#111330, 10%);
+            background-color: var(--secondary-color-light);
           }
         }
       }
@@ -81,6 +83,7 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     margin-bottom: 3rem;
+    page-break-inside: avoid;
 
     .order-banner {
       background-color: var(--theme-color);
@@ -383,32 +386,44 @@
     cursor: pointer;
 
     &:hover {
-      background-color: darken(#ff681a, 10%);
+      background-color: var(--theme-color-dark);
     }
   }
 }
 
 /* PDF Specific Styles */
 .generating-pdf {
+  /* Ensure colors appear correctly in PDFs */
   .order-banner {
     background-color: var(--theme-color) !important;
+    color: white !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .card-header {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .footer-note {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .info-value.status {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  .verification-badge {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 }
 
@@ -446,6 +461,10 @@
 
 /* Print Styles */
 @media print {
+  body {
+    background-color: white;
+  }
+
   .single-order-container {
     margin: 0;
     padding: 0;
@@ -459,10 +478,13 @@
     .order-details {
       box-shadow: none;
       margin: 0;
+      border: none;
 
       .order-banner {
+        background-color: var(--theme-color) !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+        color-adjust: exact !important;
       }
 
       .content-grid {
@@ -472,11 +494,48 @@
           margin-bottom: 2rem;
           box-shadow: none;
           page-break-inside: avoid;
+          break-inside: avoid;
 
           &:hover {
             transform: none;
           }
+
+          .card-header {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
         }
+      }
+
+      .info-value.status.completed {
+        background-color: rgba(40, 167, 69, 0.1) !important;
+        color: var(--success-color) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      .info-value.status.pending {
+        background-color: rgba(254, 198, 36, 0.1) !important;
+        color: var(--yellow-color) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      .verification-badge.verified {
+        background-color: var(--theme-color2) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      .verification-badge.not-verified {
+        background-color: var(--error-color) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
       }
     }
   }

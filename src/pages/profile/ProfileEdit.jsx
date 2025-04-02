@@ -1,21 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import Select from 'react-select';
-import { languageOptions } from '../../utils/options.js';
+import { FaUser, FaEnvelope, FaGlobe, FaFileAlt, FaCity, FaPhone, FaCreditCard, FaImage, FaLanguage, FaChevronDown } from 'react-icons/fa';
 import upload from "../../utils/upload.js";
-import {
-    FaUser,
-    FaEnvelope,
-    FaGlobe,
-    FaFileAlt,
-    FaCity,
-    FaPhone,
-    FaCreditCard,
-    FaImage
-} from 'react-icons/fa';
-
 import ImageUpload from './ImageUpload';
+import newRequest from "../../utils/newRequest.js";
 
 const ProfileEdit = ({ user, onUpdate }) => {
     const [formData, setFormData] = useState({
@@ -36,17 +25,58 @@ const ProfileEdit = ({ user, onUpdate }) => {
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [languages, setLanguages] = useState([]);
+    const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // Fetch languages from API
+    useEffect(() => {
+        const fetchLanguages = async () => {
+            setIsLoading(true);
+            try {
+                const languagesResponse = await newRequest.get("/languages");
+                setLanguages(languagesResponse.data || []);
+            } catch (error) {
+                console.error("Failed to fetch languages", error);
+                setError("Failed to load languages");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchLanguages();
+    }, []);
+
+    // Function to get flag URL from language flag code
+    const getFlagUrl = (flagCode) => {
+        // If it's already a full URL, return it
+        if (flagCode?.startsWith('http')) {
+            return flagCode;
+        }
+
+        // Otherwise, assume it's a country code and build the flag URL
+        const code = flagCode?.toLowerCase();
+        return code ? `https://flagcdn.com/w320/${code}.png` : '';
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectChange = (selectedOptions) => {
-        setFormData((prev) => ({
-            ...prev,
-            languages: selectedOptions ? selectedOptions.map(option => option.value) : []
-        }));
+    // Toggle language selection
+    const toggleLanguage = (languageId) => {
+        setFormData(prevData => {
+            const updatedLanguages = prevData.languages.includes(languageId)
+                ? prevData.languages.filter(id => id !== languageId)
+                : [...prevData.languages, languageId];
+
+            return {
+                ...prevData,
+                languages: updatedLanguages
+            };
+        });
     };
 
     const handleFileChange = async (e) => {
@@ -97,6 +127,38 @@ const ProfileEdit = ({ user, onUpdate }) => {
         });
         toast.info("Form has been reset to original values");
     };
+
+    // Helper function to get language name by ID
+    const getLanguageNameById = (languageId) => {
+        const language = languages.find(l => l._id === languageId);
+        return language ? language.langue : languageId;
+    };
+
+    // Helper function to get language flag by ID
+    const getLanguageFlagById = (languageId) => {
+        const language = languages.find(l => l._id === languageId);
+        return language ? getFlagUrl(language.flag) : null;
+    };
+
+    // Handle checkbox click directly
+    const handleCheckboxClick = (e, id) => {
+        e.stopPropagation();
+        toggleLanguage(id);
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.language-dropdown-container')) {
+                setShowLanguageDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <Form className="profile-edit" onSubmit={handleSubmit}>
@@ -166,17 +228,95 @@ const ProfileEdit = ({ user, onUpdate }) => {
                         />
                     </Form.Group>
 
-                    <Form.Group as={Col} md="6">
-                        <Form.Label><FaFileAlt /> Languages</Form.Label>
-                        <Select
-                            name="languages"
-                            options={languageOptions}
-                            isMulti
-                            value={formData.languages.map(lang => languageOptions.find(option => option.value === lang) || { value: lang, label: lang })}
-                            onChange={handleSelectChange}
-                            placeholder="Select languages you speak"
-                            className="language-select"
-                        />
+                    {/* Language Selection Dropdown with Flags - Similar to Hero.jsx */}
+                    <Form.Group as={Col} md="6" className="language-dropdown-container">
+                        <Form.Label><FaLanguage /> Languages</Form.Label>
+                        <div className="position-relative">
+                            <button
+                                type="button"
+                                className="form-control text-start d-flex justify-content-between align-items-center"
+                                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                            >
+                                <span className="truncate">
+                                    {formData.languages.length === 0
+                                        ? "Select languages"
+                                        : `${formData.languages.length} language(s) selected`}
+                                </span>
+                                <FaChevronDown className="dropdown-toggle" />
+                            </button>
+
+                            {showLanguageDropdown && (
+                                <div
+                                    className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                                    style={{ maxHeight: "200px", overflowY: "auto" }}
+                                >
+                                    {isLoading ? (
+                                        <div className="text-center py-3">Loading languages...</div>
+                                    ) : (
+                                        languages.map((lang) => (
+                                            <div
+                                                key={lang._id}
+                                                className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                                onClick={() => toggleLanguage(lang._id)}
+                                            >
+                                                <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="form-check-input"
+                                                        checked={formData.languages.includes(lang._id)}
+                                                        onChange={(e) => handleCheckboxClick(e, lang._id)}
+                                                        id={`lang-${lang._id}`}
+                                                    />
+                                                    <label className="form-check-label ms-2 w-100 d-flex align-items-center" htmlFor={`lang-${lang._id}`}>
+                                                        <img
+                                                            src={getFlagUrl(lang.flag)}
+                                                            alt={lang.langue}
+                                                            className="me-2"
+                                                            style={{ width: '20px', height: 'auto' }}
+                                                        />
+                                                        {lang.langue}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                    {!isLoading && languages.length === 0 && (
+                                        <div className="text-center py-3">No languages available</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Display selected languages with flags */}
+                        {formData.languages.length > 0 && (
+                            <div className="mt-2 d-flex flex-wrap selected-languages">
+                                {formData.languages.map(languageId => {
+                                    const flagUrl = getLanguageFlagById(languageId);
+                                    return (
+                                        <span
+                                            key={languageId}
+                                            className="badge bg-primary me-1 mb-1 d-flex align-items-center"
+                                        >
+                                            {flagUrl && (
+                                                <img
+                                                    src={flagUrl}
+                                                    alt=""
+                                                    width="16"
+                                                    height="16"
+                                                    className="me-1"
+                                                />
+                                            )}
+                                            <span className="lang-name">{getLanguageNameById(languageId)}</span>
+                                            <button
+                                                type="button"
+                                                className="btn-close btn-close-white ms-2"
+                                                onClick={() => toggleLanguage(languageId)}
+                                            ></button>
+                                        </span>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </Form.Group>
                 </Row>
 

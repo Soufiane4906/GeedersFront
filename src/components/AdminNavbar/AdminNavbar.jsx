@@ -11,7 +11,7 @@ import {
     FaCheckCircle,
     FaGlobe,
     FaSignOutAlt,
-    FaSmile
+    FaSmile, FaLanguage
 } from "react-icons/fa";
 
 const AdminNavbar = () => {
@@ -63,6 +63,9 @@ const AdminNavbar = () => {
                     </Link>
                     <Link to="/admin/pois" className="nav-link">
                         <FaSmile /> Pois
+                    </Link>
+                    <Link to="/admin/languages" className="nav-link">
+                        <FaLanguage /> Languages
                     </Link>
                 </div>
 

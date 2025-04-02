@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faBold, faItalic, faUnderline, faListUl,
@@ -9,6 +9,14 @@ import {
 const WysiwygEditor = ({ value, onChange, placeholder }) => {
     const editorRef = useRef(null);
     const [activeStyles, setActiveStyles] = useState([]);
+    const [editorContent, setEditorContent] = useState(value || '');
+
+    // Initialiser le contenu de l'éditeur
+    useEffect(() => {
+        if (editorRef.current && value !== undefined) {
+            editorRef.current.innerHTML = value;
+        }
+    }, []);
 
     const saveSelection = () => {
         let sel = window.getSelection();
@@ -19,6 +27,7 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
     };
 
     const restoreSelection = (range) => {
+        if (!range) return;
         let sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
@@ -26,6 +35,7 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
 
     const execCommand = (command, value = null) => {
         const range = saveSelection(); // Sauvegarde la position du curseur
+        editorRef.current.focus();
         document.execCommand(command, false, value);
         updateActiveStyles();
         saveContent();
@@ -47,7 +57,9 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
 
     const saveContent = () => {
         if (editorRef.current) {
-            onChange({ target: { name: 'desc', value: editorRef.current.innerHTML } });
+            const newContent = editorRef.current.innerHTML;
+            setEditorContent(newContent);
+            onChange({ target: { name: 'desc', value: newContent } });
         }
     };
 
@@ -86,7 +98,6 @@ const WysiwygEditor = ({ value, onChange, placeholder }) => {
                 suppressContentEditableWarning={true}
                 onInput={handleInput}
                 onKeyUp={handleKeyUp}
-                dangerouslySetInnerHTML={{ __html: value }}
                 data-placeholder={placeholder}
             ></div>
         </div>
