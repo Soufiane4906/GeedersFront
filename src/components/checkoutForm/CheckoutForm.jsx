@@ -15,6 +15,9 @@ const CheckoutForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Récupérer l'URL de retour depuis les variables d'environnement
+  const returnUrl = import.meta.env.VITE_APP_RETURN_URL || "https://www.blablatrip.com/success";
+
   useEffect(() => {
     if (!stripe) {
       return;
@@ -60,8 +63,8 @@ const CheckoutForm = () => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          // return_url: "http://localhost:5173/success",
-          return_url: "https://www.blablatrip.com/success",
+          // Utiliser la variable d'environnement
+          return_url: returnUrl,
         },
       });
 
@@ -75,7 +78,6 @@ const CheckoutForm = () => {
       setMessage("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
-      // We don't reset isSubmitting to prevent multiple form submissions
     }
   };
 

@@ -1,14 +1,14 @@
 .gigCard {
-  border: 1px solid #ffd8b5; 
+  border: 1px solid #ffd8b5;
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(255, 127, 0, 0.15); 
+  box-shadow: 0 4px 8px rgba(255, 127, 0, 0.15);
   width: 100%;
   max-width: 400px;
   margin: 10px;
   background-color: white;
-  
+
   @media (max-width: 768px) {
     margin: 10px auto;
     max-width: 100%;
@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: column;
     padding: 15px;
-    
+
     @media (max-width: 576px) {
       padding: 12px;
     }
@@ -39,7 +39,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    
+
     @media (max-width: 576px) {
       flex-wrap: wrap;
     }
@@ -51,7 +51,7 @@
     border-radius: 50%;
     object-fit: cover;
     transition: border 0.3s ease;
-    
+
     @media (max-width: 576px) {
       width: 40px;
       height: 40px;
@@ -71,7 +71,7 @@
     font-weight: bold;
     font-size: 16px;
     color: black;
-    
+
     @media (max-width: 576px) {
       font-size: 15px;
     }
@@ -95,7 +95,7 @@
     color: #666;
     margin: 8px 0;
     line-height: 1.4;
-    
+
     @media (max-width: 576px) {
       font-size: 13px;
     }
@@ -106,51 +106,129 @@
     align-items: center;
     gap: 5px;
     margin: 10px 0;
-    
+
     svg {
       color: #16214a; // Golden orange for stars
     }
   }
 
-  .availability,
-  .languages {
-    margin: 10px 0;
+  .languages-section {
+    margin: 15px 0;
 
     h4 {
       font-weight: bold;
-      margin-bottom: 5px;
-      color: #16214a; // Dark orange
+      margin-bottom: 10px;
+      color: #16214a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 5px 0;
+    .language-flags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    li {
-      font-size: 14px;
-      color: #333;
-      padding: 3px 0;
-      
-      @media (max-width: 576px) {
-        font-size: 13px;
+    .language-badge {
+      display: flex;
+      align-items: center;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 5px 10px;
+      border: 1px solid #ffd8b5;
+
+      .language-flag {
+        width: 20px;
+        height: 15px;
+        margin-right: 5px;
+        object-fit: cover;
+      }
+
+      .language-name {
+        font-size: 14px;
+        color: #333;
       }
     }
 
-    .flags {
+    .no-languages {
+      font-style: italic;
+      color: #888;
       font-size: 14px;
-      color: #333;
+    }
+  }
+
+  .poi-section {
+    margin: 15px 0;
+
+    h4 {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #16214a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .poi-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 10px;
+    }
+
+    .poi-item {
+      display: flex;
+      align-items: center;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px solid #ffd8b5;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(255, 127, 0, 0.1);
+      }
+
+      .poi-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        object-fit: cover;
+        margin-right: 8px;
+      }
+
+      .poi-icon {
+        color: #ff7f00;
+        font-size: 18px;
+        margin-right: 8px;
+      }
+
+      .poi-name {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+
+    .show-more-btn {
+      background: none;
+      border: none;
+      color: #ff7f00;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 5px;
+      margin-top: 5px;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
   .detailsSection {
     padding: 15px;
     border-top: 1px solid #ffd8b5; // Light orange border
-    
+
     @media (max-width: 576px) {
       padding: 12px;
     }
@@ -168,7 +246,7 @@
       h2 {
         margin: 0;
       }
-      
+
       @media (max-width: 576px) {
         font-size: 16px;
       }
@@ -185,11 +263,11 @@
         align-items: center;
         gap: 8px;
         font-size: 14px;
-        
+
         svg {
           color: #16214a; // Medium orange for icons
         }
-        
+
         @media (max-width: 576px) {
           font-size: 13px;
           gap: 6px;
@@ -203,7 +281,7 @@
         color: #888;
         font-size: 14px;
         font-style: italic;
-        
+
         @media (max-width: 576px) {
           font-size: 13px;
         }
@@ -224,7 +302,7 @@
     transition: all 0.3s ease;
     position: relative; // Ensure relative positioning for the tooltip
     margin-top: 5px;
-    
+
     @media (max-width: 576px) {
       padding: 10px;
       font-size: 15px;
@@ -268,7 +346,7 @@
       opacity: 0;
       transition: opacity 0.3s ease;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      
+
       &:before {
         content: '';
         position: absolute;

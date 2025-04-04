@@ -419,7 +419,18 @@ $transition: all 0.3s ease;
           }
 
           .points-of-interest {
-            margin-bottom: 25px;
+            margin: 20px 0;
+
+            h3 {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin-bottom: 15px;
+
+              svg {
+                color: $primary-color;
+              }
+            }
 
             .poi-tags {
               display: flex;
@@ -427,21 +438,36 @@ $transition: all 0.3s ease;
               gap: 10px;
 
               .poi-tag {
-                background-color: rgba($primary-color, 0.1);
-                color: darken($primary-color, 10%);
-                padding: 6px 12px;
+                background-color: #f9f9f9;
+                border: 1px solid #ffd8b5;
                 border-radius: 20px;
+                padding: 6px 12px;
                 font-size: 14px;
-                transition: $transition;
+                color: #333;
+                display: inline-block;
+              }
 
-                &:hover {
-                  background-color: $primary-color;
-                  color: white;
-                  transform: translateY(-2px);
+              .poi-tag-with-image {
+                display: flex;
+                align-items: center;
+                background-color: #f9f9f9;
+                border: 1px solid #ffd8b5;
+                border-radius: 20px;
+                padding: 6px 12px;
+                font-size: 14px;
+                color: #333;
+
+                .poi-thumbnail {
+                  width: 24px;
+                  height: 24px;
+                  border-radius: 50%;
+                  object-fit: cover;
+                  margin-right: 8px;
                 }
               }
             }
           }
+
 
           .features-section {
             margin-bottom: 25px;

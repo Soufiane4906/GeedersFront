@@ -111,7 +111,7 @@ const AdminUserDetails = () => {
                 <div className="admin-header">
                     <h1>User Details</h1>
                     <div className="header-actions">
-                        <button className="back-btn" onClick={() => navigate('/adminUsers/users')}>
+                        <button className="back-btn" onClick={() => navigate('/admin/users')}>
                             Back to Users
                         </button>
                         {!isEditing ? (

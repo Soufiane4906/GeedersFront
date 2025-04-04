@@ -424,12 +424,32 @@ function Gig() {
                       <div className="points-of-interest">
                         <h3><FontAwesomeIcon icon={faMapMarkedAlt} /> Points d'intérêt</h3>
                         <div className="poi-tags">
-                          {gigData.poi.map((point, index) => (
-                              <span key={index} className="poi-tag">{point}</span>
-                          ))}
+                          {gigData.poi.map((point, index) => {
+                            // Si point est un objet avec des propriétés name et image
+                            if (typeof point === 'object' && point !== null && point.name) {
+                              return (
+                                  <div key={index} className="poi-tag-with-image">
+                                    {point.image && (
+                                        <img
+                                            src={point.image}
+                                            alt={point.name}
+                                            className="poi-thumbnail"
+                                        />
+                                    )}
+                                    <span>{point.name}</span>
+                                  </div>
+                              );
+                            }
+                            // Si c'est juste une chaîne de caractères ou autre chose
+                            return (
+                                <span key={index} className="poi-tag">{String(point)}</span>
+                            );
+                          })}
                         </div>
                       </div>
                   )}
+
+
 
                   {/* Features */}
                   {gigData?.features && gigData.features.length > 0 && (

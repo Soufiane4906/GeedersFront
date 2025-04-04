@@ -16,6 +16,7 @@ import {
 
 const GigCard = ({ item }) => {
   const [languagesData, setLanguagesData] = useState([]);
+  const [poiData, setPoiData] = useState([]);
 
   // Récupération des données utilisateur
   const { isLoading, error, data } = useQuery({
@@ -38,6 +39,20 @@ const GigCard = ({ item }) => {
     fetchLanguages();
   }, []);
 
+  // Récupération des données des POI
+  useEffect(() => {
+    const fetchPOIs = async () => {
+      try {
+        const response = await newRequest.get("/poi");
+        setPoiData(response.data || []);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des points d'intérêt", error);
+      }
+    };
+
+    fetchPOIs();
+  }, []);
+
   // Fonction pour obtenir l'URL du drapeau à partir du code
   const getFlagUrl = (flagCode) => {
     if (flagCode?.startsWith('http')) {
@@ -50,6 +65,11 @@ const GigCard = ({ item }) => {
 
   // Fonction pour obtenir les détails d'une langue par son ID ou son nom
   const getLanguageDetails = (language) => {
+    // Si c'est un objet complet (après populate)
+    if (language && typeof language === 'object' && language.langue) {
+      return language;
+    }
+
     // Si c'est un ID, chercher par ID
     const byId = languagesData.find(lang => lang._id === language);
     if (byId) return byId;
@@ -57,6 +77,18 @@ const GigCard = ({ item }) => {
     // Sinon chercher par nom
     const byName = languagesData.find(lang => lang.langue === language);
     return byName || { langue: language, flag: null };
+  };
+
+  // Modification de la fonction getPoiDetails pour récupérer l'image également
+  const getPoiDetails = (poiId) => {
+    // Si c'est déjà un objet POI complet (après populate)
+    if (poiId && typeof poiId === 'object' && poiId.name) {
+      return poiId;
+    }
+
+    // Si c'est un ID, chercher par ID
+    const poi = poiData.find(p => p._id === poiId);
+    return poi || { name: poiId, image: null }; // Retourne l'objet POI complet si trouvé
   };
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -144,16 +176,28 @@ const GigCard = ({ item }) => {
               </div>
             </div>
 
-            {/* Section des points d'intérêt */}
+            {/* Section des points d'intérêt avec images */}
             {item.poi && item.poi.length > 0 && (
                 <div className="poi-section">
                   <h4><FaMapMarkerAlt /> Points d'intérêt:</h4>
                   <div className="poi-list">
-                    {displayedPoi.map((poi, index) => (
-                        <div key={index} className="poi-item">
-                          <FaMapMarkerAlt /> {poi}
-                        </div>
-                    ))}
+                    {displayedPoi.map((poi, index) => {
+                      const poiDetails = getPoiDetails(poi);
+                      return (
+                          <div key={index} className="poi-item">
+                            {poiDetails.image ? (
+                                <img
+                                    src={poiDetails.image}
+                                    alt={poiDetails.name}
+                                    className="poi-image"
+                                />
+                            ) : (
+                                <FaMapMarkerAlt className="poi-icon" />
+                            )}
+                            <span className="poi-name">{poiDetails.name}</span>
+                          </div>
+                      );
+                    })}
                     {item.poi.length > 2 && (
                         <button
                             className="show-more-btn"
