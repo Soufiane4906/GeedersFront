@@ -16,7 +16,7 @@ const CheckoutForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Récupérer l'URL de retour depuis les variables d'environnement
-  const returnUrl = import.meta.env.VITE_APP_RETURN_URL || "https://www.blablatrip.com/success";
+  const returnUrl =  "https://www.blablatrip.com/success";
 
   useEffect(() => {
     if (!stripe) {
