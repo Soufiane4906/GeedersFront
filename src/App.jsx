@@ -18,6 +18,8 @@ import Pay from "./pages/pay/Pay";
 import Success from "./pages/success/Success";
 import Profile from "./pages/profile/Profile.jsx";
 import AboutUs from "./pages/about/AboutUs.jsx";
+import Services from "./pages/services/Services.jsx";
+import Contact from "./pages/contact/Contact.jsx";
 import Terms from "./pages/legal/Terms.jsx";
 import Privacy from "./pages/legal/Privacy.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -108,6 +110,14 @@ function App() {
         {
           path: "/about",
           element: <AboutUs />,
+        },
+        {
+          path: "/services",
+          element: <Services />,
+        },
+        {
+          path: "/contact",
+          element: <Contact />,
         },
         {
           path: "/terms",

@@ -1,40 +1,59 @@
 .footer {
-  background-color: #f8f9fa; // Light background color
-  padding: 3rem 0; // Equivalent to py-12 in Tailwind
+  background: linear-gradient(135deg, #1e2a78 0%, #111330 100%);
+  color: #ffffff;
+  padding: 4rem 0 2rem;
 
   .container {
     max-width: 1400px;
-    margin: 0 auto; 
-    padding: 0 1rem; 
+    margin: 0 auto;
+    padding: 0 1.5rem;
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr; // Single column on small screens
-      gap: 4rem; // Equivalent to gap-8 in Tailwind
+    .footer-content {
+      margin-bottom: 3rem;
 
-      @media (min-width: 768px) {
-        grid-template-columns: repeat(3, 1fr); // 3 columns on medium screens and up
-      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
 
-      .col {
-        h3 {
-          font-size: 1.8rem; // Equivalent to text-2xl in Tailwind
-          font-weight: 700; // Equivalent to font-bold in Tailwind
-          margin-bottom: 0.5rem; // Equivalent to mb-2 in Tailwind
+        .col-md-4 {
+          padding: 0 15px;
+          width: 100%;
+          margin-bottom: 2rem;
 
-          span {
-            &:first-child {
-              color: black; // Red color for "Que"
-            }
-            &:last-child {
-              color: #e66224; // Black color for "zzy"
-            }
+          @media (min-width: 768px) {
+            width: 33.333%;
+            margin-bottom: 0;
           }
         }
+      }
 
+      .footer-logo {
         p {
-          color: #4a5568; // Equivalent to text-gray-700 in Tailwind
-          font-size: 1.4rem; // Equivalent to text-lg in Tailwind
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.95rem;
+          line-height: 1.6;
+          margin-top: 1rem;
+        }
+      }
+
+      .footer-links {
+        h3 {
+          color: #ffffff;
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          position: relative;
+
+          &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 40px;
+            height: 2px;
+            background-color: #ff681a;
+          }
         }
 
         ul {
@@ -43,55 +62,79 @@
           margin: 0;
 
           li {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem; // Equivalent to space-y-2 in Tailwind
+            margin-bottom: 0.75rem;
 
             a {
-              color: #4a5568; // Equivalent to text-gray-700 in Tailwind
+              color: rgba(255, 255, 255, 0.7);
               text-decoration: none;
-              transition: color 0.3s ease;
-              font-size: 1.2rem;
+              transition: all 0.3s ease;
+              font-size: 0.95rem;
 
               &:hover {
-                color: #e66224; // Equivalent to hover:text-[#FF204E] in Tailwind
+                color: #ff681a;
+                padding-left: 5px;
               }
+            }
+          }
+        }
+      }
+
+      .footer-social {
+        h3 {
+          color: #ffffff;
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          position: relative;
+
+          &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 40px;
+            height: 2px;
+            background-color: #ff681a;
+          }
+        }
+
+        .social-icons {
+          display: flex;
+          gap: 1rem;
+
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background-color: #ff681a;
+              transform: translateY(-3px);
+            }
+
+            svg {
+              font-size: 1rem;
             }
           }
         }
       }
     }
 
-    .social {
+    .footer-bottom {
       text-align: center;
-      margin-top: 3rem; // Equivalent to mt-12 in Tailwind
-
-      .social-icons {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem; // Equivalent to space-x-6 in Tailwind
-        margin-bottom: 1rem; // Equivalent to mb-4 in Tailwind
-
-        a {
-          color: #4a5568; // Equivalent to text-gray-700 in Tailwind
-          text-decoration: none;
-          transition: color 0.3s ease;
-          font-size: 1.2rem;
-
-          &:hover {
-            color: #e66224; // Equivalent to hover:text-[#FF204E] in Tailwind
-          }
-
-          i {
-           font-size: 1.2rem;
-            
-            font-size: 1.5rem; // Equivalent to text-2xl in Tailwind
-          }
-        }
-      }
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
 
       p {
-        color: #718096; // Equivalent to text-gray-600 in Tailwind
-        font-size: 1.4rem; // Equivalent to text-lg in Tailwind
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+        margin: 0;
       }
     }
   }

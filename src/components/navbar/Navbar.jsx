@@ -17,13 +17,17 @@ import {
   FaShoppingCart,
   FaCheckCircle,
   FaGlobe,
-  FaSmile
+  FaSmile,
+  FaSearch,
+  FaChevronDown
 } from "react-icons/fa";
 
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const userRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -53,15 +57,18 @@ function Navbar() {
 
   const BlaBlaTripLogo = () => {
     return (
-        <Link to="/"> <img src={"/img/img_3.png"} alt={'rfe'}/>
+        <Link to="/" className="logo-link">
+          <img src={"/img/img_3.png"} alt="BlaBlaTripLogo"/>
         </Link>
-
     );
   };
 
   const handleClickOutside = (e) => {
     if (userRef.current && !userRef.current.contains(e.target)) {
       setOpen(false);
+    }
+    if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+      setMobileMenu(false);
     }
   };
 
@@ -71,6 +78,7 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const adminLinks = [
     { path: "/admin", icon: <FaHome />, text: "Dashboard" },
     { path: "/admin/users", icon: <FaUsers />, text: "Users" },
@@ -82,60 +90,137 @@ function Navbar() {
   ];
 
   return (
-      <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
-        <div className="logo">
-          <BlaBlaTripLogo />
-        </div>
-        <div className="links">
-          {currentUser ? (
-            <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
-              <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
-              <span>{currentUser?.username} </span>
-              {currentUser.isAmbassador && (
-                  <>
-                 <span> (Ambassador)</span>
-                  </>
-              )}
+      <div className={`navbar ${active || pathname !== "/" ? "active" : ""} ${mobileMenu ? "menu-open" : ""}`}>
+        <div className="container">
+          <div className="logo">
+            <BlaBlaTripLogo/>
+          </div>
 
-              <div className={`options ${open ? "open" : ""}`}>
-                <div className="user-info">
-                  <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
-                  <span>{currentUser?.username}</span>
-                </div>
-                <div className="menu-links">
-                  <Link className="link" to="/profile">
-                    <FaUserCircle /> Profile
-                  </Link>
-                  {currentUser.isAmbassador && (
-                    <>
-                      <Link className="link" to="/mygigs">
-                        <FaCalendarAlt /> My Posts
-                      </Link>
-                      <Link className="link" to="/add">
-                        <FaPlus /> Add New
-                      </Link>
-                    </>
-                  )}
-                  <Link className="link" to="/orders">
-                    <FaMapMarkerAlt /> Orders
-                  </Link>
-                  <Link className="link" to="/messages">
-                    <FaEnvelope /> Messages
-                  </Link>
-                  <Link className="link" onClick={handleLogout}>
-                    <FaSignOutAlt /> Logout
-                  </Link>
-                </div>
-              </div>
+          <div className="nav-center">
+            <div className="search-bar">
+              <FaSearch className="search-icon"/>
+              <input type="text" placeholder="Search experiences..."/>
             </div>
-          ) : (
-              <div className="auth-links">
-                <Link to="/login" className="signin">
-                  <FaSignInAlt /> Sign In
+
+            <div className="main-links">
+              <Link to="/" className={pathname === "/" ? "active" : ""}>
+                Home
+              </Link>
+              <Link to="/about" className={pathname === "/about" ? "active" : ""}>
+                About
+              </Link>
+              <Link to="/services" className={pathname === "/services" ? "active" : ""}>
+                Services
+              </Link>
+              <Link to="/contact" className={pathname === "/contact" ? "active" : ""}>
+                Contact
+              </Link>
+            </div>
+          </div>
+
+          <div className="hamburger" onClick={() => setMobileMenu(!mobileMenu)}>
+            <FaBars/>
+          </div>
+
+          <div className="links">
+            {currentUser ? (
+                <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
+                  <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
+                  <div className="user-info">
+                    <span>{currentUser?.username}</span>
+                    {currentUser.isAmbassador && (
+                        <span className="ambassador-badge">Ambassador</span>
+                    )}
+                  </div>
+                  <FaChevronDown className="dropdown-icon"/>
+
+                  <div className={`options ${open ? "open" : ""}`}>
+                    <div className="user-info">
+                      <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
+                      <div>
+                        <span className="username">{currentUser?.username}</span>
+                        {currentUser.isAmbassador && (
+                            <span className="badge">Ambassador</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="menu-links">
+                      <Link className="link" to="/profile">
+                        <FaUserCircle/> Profile
+                      </Link>
+                      {currentUser.isAmbassador && (
+                          <>
+                            <Link className="link" to="/mygigs">
+                              <FaCalendarAlt/> My Experiences
+                            </Link>
+                            <Link className="link" to="/add">
+                              <FaPlus/> Add New
+                            </Link>
+                          </>
+                      )}
+                      <Link className="link" to="/orders">
+                        <FaMapMarkerAlt/> Orders
+                      </Link>
+                      <Link className="link" to="/messages">
+                        <FaEnvelope/> Messages
+                      </Link>
+
+                      {currentUser.isAdmin && (
+                          <div className="admin-section">
+                            <div className="section-title">Admin Panel</div>
+                            {adminLinks.map((link) => (
+                                <Link key={link.path} className="link admin-link" to={link.path}>
+                                  {link.icon} {link.text}
+                                </Link>
+                            ))}
+                          </div>
+                      )}
+
+                      <div className="divider"></div>
+                      <Link className="link logout" onClick={handleLogout}>
+                        <FaSignOutAlt/> Logout
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+            ) : (
+                <div className="auth-links">
+                  <Link to="/login" className="signin">
+                    <FaSignInAlt/> Sign In
+                  </Link>
+                  <span className="divider">|</span>
+                  <Link to="/register" className="signup">
+                    <FaUserPlus/> Sign Up
+                  </Link>
+                </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`mobile-menu ${mobileMenu ? "open" : ""}`} ref={mobileMenuRef}>
+          <div className="mobile-links">
+            <Link to="/" className={pathname === "/" ? "active" : ""} onClick={() => setMobileMenu(false)}>
+              Home
+            </Link>
+            <Link to="/about" className={pathname === "/about" ? "active" : ""} onClick={() => setMobileMenu(false)}>
+              About
+            </Link>
+            <Link to="/services" className={pathname === "/services" ? "active" : ""} onClick={() => setMobileMenu(false)}>
+              Services
+            </Link>
+            <Link to="/contact" className={pathname === "/contact" ? "active" : ""} onClick={() => setMobileMenu(false)}>
+              Contact
+            </Link>
+          </div>
+
+          {!currentUser && (
+              <div className="mobile-auth">
+                <Link to="/login" className="signin-btn" onClick={() => setMobileMenu(false)}>
+                  <FaSignInAlt/> Sign In
                 </Link>
-                <span className="divider">|</span>
-                <Link to="/register" className="signup">
-                  <FaUserPlus /> Sign Up
+                <Link to="/register" className="signup-btn" onClick={() => setMobileMenu(false)}>
+                  <FaUserPlus/> Sign Up
                 </Link>
               </div>
           )}

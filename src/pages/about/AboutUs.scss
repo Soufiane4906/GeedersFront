@@ -1,6 +1,29 @@
 .about-us-page {
-  padding-top: 60px;
+  padding-top: 0;
   padding-bottom: 30px;
+
+  // Hero Section
+  .about-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/assets/img/about/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 60px;
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
 
   .sec-title {
     font-size: 42px;
@@ -8,6 +31,13 @@
     margin-bottom: 15px;
     color: var(--title-color);
     font-family: var(--title-font);
+  }
+
+  .sec-subtitle {
+    font-size: 18px;
+    max-width: 700px;
+    margin: 0 auto;
+    color: var(--body-color);
   }
 
   .sec-line {
@@ -31,6 +61,146 @@
       color: var(--body-color);
       line-height: 1.8;
       margin-bottom: 20px;
+
+      &.lead {
+        font-size: 18px;
+        font-weight: 400;
+      }
+    }
+
+    .about-list1 {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        padding: 8px 0;
+        color: var(--body-color);
+        font-weight: 500;
+
+        .check-icon {
+          color: var(--theme-color);
+          font-weight: bold;
+          margin-right: 10px;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  // Values Section
+  .values-section {
+    background-color: var(--bg-color1);
+    border-radius: 15px;
+    padding: 40px;
+
+    .values-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--title-color);
+    }
+  }
+
+  // Team Section
+  .team-section {
+    .team-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--title-color);
+    }
+
+    .team-subtitle {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .team-member {
+      text-align: center;
+      margin-bottom: 30px;
+
+      .team-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 15px;
+
+        img {
+          width: 100%;
+          transition: transform 0.3s ease;
+        }
+
+        .team-social {
+          position: absolute;
+          bottom: -50px;
+          left: 0;
+          right: 0;
+          background: rgba(255, 104, 26, 0.9);
+          padding: 10px 0;
+          transition: all 0.3s ease;
+
+          a {
+            color: white;
+            margin: 0 10px;
+            font-size: 18px;
+
+            &:hover {
+              transform: scale(1.2);
+            }
+          }
+        }
+
+        &:hover {
+          img {
+            transform: scale(1.05);
+          }
+
+          .team-social {
+            bottom: 0;
+          }
+        }
+      }
+
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--title-color);
+      }
+
+      p {
+        font-size: 14px;
+        color: var(--theme-color);
+        margin: 0;
+      }
+    }
+  }
+
+  // Stats Section
+  .stats-section {
+    background-color: var(--bg-color2, #f8f9fa);
+    border-radius: 15px;
+
+    .stat-item {
+      text-align: center;
+      padding: 20px 10px;
+
+      .stat-icon {
+        font-size: 36px;
+        color: var(--theme-color);
+        margin-bottom: 15px;
+      }
+
+      h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--title-color);
+      }
+
+      p {
+        font-size: 16px;
+        color: var(--body-color);
+        margin: 0;
+      }
     }
   }
 
@@ -38,6 +208,7 @@
     background-color: var(--bg-color1);
     padding: 25px;
     border-radius: 10px;
+    text-align: center;
 
     h4 {
       font-size: 20px;
@@ -59,6 +230,8 @@
 
     .img1 {
       border-radius: 25% 0 25% 0;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .media-box1,
@@ -72,6 +245,7 @@
       right: 0;
       top: -55px;
       z-index: 0;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 
       .media-info {
         font-size: 36px;
@@ -113,6 +287,13 @@
     padding: 30px 25px;
     padding-left: 110px;
     position: relative;
+    transition: all 0.3s ease;
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
     .contact-box_icon {
       width: 60px;
@@ -130,27 +311,36 @@
     }
 
     .contact-box__title {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--title-color);
     }
 
     .contact-box__text {
-      margin-bottom: -5px;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 2;
-      font-family: var(--body-font);
-      color: var(--title-color);
+      margin-bottom: 0;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--body-color);
     }
 
     &:hover {
       .contact-box_icon {
         background-color: var(--theme-color2);
+        transform: rotateY(180deg);
       }
     }
   }
 
   // Responsive Styles
   @media (max-width: 992px) {
+    .about-hero {
+      height: 300px;
+
+      .hero-title {
+        font-size: 36px;
+      }
+    }
+
     .sec-title {
       font-size: 36px;
     }
@@ -189,10 +379,27 @@
         margin-left: 20px;
       }
     }
+
+    .values-section {
+      padding: 30px 20px;
+    }
   }
 
   @media (max-width: 768px) {
-    padding-top: 40px;
+    padding-top: 0;
+
+    .about-hero {
+      height: 250px;
+      margin-bottom: 40px;
+
+      .hero-title {
+        font-size: 32px;
+      }
+
+      .hero-subtitle {
+        font-size: 16px;
+      }
+    }
 
     .sec-title {
       font-size: 32px;
@@ -203,10 +410,35 @@
         font-size: 24px;
       }
     }
+
+    .contact-box {
+      padding-left: 25px;
+      padding-top: 90px;
+      text-align: center;
+
+      .contact-box_icon {
+        left: 50%;
+        transform: translateX(-50%);
+        top: 20px;
+      }
+    }
+
+    .team-section {
+      .team-member {
+        max-width: 300px;
+        margin: 0 auto 30px;
+      }
+    }
   }
 
   @media (max-width: 576px) {
-    padding-top: 30px;
+    .about-hero {
+      height: 200px;
+
+      .hero-title {
+        font-size: 28px;
+      }
+    }
 
     .sec-title {
       font-size: 28px;
@@ -231,6 +463,16 @@
 
         .media-text {
           font-size: 16px;
+        }
+      }
+    }
+
+    .stats-section {
+      .stat-item {
+        margin-bottom: 20px;
+
+        h3 {
+          font-size: 28px;
         }
       }
     }

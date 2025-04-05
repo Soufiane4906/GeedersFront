@@ -300,6 +300,17 @@ const HeroSection = () => {
         </div>
 
         <div className="hero-mask">
+          <div className="hero-content">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-10 col-md-12 mx-auto text-center">
+                  <h1 className="hero-title">Find a Local Ambassador</h1>
+                  <p className="hero-subtitle">Explore like a true local and discover hidden gems!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="hero-bottom">
             <div className="container">
               <form className="hero-form">
@@ -342,7 +353,8 @@ const HeroSection = () => {
                                               type="checkbox"
                                               className="form-check-input"
                                               checked={country === countryItem.name}
-                                              onChange={() => {}}
+                                              onChange={() => {
+                                              }}
                                               onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleCountrySelect(countryItem._id, countryItem.name);
@@ -404,7 +416,8 @@ const HeroSection = () => {
                                               type="checkbox"
                                               className="form-check-input"
                                               checked={city === cityItem.name}
-                                              onChange={() => {}}
+                                              onChange={() => {
+                                              }}
                                               onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleCitySelect(cityItem.name);
@@ -587,12 +600,13 @@ const HeroSection = () => {
                                               onChange={(e) => handleCheckboxClick(e, lang._id, 'language')}
                                               id={`lang-${lang._id}`}
                                           />
-                                          <label className="form-check-label ms-2 w-100 d-flex align-items-center" htmlFor={`lang-${lang._id}`}>
+                                          <label className="form-check-label ms-2 w-100 d-flex align-items-center"
+                                                 htmlFor={`lang-${lang._id}`}>
                                             <img
                                                 src={getFlagUrl(lang.flag)}
                                                 alt={lang.langue}
                                                 className="me-2"
-                                                style={{ width: '20px', height: 'auto' }}
+                                                style={{width: '20px', height: 'auto'}}
                                             />
                                             {lang.langue}
                                           </label>
