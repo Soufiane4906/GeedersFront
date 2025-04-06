@@ -10,12 +10,12 @@ import {
   faSearch,
   faChevronDown,
   faCar,
-  faMotorcycle
+  faMotorcycle,
+  faMapMarkerAlt,  // Ajouté pour les points d'intérêt
+  faSpinner       // Ajouté pour l'indicateur de chargement
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// Remove import of availableLanguages since we'll fetch from API
-// import { availableLanguages } from "../../utils/options.js";
 import "./Hero.scss";
 import newRequest from "../../utils/newRequest";
 import Slider from "react-slick";
@@ -53,20 +53,24 @@ const HeroSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sliderLoaded, setSliderLoaded] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   // Improved slider settings
   const settings = {
     dots: true,
     infinite: true,
-    speed: 800,
+    speed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
     fade: true,
-    cssEase: 'linear',
+    cssEase: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
     lazyLoad: 'ondemand',
-    beforeChange: () => setSliderLoaded(true),
+    beforeChange: (current, next) => {
+      setSliderLoaded(true);
+      setActiveSlide(next);
+    },
     responsive: [
       {
         breakpoint: 768,
@@ -207,7 +211,7 @@ const HeroSection = () => {
   // Handle form submission
   const handleSubmit = () => {
     if (!country || !city) {
-      alert("Please select a country and city.");
+      setError("Please select a country and city.");
       return;
     }
 
@@ -281,6 +285,14 @@ const HeroSection = () => {
     // You could set a fallback image here
   };
 
+  // Loading spinner component
+  const LoadingSpinner = () => (
+      <div className="d-flex align-items-center">
+        <FontAwesomeIcon icon={faSpinner} spin className="me-2" />
+        <span>Loading...</span>
+      </div>
+  );
+
   return (
       <section className="hero-layout">
         {/* Image Slider with Error Handling */}
@@ -292,7 +304,7 @@ const HeroSection = () => {
                       src={img}
                       alt={`Travel destination ${index + 1}`}
                       onError={() => handleImageError(index)}
-                      className="slide-image"
+                      className={`slide-image ${activeSlide === index ? 'active' : ''}`}
                   />
                 </div>
             ))}
@@ -327,6 +339,7 @@ const HeroSection = () => {
                             type="button"
                             className="form-control text-start d-flex justify-content-between align-items-center"
                             onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                            aria-expanded={showCountryDropdown}
                         >
                         <span className="truncate">
                           {country || "Select Country"}
@@ -340,7 +353,7 @@ const HeroSection = () => {
                                 style={{maxHeight: "200px", overflowY: "auto"}}
                             >
                               {isLoading ? (
-                                  <div className="text-center py-3">Loading countries...</div>
+                                  <div className="text-center py-3"><LoadingSpinner /></div>
                               ) : (
                                   countries.map((countryItem) => (
                                       <div
@@ -353,8 +366,7 @@ const HeroSection = () => {
                                               type="checkbox"
                                               className="form-check-input"
                                               checked={country === countryItem.name}
-                                              onChange={() => {
-                                              }}
+                                              onChange={() => {}}
                                               onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleCountrySelect(countryItem._id, countryItem.name);
@@ -390,6 +402,7 @@ const HeroSection = () => {
                             className="form-control text-start d-flex justify-content-between align-items-center"
                             onClick={() => country && setShowCityDropdown(!showCityDropdown)}
                             disabled={!country || cities.length === 0}
+                            aria-expanded={showCityDropdown}
                         >
                         <span className="truncate">
                           {city || "Select City"}
@@ -403,7 +416,7 @@ const HeroSection = () => {
                                 style={{maxHeight: "200px", overflowY: "auto"}}
                             >
                               {isLoading ? (
-                                  <div className="text-center py-3">Loading cities...</div>
+                                  <div className="text-center py-3"><LoadingSpinner /></div>
                               ) : (
                                   cities.map((cityItem) => (
                                       <div
@@ -416,8 +429,7 @@ const HeroSection = () => {
                                               type="checkbox"
                                               className="form-check-input"
                                               checked={city === cityItem.name}
-                                              onChange={() => {
-                                              }}
+                                              onChange={() => {}}
                                               onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleCitySelect(cityItem.name);
@@ -440,7 +452,7 @@ const HeroSection = () => {
                             </div>
                         )}
                       </div>
-                      {isLoading && <div className="loading-indicator">Loading...</div>}
+                      {isLoading && <div className="loading-indicator"><FontAwesomeIcon icon={faSpinner} spin className="me-1" /> Loading...</div>}
                     </div>
                   </div>
 
@@ -467,7 +479,7 @@ const HeroSection = () => {
                   <div className="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div className="form-group poi-dropdown-container">
                       <label>
-                        <FontAwesomeIcon icon={faCity} className="me-2"/>
+                        <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2"/>
                         Points of Interest
                       </label>
                       <div className="position-relative">
@@ -477,6 +489,7 @@ const HeroSection = () => {
                             onClick={() => city && setShowPoiDropdown(!showPoiDropdown)}
                             disabled={!city}
                             tabIndex={0}
+                            aria-expanded={showPoiDropdown}
                         >
                         <span className="truncate">
                           {selectedPOIs.length === 0
@@ -492,7 +505,7 @@ const HeroSection = () => {
                                 style={{maxHeight: "200px", overflowY: "auto"}}
                             >
                               {isLoading ? (
-                                  <div className="text-center py-3">Loading points of interest...</div>
+                                  <div className="text-center py-3"><LoadingSpinner /></div>
                               ) : (
                                   pointsOfInterest.map((poi) => (
                                       <div
@@ -569,6 +582,7 @@ const HeroSection = () => {
                             type="button"
                             className="form-control text-start d-flex justify-content-between align-items-center"
                             onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                            aria-expanded={showLanguageDropdown}
                         >
                         <span className="truncate">
                           {selectedLanguages.length === 0
@@ -584,7 +598,7 @@ const HeroSection = () => {
                                 style={{maxHeight: "200px", overflowY: "auto"}}
                             >
                               {isLoading ? (
-                                  <div className="text-center py-3">Loading languages...</div>
+                                  <div className="text-center py-3"><LoadingSpinner /></div>
                               ) : (
                                   languages.map((lang) => (
                                       <div
@@ -694,7 +708,11 @@ const HeroSection = () => {
 
                   {/* Search Button */}
                   <div className="col-lg-4 col-md-12 col-sm-12 col-12 d-flex align-items-end">
-                    <button type="button" className="vs-btn style4 w-100" onClick={handleSubmit}>
+                    <button
+                        type="button"
+                        className="vs-btn style4 w-100"
+                        onClick={handleSubmit}
+                    >
                       <FontAwesomeIcon icon={faSearch} className="me-2"/>
                       Find Your Ambassador
                     </button>
@@ -704,6 +722,7 @@ const HeroSection = () => {
                   {error && (
                       <div className="col-12 mt-3">
                         <div className="alert alert-danger" role="alert">
+                          <FontAwesomeIcon icon={faSearch} className="me-2"/>
                           {error}
                         </div>
                       </div>

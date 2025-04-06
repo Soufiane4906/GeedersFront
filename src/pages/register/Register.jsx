@@ -362,7 +362,7 @@ function Register() {
 
   return (
       <>
-        <HeroProfile />
+
         <div className="register mt-4 mb-4">
           <div className="container">
             <div className="row justify-content-center">
