@@ -835,7 +835,7 @@ function Register() {
                             <h4>Informations de base</h4>
                             <div className="summary-item">
                               <span className="label">Type de compte:</span>
-                              <span className="value">{user.userType === "guest" ? "Guest" : "Ambassador"}</span>
+                              <span className="value">{user.userType === "guest" ? "Traveler" : "Ambassador"}</span>
                             </div>
                             <div className="summary-item">
                               <span className="label">Nom complet:</span>
