@@ -404,7 +404,7 @@ function Register() {
                               <div className="icon-container">
                                 <FontAwesomeIcon icon={faUser} size="2x" />
                               </div>
-                              <h4>Guest</h4>
+                              <h4>Traveler</h4>
                               <p>Explorez et découvrez de nouvelles destinations</p>
                             </div>
 
