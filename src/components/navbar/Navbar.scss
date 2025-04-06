@@ -541,6 +541,131 @@
         }
       }
     }
+
+    // Styles pour le menu utilisateur mobile
+    .mobile-user-section {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .mobile-user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      margin-bottom: 10px;
+
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--theme-color, #ff681a);
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+
+        .username {
+          font-weight: 600;
+          color: var(--secondary-color, #111330);
+          font-size: 16px;
+        }
+
+        .badge {
+          background: var(--theme-color2, #37d4d9);
+          color: white;
+          font-size: 11px;
+          padding: 2px 6px;
+          border-radius: 10px;
+          display: inline-block;
+          font-weight: 500;
+          align-self: flex-start;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    .mobile-user-link {
+      color: var(--body-color, #505050);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      padding: 12px 0;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:hover {
+        color: var(--theme-color, #ff681a);
+      }
+
+      &.logout {
+        color: #e74c3c;
+
+        svg {
+          color: #e74c3c;
+        }
+      }
+
+      svg {
+        color: var(--theme-color, #ff681a);
+        font-size: 18px;
+      }
+
+      &.admin-link {
+        color: #1e2a78;
+        font-size: 14px;
+        padding: 10px 0;
+
+        svg {
+          color: #1e2a78;
+        }
+      }
+    }
+
+    .mobile-admin-section {
+      margin: 10px 0;
+      padding: 10px 0;
+      background: #f9f9f9;
+      border-radius: 8px;
+
+      .section-title {
+        padding: 10px 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #999;
+        font-weight: 600;
+      }
+    }
+
+    .mobile-divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 10px 0;
+    }
+  }
+
+  // Overlay pour le menu mobile et les options
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 990;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   // Responsive styles
@@ -617,6 +742,7 @@
       overflow-y: auto;
       border-radius: 20px 20px 0 0;
       transform: translateY(100%);
+      z-index: 1001; // Augmenter le z-index pour s'assurer qu'il s'affiche au-dessus des autres éléments
 
       &.open {
         transform: translateY(0);
@@ -634,3 +760,4 @@
     }
   }
 }
+

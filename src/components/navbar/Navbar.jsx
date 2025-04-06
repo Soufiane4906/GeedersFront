@@ -28,6 +28,7 @@ function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const userRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const optionsRef = useRef(null);
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -64,10 +65,14 @@ function Navbar() {
   };
 
   const handleClickOutside = (e) => {
-    if (userRef.current && !userRef.current.contains(e.target)) {
+    // Vérifier si le clic est en dehors du menu utilisateur et du menu d'options
+    if (userRef.current && !userRef.current.contains(e.target) &&
+        optionsRef.current && !optionsRef.current.contains(e.target)) {
       setOpen(false);
     }
-    if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+
+    if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target) &&
+        !e.target.closest('.hamburger')) {
       setMobileMenu(false);
     }
   };
@@ -78,6 +83,12 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Empêcher la propagation des clics à l'intérieur du menu d'options
+  const handleUserClick = (e) => {
+    e.stopPropagation();
+    setOpen(!open);
+  };
 
   const adminLinks = [
     { path: "/admin", icon: <FaHome />, text: "Dashboard" },
@@ -124,7 +135,7 @@ function Navbar() {
 
           <div className="links">
             {currentUser ? (
-                <div className="user" ref={userRef} onClick={() => setOpen(!open)}>
+                <div className="user" ref={userRef} onClick={() => setMobileMenu(!mobileMenu)}>
                   <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
                   <div className="user-info">
                     <span>{currentUser?.username}</span>
@@ -134,7 +145,7 @@ function Navbar() {
                   </div>
                   <FaChevronDown className="dropdown-icon"/>
 
-                  <div className={`options ${open ? "open" : ""}`}>
+                  <div className={`options ${open ? "open" : ""}`} ref={optionsRef}>
                     <div className="user-info">
                       <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
                       <div>
@@ -145,23 +156,23 @@ function Navbar() {
                       </div>
                     </div>
                     <div className="menu-links">
-                      <Link className="link" to="/profile">
+                      <Link className="link" to="/profile" onClick={() => setOpen(false)}>
                         <FaUserCircle/> Profile
                       </Link>
                       {currentUser.isAmbassador && (
                           <>
-                            <Link className="link" to="/mygigs">
+                            <Link className="link" to="/mygigs" onClick={() => setOpen(false)}>
                               <FaCalendarAlt/> My Experiences
                             </Link>
-                            <Link className="link" to="/add">
+                            <Link className="link" to="/add" onClick={() => setOpen(false)}>
                               <FaPlus/> Add New
                             </Link>
                           </>
                       )}
-                      <Link className="link" to="/orders">
+                      <Link className="link" to="/orders" onClick={() => setOpen(false)}>
                         <FaMapMarkerAlt/> Orders
                       </Link>
-                      <Link className="link" to="/messages">
+                      <Link className="link" to="/messages" onClick={() => setOpen(false)}>
                         <FaEnvelope/> Messages
                       </Link>
 
@@ -169,7 +180,7 @@ function Navbar() {
                           <div className="admin-section">
                             <div className="section-title">Admin Panel</div>
                             {adminLinks.map((link) => (
-                                <Link key={link.path} className="link admin-link" to={link.path}>
+                                <Link key={link.path} className="link admin-link" to={link.path} onClick={() => setOpen(false)}>
                                   {link.icon} {link.text}
                                 </Link>
                             ))}
@@ -212,6 +223,63 @@ function Navbar() {
             <Link to="/contact" className={pathname === "/contact" ? "active" : ""} onClick={() => setMobileMenu(false)}>
               Contact
             </Link>
+
+            {/* Section utilisateur mobile */}
+            {currentUser && (
+                <>
+                  <div className="mobile-user-section">
+                    <div className="mobile-user-info">
+                      <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
+                      <div>
+                        <span className="username">{currentUser?.username}</span>
+                        {currentUser.isAmbassador && (
+                            <span className="badge">Ambassador</span>
+                        )}
+                      </div>
+                    </div>
+                    <Link to="/profile" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
+                      <FaUserCircle/> Profile
+                    </Link>
+                    {currentUser.isAmbassador && (
+                        <>
+                          <Link to="/mygigs" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
+                            <FaCalendarAlt/> My Experiences
+                          </Link>
+                          <Link to="/add" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
+                            <FaPlus/> Add New
+                          </Link>
+                        </>
+                    )}
+                    <Link to="/orders" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
+                      <FaMapMarkerAlt/> Orders
+                    </Link>
+                    <Link to="/messages" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
+                      <FaEnvelope/> Messages
+                    </Link>
+
+                    {currentUser.isAdmin && (
+                        <div className="mobile-admin-section">
+                          <div className="section-title">Admin Panel</div>
+                          {adminLinks.map((link) => (
+                              <Link
+                                  key={link.path}
+                                  className="mobile-user-link admin-link"
+                                  to={link.path}
+                                  onClick={() => setMobileMenu(false)}
+                              >
+                                {link.icon} {link.text}
+                              </Link>
+                          ))}
+                        </div>
+                    )}
+
+                    <div className="mobile-divider"></div>
+                    <Link className="mobile-user-link logout" onClick={handleLogout}>
+                      <FaSignOutAlt/> Logout
+                    </Link>
+                  </div>
+                </>
+            )}
           </div>
 
           {!currentUser && (
@@ -225,6 +293,17 @@ function Navbar() {
               </div>
           )}
         </div>
+
+        {/* Overlay pour le menu mobile et les options */}
+        {(mobileMenu || open) && (
+            <div
+                className="menu-overlay"
+                onClick={() => {
+                  setMobileMenu(false);
+                  setOpen(false);
+                }}
+            />
+        )}
       </div>
   );
 }
