@@ -1,3 +1,4 @@
+@use "sass:color";
 // Variables
 $primary-color: #FFC107;
 $secondary-color: #FF6B6B;
@@ -862,7 +863,7 @@ $transition: all 0.3s ease;
           gap: 10px;
 
           &:hover:not(:disabled) {
-            background-color: darken($primary-color, 10%);
+            background-color: color.adjust($primary-color, $lightness: -10%);;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba($primary-color, 0.3);
           }
@@ -959,7 +960,7 @@ $transition: all 0.3s ease;
     transition: $transition;
 
     &:hover {
-      background-color: darken($primary-color, 10%);
+      background-color: color.adjust($primary-color, $lightness: -10%);;
     }
   }
 }

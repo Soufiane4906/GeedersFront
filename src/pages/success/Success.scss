@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:list";
+@use "sass:math";
 /* Variables for consistent styling */
 :root {
   --primary-color: #4361ee;
@@ -286,12 +289,12 @@
 
   @for $i from 1 through 20 {
     &:nth-child(#{$i}) {
-      background-color: nth(#4361ee #3f37c9 #2ecc71 #f72585 #4cc9f0, ($i % 5) + 1);
-      left: random(100) * 1%;
+      background-color: list.nth(#4361ee #3f37c9 #2ecc71 #f72585 #4cc9f0, ($i % 5) + 1);
+      left: math.random(100) * 1%;
       top: -20px;
-      animation: confetti-fall random(6) + 2s ease-in infinite;
-      animation-delay: random(100) / 100 * 5s;
-      transform: rotate(random(360) + deg);
+      animation: confetti-fall math.random(6) + 2s ease-in infinite;
+      animation-delay: math.div(math.random(100), 100) * 5s;
+      transform: rotate(math.random(360) + deg);
     }
   }
 }
@@ -305,7 +308,7 @@
   100% {
     opacity: 0;
     top: 100%;
-    transform: translateX(random(100) - 50px) rotate(random(360) + deg);
+    transform: translateX(math.random(100) - 50px) rotate(math.random(360) + deg);
   }
 }
 

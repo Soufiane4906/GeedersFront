@@ -1,3 +1,4 @@
+@use "sass:color";
 .register {
   --step-count: 1;
   --max-steps: 4;
@@ -382,7 +383,7 @@
         color: #fff;
 
         &:hover {
-          background-color: darken(#ff6b01, 5%);
+          background-color: color.adjust(#111330, $lightness: -2%);
           transform: translateY(-2px);
           box-shadow: 0 5px 15px rgba(255, 107, 1, 0.3);
         }

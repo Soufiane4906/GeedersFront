@@ -1,3 +1,4 @@
+@use "sass:color";
 /* Profile Styles */
 
 .profile-dashboard {
@@ -286,8 +287,8 @@
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: darken(#ff681a, 10%);
-          border-color: darken(#ff681a, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
+          border-color: color.adjust(#111330, $lightness: -2%);
           transform: translateY(-3px);
           box-shadow: 0 5px 15px rgba(255, 104, 26, 0.3);
         }
@@ -413,8 +414,8 @@
       border-color: var(--theme-color);
 
       &:hover:not(:disabled) {
-        background-color: darken(#ff681a, 10%);
-        border-color: darken(#ff681a, 10%);
+        background-color: color.adjust(#111330, $lightness: -2%);
+        border-color: color.adjust(#111330, $lightness: -2%);
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(255, 104, 26, 0.3);
       }
@@ -431,8 +432,8 @@
       color: var(--body-color);
 
       &:hover {
-        background-color: darken(#f7f7f7, 10%);
-        border-color: darken(#f7f7f7, 10%);
+        background-color: color.adjust(#111330, $lightness: -2%);
+        border-color: color.adjust(#111330, $lightness: -2%);
         color: var(--title-color);
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -568,7 +569,7 @@
       position: relative;
 
       &:hover {
-        background-color: darken(#ff681a, 10%);
+        background-color: color.adjust(#111330, $lightness: -2%);
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(255, 104, 26, 0.3);
       }
@@ -692,8 +693,8 @@
     transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
-      background-color: darken(#ff681a, 10%);
-      border-color: darken(#ff681a, 10%);
+      background-color: color.adjust(#111330, $lightness: -2%);
+      border-color: color.adjust(#111330, $lightness: -2%);
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(255, 104, 26, 0.3);
     }

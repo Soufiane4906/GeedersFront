@@ -1,3 +1,4 @@
+@use "sass:color";
 .myGigs {
   background-color: var(--bg-color1);
   padding: 20px 0;
@@ -106,7 +107,7 @@
         gap: 8px;
 
         &:hover {
-          background-color: darken(#ff681a, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
           transform: translateY(-2px);
           box-shadow: 0 4px 8px rgba(255, 104, 26, 0.25);
         }
@@ -389,7 +390,7 @@
               text-decoration: none;
 
               &:hover {
-                background-color: darken(#37d4d9, 10%);
+                background-color: color.adjust(#111330, $lightness: -2%);
               }
             }
 
@@ -398,7 +399,7 @@
               color: white;
 
               &:hover {
-                background-color: darken(#ffc107, 10%);
+                background-color: color.adjust(#111330, $lightness: -2%);
               }
             }
 
@@ -407,7 +408,7 @@
               color: var(--white-color);
 
               &:hover {
-                background-color: darken(#dc3545, 10%);
+                background-color: color.adjust(#111330, $lightness: -2%);
               }
             }
           }
@@ -591,7 +592,7 @@
         color: var(--white-color);
 
         &:hover {
-          background-color: darken(#37d4d9, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
 
@@ -600,7 +601,7 @@
         color: white;
 
         &:hover {
-          background-color: darken(#ffc107, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
 
@@ -609,7 +610,7 @@
         color: var(--white-color);
 
         &:hover {
-          background-color: darken(#dc3545, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
     }
@@ -793,7 +794,7 @@
         text-decoration: none;
 
         &:hover {
-          background-color: darken(#ff681a, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
 
@@ -803,7 +804,7 @@
         border: none;
 
         &:hover {
-          background-color: darken(#ffc107, 10%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
     }

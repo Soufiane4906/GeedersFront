@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .admin-order-details {
     padding: 40px 0;
 
@@ -38,7 +40,7 @@
                 color: var(--white-color);
 
                 &:hover {
-                    background-color: darken(#111330, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
 
@@ -47,7 +49,7 @@
                 color: var(--white-color);
 
                 &:hover {
-                    background-color: darken(#dc3545, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
 
@@ -56,7 +58,7 @@
                 color: var(--white-color);
 
                 &:hover {
-                    background-color: darken(#0d6efd, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
         }
@@ -154,7 +156,7 @@
                     color: #333;
 
                     &:hover {
-                        background-color: darken(#ffc107, 10%);
+                        background-color: color.adjust(#111330, $lightness: -2%);
                     }
                 }
 
@@ -163,7 +165,7 @@
                     color: white;
 
                     &:hover {
-                        background-color: darken(#28a745, 10%);
+                        background-color: color.adjust(#28a745, $lightness: -10%);
                     }
                 }
             }
@@ -221,7 +223,7 @@
                         transition: background-color 0.3s ease;
 
                         &:hover {
-                            background-color: darken(#0d6efd, 10%);
+                            background-color: color.adjust(#111330, $lightness: -2%);
                         }
                     }
                 }
@@ -258,7 +260,7 @@
                 color: white;
 
                 &:hover {
-                    background-color: darken(#f44336, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
 
@@ -267,7 +269,7 @@
                 color: white;
 
                 &:hover {
-                    background-color: darken(#1e7e34, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
 
@@ -276,7 +278,7 @@
                 color: white;
 
                 &:hover {
-                    background-color: darken(#6c757d, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
         }
@@ -334,7 +336,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-                background-color: darken(#111330, 10%);
+                background-color: color.adjust(#111330, $lightness: -2%);
             }
         }
 
@@ -359,7 +361,7 @@
                 color: white;
 
                 &:hover {
-                    background-color: darken(#1e7e34, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
 
@@ -368,7 +370,7 @@
                 color: white;
 
                 &:hover {
-                    background-color: darken(#f44336, 10%);
+                    background-color: color.adjust(#111330, $lightness: -2%);
                 }
             }
         }
@@ -558,7 +560,7 @@
                             color: white;
 
                             &:hover {
-                                background-color: darken(#0d6efd, 10%);
+                                background-color: color.adjust(#111330, $lightness: -2%);
                             }
                         }
 
@@ -567,7 +569,7 @@
                             color: white;
 
                             &:hover {
-                                background-color: darken(#dc3545, 10%);
+                                background-color: color.adjust(#111330, $lightness: -2%);
                             }
                         }
                     }
@@ -622,7 +624,7 @@
         transition: all 0.3s ease;
 
         &:hover {
-            background-color: darken(#0d6efd, 10%);
+            background-color: color.adjust(#111330, $lightness: -2%);
         }
 
         &:after {

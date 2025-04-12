@@ -1,3 +1,4 @@
+@use "sass:color";
 .messages {
   display: flex;
   justify-content: center;
@@ -240,7 +241,7 @@
             user-select: none;
 
             &:hover {
-              background-color: darken(#ff681a, 5%);
+              background-color: color.adjust(#111330, $lightness: -2%);
             }
           }
 
@@ -427,7 +428,7 @@
               color: var(--white-color);
 
               &:hover {
-                background-color: darken(#37d4d9, 5%);
+                background-color: color.adjust(#111330, $lightness: -2%);
               }
             }
 
@@ -436,7 +437,7 @@
               color: var(--white-color);
 
               &:hover {
-                background-color: darken(#ff681a, 5%);
+                background-color: color.adjust(#111330, $lightness: -2%);
               }
             }
           }
@@ -490,7 +491,7 @@
         transition: all 0.2s ease;
 
         &:hover {
-          background-color: darken(#ff681a, 5%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
     }
@@ -524,7 +525,7 @@
         transition: all 0.2s ease;
 
         &:hover {
-          background-color: darken(#ff681a, 5%);
+          background-color: color.adjust(#111330, $lightness: -2%);
         }
       }
     }
