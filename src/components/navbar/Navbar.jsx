@@ -3,32 +3,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import "./Navbar.scss";
 import {
-  FaUserCircle,
-  FaCalendarAlt,
-  FaPlus,
-  FaEnvelope,
-  FaSignOutAlt,
-  FaSignInAlt,
-  FaUserPlus,
-  FaMapMarkerAlt,
-  FaBars,
-  FaUsers,
-  FaHome,
-  FaShoppingCart,
-  FaCheckCircle,
-  FaGlobe,
-  FaSmile,
-  FaSearch,
-  FaChevronDown
+  FaUserCircle, FaCalendarAlt, FaPlus, FaEnvelope,
+  FaSignOutAlt, FaSignInAlt, FaUserPlus, FaMapMarkerAlt,
+  FaBars, FaUsers, FaHome, FaShoppingCart, FaCheckCircle,
+  FaGlobe, FaSmile, FaSearch, FaChevronDown, FaTimes
 } from "react-icons/fa";
 
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const userRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const optionsRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -44,6 +33,12 @@ function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    // Fermer les menus lors du changement de route
+    setOpen(false);
+    setMobileMenu(false);
+  }, [pathname]);
+
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const handleLogout = async () => {
@@ -56,16 +51,7 @@ function Navbar() {
     }
   };
 
-  const BlaBlaTripLogo = () => {
-    return (
-        <Link to="/" className="logo-link">
-          <img src={"/img/img_3.png"} alt="BlaBlaTripLogo"/>
-        </Link>
-    );
-  };
-
   const handleClickOutside = (e) => {
-    // Vérifier si le clic est en dehors du menu utilisateur et du menu d'options
     if (userRef.current && !userRef.current.contains(e.target) &&
         optionsRef.current && !optionsRef.current.contains(e.target)) {
       setOpen(false);
@@ -84,10 +70,28 @@ function Navbar() {
     };
   }, []);
 
-  // Empêcher la propagation des clics à l'intérieur du menu d'options
+  // Gestion des touches d'accessibilité
+  const handleKeyDown = (e, action) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+    if (e.key === 'Escape') {
+      setOpen(false);
+      setMobileMenu(false);
+    }
+  };
+
   const handleUserClick = (e) => {
     e.stopPropagation();
     setOpen(!open);
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      // Implémenter la recherche
+      navigate(`/search?q=${e.target.value}`);
+    }
   };
 
   const adminLinks = [
@@ -104,21 +108,30 @@ function Navbar() {
       <div className={`navbar ${active || pathname !== "/" ? "active" : ""} ${mobileMenu ? "menu-open" : ""}`}>
         <div className="container">
           <div className="logo">
-            <BlaBlaTripLogo/>
+            <Link to="/" className="logo-link" aria-label="BlaBlaTripLogo">
+              <img src="/img/img_3.png" alt="BlaBlaTripLogo"/>
+            </Link>
           </div>
 
           <div className="nav-center">
-            <div className="search-bar">
+            <div className={`search-bar ${searchFocused ? "focused" : ""}`}>
               <FaSearch className="search-icon"/>
-              <input type="text" placeholder="Search experiences..."/>
+              <input
+                  type="text"
+                  placeholder="Rechercher des expériences..."
+                  ref={searchInputRef}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  onKeyDown={handleSearch}
+              />
             </div>
 
-            <div className="main-links">
+            <nav className="main-links" aria-label="Navigation principale">
               <Link to="/" className={pathname === "/" ? "active" : ""}>
-                Home
+                Accueil
               </Link>
               <Link to="/about" className={pathname === "/about" ? "active" : ""}>
-                About
+                À propos
               </Link>
               <Link to="/services" className={pathname === "/services" ? "active" : ""}>
                 Services
@@ -126,28 +139,42 @@ function Navbar() {
               <Link to="/contact" className={pathname === "/contact" ? "active" : ""}>
                 Contact
               </Link>
-            </div>
+            </nav>
           </div>
 
-          <div className="hamburger" onClick={() => setMobileMenu(!mobileMenu)}>
-            <FaBars/>
-          </div>
+          <button
+              className="hamburger"
+              onClick={() => setMobileMenu(!mobileMenu)}
+              aria-expanded={mobileMenu}
+              aria-label="Menu principal"
+          >
+            {mobileMenu ? <FaTimes /> : <FaBars />}
+          </button>
 
           <div className="links">
             {currentUser ? (
-                <div className="user" ref={userRef} onClick={() => setMobileMenu(!mobileMenu)}>
-                  <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
+                <div
+                    className="user"
+                    ref={userRef}
+                    onClick={handleUserClick}
+                    onKeyDown={(e) => handleKeyDown(e, () => setOpen(!open))}
+                    tabIndex="0"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded={open}
+                >
+                  <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
                   <div className="user-info">
                     <span>{currentUser?.username}</span>
                     {currentUser.isAmbassador && (
                         <span className="ambassador-badge">Ambassador</span>
                     )}
                   </div>
-                  <FaChevronDown className="dropdown-icon"/>
+                  <FaChevronDown className={`dropdown-icon ${open ? "rotated" : ""}`} />
 
                   <div className={`options ${open ? "open" : ""}`} ref={optionsRef}>
                     <div className="user-info">
-                      <img src={currentUser.img || "/img/noavatar.jpg"} alt=""/>
+                      <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
                       <div>
                         <span className="username">{currentUser?.username}</span>
                         {currentUser.isAmbassador && (
@@ -157,30 +184,35 @@ function Navbar() {
                     </div>
                     <div className="menu-links">
                       <Link className="link" to="/profile" onClick={() => setOpen(false)}>
-                        <FaUserCircle/> Profile
+                        <FaUserCircle /> Profil
                       </Link>
                       {currentUser.isAmbassador && (
                           <>
                             <Link className="link" to="/mygigs" onClick={() => setOpen(false)}>
-                              <FaCalendarAlt/> My Experiences
+                              <FaCalendarAlt /> Mes expériences
                             </Link>
                             <Link className="link" to="/add" onClick={() => setOpen(false)}>
-                              <FaPlus/> Add New
+                              <FaPlus /> Ajouter
                             </Link>
                           </>
                       )}
                       <Link className="link" to="/orders" onClick={() => setOpen(false)}>
-                        <FaMapMarkerAlt/> Orders
+                        <FaMapMarkerAlt /> Commandes
                       </Link>
                       <Link className="link" to="/messages" onClick={() => setOpen(false)}>
-                        <FaEnvelope/> Messages
+                        <FaEnvelope /> Messages
                       </Link>
 
                       {currentUser.isAdmin && (
                           <div className="admin-section">
                             <div className="section-title">Admin Panel</div>
                             {adminLinks.map((link) => (
-                                <Link key={link.path} className="link admin-link" to={link.path} onClick={() => setOpen(false)}>
+                                <Link
+                                    key={link.path}
+                                    className="link admin-link"
+                                    to={link.path}
+                                    onClick={() => setOpen(false)}
+                                >
                                   {link.icon} {link.text}
                                 </Link>
                             ))}
@@ -188,34 +220,49 @@ function Navbar() {
                       )}
 
                       <div className="divider"></div>
-                      <Link className="link logout" onClick={handleLogout}>
-                        <FaSignOutAlt/> Logout
-                      </Link>
+                      <button className="link logout" onClick={handleLogout}>
+                        <FaSignOutAlt /> Déconnexion
+                      </button>
                     </div>
                   </div>
                 </div>
             ) : (
                 <div className="auth-links">
                   <Link to="/login" className="signin">
-                    <FaSignInAlt/> Sign In
+                    <FaSignInAlt /> Connexion
                   </Link>
                   <span className="divider">|</span>
                   <Link to="/register" className="signup">
-                    <FaUserPlus/> Sign Up
+                    <FaUserPlus /> Inscription
                   </Link>
                 </div>
             )}
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div className={`mobile-menu ${mobileMenu ? "open" : ""}`} ref={mobileMenuRef}>
+        {/* Menu Mobile */}
+        <div
+            className={`mobile-menu ${mobileMenu ? "open" : ""}`}
+            ref={mobileMenuRef}
+            aria-hidden={!mobileMenu}
+        >
+          <div className="mobile-search">
+            <div className="search-bar">
+              <FaSearch className="search-icon"/>
+              <input
+                  type="text"
+                  placeholder="Rechercher des expériences..."
+                  onKeyDown={handleSearch}
+              />
+            </div>
+          </div>
+
           <div className="mobile-links">
             <Link to="/" className={pathname === "/" ? "active" : ""} onClick={() => setMobileMenu(false)}>
-              Home
+              <FaHome /> Accueil
             </Link>
             <Link to="/about" className={pathname === "/about" ? "active" : ""} onClick={() => setMobileMenu(false)}>
-              About
+              À propos
             </Link>
             <Link to="/services" className={pathname === "/services" ? "active" : ""} onClick={() => setMobileMenu(false)}>
               Services
@@ -238,23 +285,23 @@ function Navbar() {
                       </div>
                     </div>
                     <Link to="/profile" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                      <FaUserCircle/> Profile
+                      <FaUserCircle /> Profil
                     </Link>
                     {currentUser.isAmbassador && (
                         <>
                           <Link to="/mygigs" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                            <FaCalendarAlt/> My Experiences
+                            <FaCalendarAlt /> Mes expériences
                           </Link>
                           <Link to="/add" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                            <FaPlus/> Add New
+                            <FaPlus /> Ajouter
                           </Link>
                         </>
                     )}
                     <Link to="/orders" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                      <FaMapMarkerAlt/> Orders
+                      <FaMapMarkerAlt /> Commandes
                     </Link>
                     <Link to="/messages" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                      <FaEnvelope/> Messages
+                      <FaEnvelope /> Messages
                     </Link>
 
                     {currentUser.isAdmin && (
@@ -274,9 +321,9 @@ function Navbar() {
                     )}
 
                     <div className="mobile-divider"></div>
-                    <Link className="mobile-user-link logout" onClick={handleLogout}>
-                      <FaSignOutAlt/> Logout
-                    </Link>
+                    <button className="mobile-user-link logout" onClick={handleLogout}>
+                      <FaSignOutAlt /> Déconnexion
+                    </button>
                   </div>
                 </>
             )}
@@ -285,10 +332,10 @@ function Navbar() {
           {!currentUser && (
               <div className="mobile-auth">
                 <Link to="/login" className="signin-btn" onClick={() => setMobileMenu(false)}>
-                  <FaSignInAlt/> Sign In
+                  <FaSignInAlt /> Connexion
                 </Link>
                 <Link to="/register" className="signup-btn" onClick={() => setMobileMenu(false)}>
-                  <FaUserPlus/> Sign Up
+                  <FaUserPlus /> Inscription
                 </Link>
               </div>
           )}
