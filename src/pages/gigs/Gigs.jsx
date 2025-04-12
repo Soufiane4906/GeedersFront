@@ -24,9 +24,9 @@ import {
   faXmark,
   faSliders,
   faCar,
-  faMotorcycle
+  faMotorcycle,
+  faSpinner
 } from "@fortawesome/free-solid-svg-icons";
-import { availableLanguages } from "../../utils/options.js";
 import Footer from "../../components/footer/Footer.jsx";
 
 const formatDate = (dateString) => {
@@ -34,7 +34,7 @@ const formatDate = (dateString) => {
     const parsedDate = parseISO(dateString);
     return format(parsedDate, 'dd/MM/yyyy');
   } catch (error) {
-    console.error("Error formatting date:", error);
+    console.error("Erreur de formatage de date:", error);
     return "";
   }
 };
@@ -48,46 +48,52 @@ function Gigs() {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
 
-  // Get all filter parameters from URL
+  // Paramètres de filtrage depuis l'URL
   const [country, setCountry] = useState(queryParams.get('country') || "");
   const [city, setCity] = useState(queryParams.get('city') || "");
 
-  // Get cities for the selected country
-  const [cities, setCities] = useState([]);
+  // États pour les dropdowns
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [showPOIDropdown, setShowPOIDropdown] = useState(false);
 
-  // Date range parameters
+  // États pour les données
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const [pointsOfInterest, setPointsOfInterest] = useState([]);
+
+  // Paramètres de plage de dates
   const startDateParam = queryParams.get('startDate');
   const endDateParam = queryParams.get('endDate');
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
 
-  // Language parameters
+  // Paramètres de langues
   const languagesParam = queryParams.get('languages') || "";
   const [selectedLanguages, setSelectedLanguages] = useState(
       languagesParam ? languagesParam.split(',') : []
   );
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // POI parameters
+  // Paramètres de POI
   const poiParam = queryParams.get('poi') || "";
   const [selectedPOIs, setSelectedPOIs] = useState(
       poiParam ? poiParam.split(',') : []
   );
-  const [showPOIDropdown, setShowPOIDropdown] = useState(false);
-  const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
-  // Transport options
+  // Options de transport
   const hasCarParam = queryParams.get('hasCar') === 'true';
   const hasScooterParam = queryParams.get('hasScooter') === 'true';
   const [hasCar, setHasCar] = useState(hasCarParam);
   const [hasScooter, setHasScooter] = useState(hasScooterParam);
 
-  // Get all unique countries from API
-  const [countries, setCountries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filterLoading, setFilterLoading] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
+  const [error, setError] = useState(null);
 
-  // Initialize date range from URL parameters
+  // Initialiser la plage de dates depuis les paramètres d'URL
   useEffect(() => {
     if (startDateParam && endDateParam) {
       try {
@@ -96,69 +102,104 @@ function Gigs() {
           new Date(endDateParam)
         ]);
       } catch (error) {
-        console.error("Error parsing dates from URL:", error);
+        console.error("Erreur d'analyse des dates depuis l'URL:", error);
         setDateRange([null, null]);
       }
     }
   }, [startDateParam, endDateParam]);
 
-  // Fetch countries
+  // Récupérer les données initiales - pays, langues et POI
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchInitialData = async () => {
+      setFilterLoading(true);
       try {
-        const res = await newRequest.get('/countries');
-        setCountries(res.data);
-      } catch (err) {
-        console.error("Error fetching countries:", err);
-      }
-    };
+        // Récupérer les pays
+        const countriesResponse = await newRequest.get('/countries');
+        setCountries(countriesResponse.data);
 
-    fetchCountries();
-  }, []);
+        // Récupérer les langues
+        const languagesResponse = await newRequest.get('/languages');
+        setLanguages(languagesResponse.data || []);
 
-  // Fetch POIs from API
-  useEffect(() => {
-    const fetchPOIs = async () => {
-      try {
-        const response = await newRequest.get("/pois");
-        setPointsOfInterest(response.data.pois || []);
-      } catch (error) {
-        console.error("Failed to fetch POIs", error);
-      }
-    };
+        // Récupérer les POI
+        const poisResponse = await newRequest.get('/pois');
+        setPointsOfInterest(poisResponse.data.pois || []);
 
-    fetchPOIs();
-  }, []);
-
-  // Update cities list when country changes
-  useEffect(() => {
-    if (country) {
-      const fetchCities = async () => {
-        try {
-          const selectedCountryObj = countries.find(c => c.name === country);
+        // Récupérer les villes si un pays est sélectionné
+        if (country) {
+          const selectedCountryObj = countriesResponse.data.find(c => c.name === country);
           if (selectedCountryObj) {
-            const res = await newRequest.get(`/cities?countryId=${selectedCountryObj._id}`);
-            setCities(res.data);
+            const citiesResponse = await newRequest.get(`/cities?countryId=${selectedCountryObj._id}`);
+            setCities(citiesResponse.data);
           }
-        } catch (err) {
-          console.error("Error fetching cities:", err);
         }
-      };
+      } catch (error) {
+        console.error("Échec de récupération des données initiales", error);
+        setError("Échec de chargement des données initiales");
+      } finally {
+        setFilterLoading(false);
+      }
+    };
 
-      fetchCities();
-    } else {
-      setCities([]);
+    fetchInitialData();
+  }, [country]);
+
+  // Fonction pour obtenir l'URL du drapeau à partir du code de drapeau de langue
+  const getFlagUrl = (flagCode) => {
+    // Si c'est déjà une URL complète, la renvoyer
+    if (flagCode?.startsWith('http')) {
+      return flagCode;
     }
-  }, [country, countries]);
 
-  // Close dropdowns when clicking outside
+    // Sinon, supposer que c'est un code de pays et construire l'URL du drapeau
+    const code = flagCode?.toLowerCase();
+    return code ? `https://flagcdn.com/w320/${code}.png` : '';
+  };
+
+  // Gérer la sélection du pays
+  const handleCountrySelect = (countryId, countryName) => {
+    setCountry(countryName);
+    setCity("");
+    setSelectedPOIs([]);
+    fetchCitiesForCountry(countryId);
+    setShowCountryDropdown(false);
+  };
+
+  // Récupérer les villes pour un pays
+  const fetchCitiesForCountry = async (countryId) => {
+    try {
+      setFilterLoading(true);
+      const response = await newRequest.get(`/cities?countryId=${countryId}`);
+      setCities(response.data);
+    } catch (error) {
+      console.error("Échec de récupération des villes", error);
+      setError("Échec de chargement des villes");
+    } finally {
+      setFilterLoading(false);
+    }
+  };
+
+  // Gérer la sélection de la ville
+  const handleCitySelect = (cityName) => {
+    setCity(cityName);
+    setSelectedPOIs([]);
+    setShowCityDropdown(false);
+  };
+
+  // Fermer les dropdowns lors d'un clic à l'extérieur
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (!e.target.closest('.language-dropdown-container')) {
+        setShowLanguageDropdown(false);
+      }
       if (!e.target.closest('.poi-dropdown-container')) {
         setShowPOIDropdown(false);
       }
-      if (!e.target.closest('.language-dropdown-container')) {
-        setShowLanguageDropdown(false);
+      if (!e.target.closest('.country-dropdown-container')) {
+        setShowCountryDropdown(false);
+      }
+      if (!e.target.closest('.city-dropdown-container')) {
+        setShowCityDropdown(false);
       }
     };
 
@@ -168,7 +209,7 @@ function Gigs() {
     };
   }, []);
 
-  // Count active filters
+  // Compter les filtres actifs
   useEffect(() => {
     let count = 0;
     if (country) count++;
@@ -181,7 +222,7 @@ function Gigs() {
     setActiveFilters(count);
   }, [country, city, startDate, endDate, selectedLanguages, selectedPOIs, hasCar, hasScooter]);
 
-  const { isLoading: queryLoading, error, data, refetch } = useQuery({
+  const { isLoading: queryLoading, error: queryError, data, refetch } = useQuery({
     queryKey: ["gigs", sort, country, city, startDateParam, endDateParam, languagesParam, poiParam, hasCarParam, hasScooterParam],
     queryFn: () => {
       let queryString = `/gigs?sort=${sort}`;
@@ -227,18 +268,18 @@ function Gigs() {
     refetch();
   }, [sort, refetch]);
 
-  // Toggle language selection
-  const toggleLanguage = (languageCode) => {
+  // Basculer la sélection de langue
+  const toggleLanguage = (languageId) => {
     setSelectedLanguages(prevSelected => {
-      if (prevSelected.includes(languageCode)) {
-        return prevSelected.filter(code => code !== languageCode);
+      if (prevSelected.includes(languageId)) {
+        return prevSelected.filter(id => id !== languageId);
       } else {
-        return [...prevSelected, languageCode];
+        return [...prevSelected, languageId];
       }
     });
   };
 
-  // Toggle POI selection
+  // Basculer la sélection de POI
   const togglePOI = (poiId) => {
     setSelectedPOIs(prevSelected => {
       if (prevSelected.includes(poiId)) {
@@ -249,26 +290,21 @@ function Gigs() {
     });
   };
 
-  // Handle country change
-  const handleCountryChange = (e) => {
-    const selectedCountry = e.target.value;
-    setCountry(selectedCountry);
-    setCity("");
-    setSelectedPOIs([]);
+  // Gérer le clic sur la case à cocher directement
+  const handleCheckboxClick = (e, id, type) => {
+    e.stopPropagation();
+    if (type === 'poi') {
+      togglePOI(id);
+    } else if (type === 'language') {
+      toggleLanguage(id);
+    }
   };
 
-  // Handle city change
-  const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    setCity(selectedCity);
-    setSelectedPOIs([]);
-  };
-
-  // Apply all filters
+  // Appliquer tous les filtres
   const applyFilters = () => {
     const params = new URLSearchParams();
 
-    // Update all filter parameters
+    // Mettre à jour tous les paramètres de filtrage
     if (country) params.set('country', country);
     if (city) params.set('city', city);
 
@@ -277,7 +313,7 @@ function Gigs() {
         params.set('startDate', startDate.toISOString());
         params.set('endDate', endDate.toISOString());
       } catch (error) {
-        console.error("Error converting dates to ISO string:", error);
+        console.error("Erreur de conversion des dates en chaîne ISO:", error);
       }
     }
 
@@ -300,7 +336,7 @@ function Gigs() {
     navigate(`?${params.toString()}`);
   };
 
-  // Clear all filters
+  // Effacer tous les filtres
   const clearAllFilters = () => {
     setCountry("");
     setCity("");
@@ -312,7 +348,7 @@ function Gigs() {
     navigate('/gigs');
   };
 
-  // Remove specific filter
+  // Supprimer un filtre spécifique
   const removeFilter = (type, value = null) => {
     const params = new URLSearchParams(search);
 
@@ -373,29 +409,36 @@ function Gigs() {
     navigate(`?${params.toString()}`);
   };
 
-  // Handle checkbox click directly
-  const handleCheckboxClick = (e, id, type) => {
-    e.stopPropagation();
-    if (type === 'poi') {
-      togglePOI(id);
-    } else if (type === 'language') {
-      toggleLanguage(id);
-    }
-  };
-
-  // Get POI name by ID
+  // Fonctions d'aide pour obtenir les informations sur les POI et les langues
   const getPoiNameById = (poiId) => {
     const poi = pointsOfInterest.find(p => p._id === poiId);
     return poi ? poi.name : poiId;
   };
 
-  // Get POI image by ID
   const getPoiImageById = (poiId) => {
     const poi = pointsOfInterest.find(p => p._id === poiId);
     return poi && poi.image ? poi.image : null;
   };
 
-  // Set loading state for initial page load
+  const getLanguageNameById = (languageId) => {
+    const language = languages.find(l => l._id === languageId);
+    return language ? language.langue : languageId;
+  };
+
+  const getLanguageFlagById = (languageId) => {
+    const language = languages.find(l => l._id === languageId);
+    return language ? getFlagUrl(language.flag) : null;
+  };
+
+  // Composant d'indicateur de chargement
+  const LoadingSpinner = () => (
+      <div className="d-flex align-items-center">
+        <FontAwesomeIcon icon={faSpinner} spin className="me-2" />
+        <span>Chargement...</span>
+      </div>
+  );
+
+  // Définir l'état de chargement pour le chargement initial de la page
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
@@ -405,6 +448,7 @@ function Gigs() {
   if (isLoading) {
     return <Loading />;
   }
+  debugger;
 
   const noResultsMessage = "Aucun ambassadeur correspondant trouvé dans ces zones.";
 
@@ -412,7 +456,7 @@ function Gigs() {
       <div className="gigs">
         <div className="container-fluid">
           <div className="gigs-wrapper">
-            {/* Sidebar Filter Section */}
+            {/* Section de filtrage de la barre latérale */}
             <div className={`filter-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
               <div className="sidebar-header">
                 <h4>
@@ -436,41 +480,136 @@ function Gigs() {
                   </div>
               )}
 
+              {/* Dropdown Pays - Mis à jour */}
               <div className="filter-section">
                 <h5 className="filter-heading">
                   <FontAwesomeIcon icon={faGlobe} className="me-2" />
-                  Localisation
+                  Pays
                 </h5>
-                <div className="filter-content">
-                  <select
-                      value={country}
-                      onChange={handleCountryChange}
-                      className="form-select mb-3"
-                  >
-                    <option value="">Sélectionner un pays</option>
-                    {countries.map((countryItem) => (
-                        <option key={countryItem._id} value={countryItem.name}>
-                          {countryItem.name}
-                        </option>
-                    ))}
-                  </select>
+                <div className="filter-content country-dropdown-container">
+                  <div className="position-relative">
+                    <button
+                        type="button"
+                        className="form-control text-start d-flex justify-content-between align-items-center"
+                        onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                        aria-expanded={showCountryDropdown}
+                    >
+                    <span className="truncate">
+                      {country || "Sélectionner un pays"}
+                    </span>
+                      <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
+                    </button>
 
-                  <select
-                      value={city}
-                      onChange={handleCityChange}
-                      disabled={!country}
-                      className="form-select"
-                  >
-                    <option value="">Sélectionner une ville</option>
-                    {cities.map((cityItem) => (
-                        <option key={cityItem._id} value={cityItem.name}>
-                          {cityItem.name}
-                        </option>
-                    ))}
-                  </select>
+                    {showCountryDropdown && (
+                        <div
+                            className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                            style={{maxHeight: "200px", overflowY: "auto"}}
+                        >
+                          {filterLoading ? (
+                              <div className="text-center py-3"><LoadingSpinner /></div>
+                          ) : (
+                              countries.map((countryItem) => (
+                                  <div
+                                      key={countryItem._id}
+                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                      onClick={() => handleCountrySelect(countryItem._id, countryItem.name)}
+                                  >
+                                    <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                      <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={country === countryItem.name}
+                                          onChange={() => {}}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCountrySelect(countryItem._id, countryItem.name);
+                                          }}
+                                          id={`country-${countryItem._id}`}
+                                      />
+                                      <label
+                                          className="form-check-label ms-2 w-100"
+                                          htmlFor={`country-${countryItem._id}`}
+                                      >
+                                        {countryItem.name}
+                                      </label>
+                                    </div>
+                                  </div>
+                              ))
+                          )}
+                        </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
+              {/* Dropdown Ville - Mis à jour */}
+              <div className="filter-section">
+                <h5 className="filter-heading">
+                  <FontAwesomeIcon icon={faCity} className="me-2" />
+                  Ville
+                </h5>
+                <div className="filter-content city-dropdown-container">
+                  <div className="position-relative">
+                    <button
+                        type="button"
+                        className="form-control text-start d-flex justify-content-between align-items-center"
+                        onClick={() => country && setShowCityDropdown(!showCityDropdown)}
+                        disabled={!country || cities.length === 0}
+                        aria-expanded={showCityDropdown}
+                    >
+                    <span className="truncate">
+                      {city || "Sélectionner une ville"}
+                    </span>
+                      <FontAwesomeIcon icon={faChevronDown} className="dropdown-toggle" />
+                    </button>
+
+                    {showCityDropdown && (
+                        <div
+                            className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                            style={{maxHeight: "200px", overflowY: "auto"}}
+                        >
+                          {filterLoading ? (
+                              <div className="text-center py-3"><LoadingSpinner /></div>
+                          ) : (
+                              cities.map((cityItem) => (
+                                  <div
+                                      key={cityItem._id}
+                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                      onClick={() => handleCitySelect(cityItem.name)}
+                                  >
+                                    <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                      <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={city === cityItem.name}
+                                          onChange={() => {}}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCitySelect(cityItem.name);
+                                          }}
+                                          id={`city-${cityItem._id}`}
+                                      />
+                                      <label
+                                          className="form-check-label ms-2 w-100"
+                                          htmlFor={`city-${cityItem._id}`}
+                                      >
+                                        {cityItem.name}
+                                      </label>
+                                    </div>
+                                  </div>
+                              ))
+                          )}
+                          {!filterLoading && cities.length === 0 && (
+                              <div className="text-center py-3">Aucune ville disponible</div>
+                          )}
+                        </div>
+                    )}
+                  </div>
+                  {filterLoading && <div className="loading-indicator"><FontAwesomeIcon icon={faSpinner} spin className="me-1" /> Chargement...</div>}
+                </div>
+              </div>
+
+              {/* Sélection de plage de dates */}
               <div className="filter-section">
                 <h5 className="filter-heading">
                   <FontAwesomeIcon icon={faCalendarAlt} className="me-2" />
@@ -489,6 +628,7 @@ function Gigs() {
                 </div>
               </div>
 
+              {/* Sélection de langue - Mise à jour avec les données de l'API */}
               <div className="filter-section">
                 <h5 className="filter-heading">
                   <FontAwesomeIcon icon={faLanguage} className="me-2" />
@@ -500,6 +640,7 @@ function Gigs() {
                         type="button"
                         className="form-control text-start d-flex justify-content-between align-items-center"
                         onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                        aria-expanded={showLanguageDropdown}
                     >
                     <span className="truncate">
                       {selectedLanguages.length === 0
@@ -510,53 +651,88 @@ function Gigs() {
                     </button>
 
                     {showLanguageDropdown && (
-                        <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow language-options-container">
-                          {availableLanguages.map((lang) => (
-                              <div
-                                  key={lang.code}
-                                  className="d-flex align-items-center px-3 py-2 language-option"
-                                  onClick={() => toggleLanguage(lang.code)}
-                              >
-                                <div className="form-check mb-0 d-flex align-items-center">
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      checked={selectedLanguages.includes(lang.code)}
-                                      onChange={() => {}}
-                                      onClick={(e) => handleCheckboxClick(e, lang.code, 'language')}
-                                      id={`lang-${lang.code}`}
-                                  />
-                                  <label className="form-check-label ms-2" htmlFor={`lang-${lang.code}`}>
-                                    <span className={`flag-icon flag-icon-${lang.code.slice(0, 2).toLowerCase()} me-2`}></span>
-                                    {lang.name}
-                                  </label>
-                                </div>
-                              </div>
-                          ))}
+                        <div
+                            className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                            style={{maxHeight: "200px", overflowY: "auto"}}
+                        >
+                          {filterLoading ? (
+                              <div className="text-center py-3"><LoadingSpinner /></div>
+                          ) : (
+                              languages.map((lang) => (
+                                  <div
+                                      key={lang._id}
+                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light"
+                                      onClick={() => toggleLanguage(lang._id)}
+                                  >
+                                    <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                      <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={selectedLanguages.includes(lang._id)}
+                                          onChange={() => {}}
+                                          onClick={(e) => handleCheckboxClick(e, lang._id, 'language')}
+                                          id={`lang-${lang._id}`}
+                                      />
+                                      <label
+                                          className="form-check-label ms-2 w-100 d-flex align-items-center"
+                                          htmlFor={`lang-${lang._id}`}
+                                      >
+                                        {lang.flag && (
+                                            <img
+                                                src={getFlagUrl(lang.flag)}
+                                                alt={lang.langue}
+                                                className="me-2"
+                                                style={{width: '20px', height: 'auto'}}
+                                            />
+                                        )}
+                                        {lang.langue}
+                                      </label>
+                                    </div>
+                                  </div>
+                              ))
+                          )}
+                          {!filterLoading && languages.length === 0 && (
+                              <div className="text-center py-3">Aucune langue disponible</div>
+                          )}
                         </div>
                     )}
                   </div>
 
-                  {/* Display selected languages */}
+                  {/* Afficher les langues sélectionnées avec des drapeaux */}
                   {selectedLanguages.length > 0 && (
-                      <div className="selected-items-container">
-                        {selectedLanguages.map(code => {
-                          const lang = availableLanguages.find(l => l.code === code);
-                          return lang ? (
-                              <div key={code} className="selected-item">
-                                <span className={`flag-icon flag-icon-${code.slice(0, 2).toLowerCase()} me-1`}></span>
-                                <span>{lang.name}</span>
-                                <button type="button" className="remove-btn" onClick={() => removeFilter('language', code)}>
-                                  <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                              </div>
-                          ) : null;
+                      <div className="mt-2 d-flex flex-wrap selected-languages">
+                        {selectedLanguages.map(languageId => {
+                          const languageName = getLanguageNameById(languageId);
+                          const flagUrl = getLanguageFlagById(languageId);
+                          return (
+                              <span
+                                  key={languageId}
+                                  className="badge bg-primary me-1 mb-1 d-flex align-items-center"
+                              >
+                          {flagUrl && (
+                              <img
+                                  src={flagUrl}
+                                  alt=""
+                                  width="16"
+                                  height="16"
+                                  className="me-1"
+                              />
+                          )}
+                                <span className="lang-name">{languageName}</span>
+                          <button
+                              type="button"
+                              className="btn-close btn-close-white ms-2"
+                              onClick={() => removeFilter('language', languageId)}
+                          ></button>
+                        </span>
+                          );
                         })}
                       </div>
                   )}
                 </div>
               </div>
 
+              {/* Dropdown Points d'intérêt - Mis à jour avec les données de l'API */}
               <div className="filter-section">
                 <h5 className="filter-heading">
                   <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" />
@@ -567,8 +743,9 @@ function Gigs() {
                     <button
                         type="button"
                         className="form-control text-start d-flex justify-content-between align-items-center"
-                        onClick={() => setShowPOIDropdown(!showPOIDropdown)}
+                        onClick={() => city && setShowPOIDropdown(!showPOIDropdown)}
                         disabled={!city}
+                        aria-expanded={showPOIDropdown}
                     >
                     <span className="truncate">
                       {selectedPOIs.length === 0
@@ -579,49 +756,71 @@ function Gigs() {
                     </button>
 
                     {showPOIDropdown && (
-                        <div className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow poi-options-container">
-                          {pointsOfInterest.map((poi) => (
-                              <div
-                                  key={poi._id}
-                                  className="d-flex align-items-center px-3 py-2 poi-option"
-                                  onClick={() => togglePOI(poi._id)}
-                              >
-                                <div className="form-check mb-0 d-flex align-items-center">
-                                  <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      checked={selectedPOIs.includes(poi._id)}
-                                      onChange={() => {}}
-                                      onClick={(e) => handleCheckboxClick(e, poi._id, 'poi')}
-                                      id={`poi-${poi._id}`}
-                                  />
-                                  <div className="poi-icon-container mx-2">
-                                    {poi.image && <img src={poi.image} alt={poi.name} width="20" height="20" />}
+                        <div
+                            className="position-absolute top-100 start-0 w-100 bg-white border rounded z-3 mt-1 py-2 shadow"
+                            style={{maxHeight: "200px", overflowY: "auto"}}
+                        >
+                          {filterLoading ? (
+                              <div className="text-center py-3"><LoadingSpinner /></div>
+                          ) : (
+                              pointsOfInterest.map((poi) => (
+                                  <div
+                                      key={poi._id}
+                                      className="d-flex align-items-center px-3 py-2 cursor-pointer hover-bg-light poi-option"
+                                      onClick={() => togglePOI(poi._id)}
+                                  >
+                                    <div className="form-check mb-0 w-100 d-flex align-items-center">
+                                      <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={selectedPOIs.includes(poi._id)}
+                                          onChange={() => {}}
+                                          onClick={(e) => handleCheckboxClick(e, poi._id, 'poi')}
+                                          id={`poi-${poi._id}`}
+                                      />
+                                      <label
+                                          className="form-check-label ms-2 w-100 d-flex align-items-center"
+                                          htmlFor={`poi-${poi._id}`}
+                                      >
+                                        {poi.image && (
+                                            <div className="poi-icon-container me-2">
+                                              <img src={poi.image} alt={poi.name} width="20" height="20"/>
+                                            </div>
+                                        )}
+                                        <span>{poi.name}</span>
+                                      </label>
+                                    </div>
                                   </div>
-                                  <label className="form-check-label" htmlFor={`poi-${poi._id}`}>
-                                    {poi.name}
-                                  </label>
-                                </div>
-                              </div>
-                          ))}
+                              ))
+                          )}
+                          {!filterLoading && pointsOfInterest.length === 0 && (
+                              <div className="text-center py-3">Aucun point d'intérêt disponible</div>
+                          )}
                         </div>
                     )}
                   </div>
 
-                  {/* Display selected POIs */}
+                  {/* Afficher les POI sélectionnés */}
                   {selectedPOIs.length > 0 && (
-                      <div className="selected-items-container">
-                        {selectedPOIs.map(poiId => {
+                      <div className="mt-2 d-flex flex-wrap selected-pois">
+                        {selectedPOIs.map((poiId) => {
                           const poiName = getPoiNameById(poiId);
                           const poiImage = getPoiImageById(poiId);
                           return (
-                              <div key={poiId} className="selected-item">
-                                {poiImage && <img src={poiImage} alt={poiName} width="16" height="16" className="me-1" />}
+                              <span
+                                  key={poiId}
+                                  className="badge bg-info me-1 mb-1 d-flex align-items-center poi-badge"
+                              >
+                          {poiImage && (
+                              <img src={poiImage} alt="" width="16" height="16" className="me-1" />
+                          )}
                                 <span>{poiName}</span>
-                                <button type="button" className="remove-btn" onClick={() => removeFilter('poi', poiId)}>
-                                  <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                              </div>
+                          <button
+                              type="button"
+                              className="btn-close btn-close-white ms-2"
+                              onClick={() => removeFilter('poi', poiId)}
+                          ></button>
+                        </span>
                           );
                         })}
                       </div>
@@ -629,42 +828,43 @@ function Gigs() {
                 </div>
               </div>
 
-              {/* Transport Options */}
+              {/* Options de transport */}
               <div className="filter-section">
                 <h5 className="filter-heading">
                   <FontAwesomeIcon icon={faCar} className="me-2" />
-                  Options de transport
+                  Transport
                 </h5>
                 <div className="filter-content">
                   <div className="form-check mb-2">
                     <input
                         type="checkbox"
                         className="form-check-input"
-                        id="carOption"
+                        id="hasCar"
                         checked={hasCar}
                         onChange={() => setHasCar(!hasCar)}
                     />
-                    <label className="form-check-label" htmlFor="carOption">
-                      <FontAwesomeIcon icon={faCar} className="me-2" />
-                      Voiture disponible
+                    <label className="form-check-label d-flex align-items-center" htmlFor="hasCar">
+                      <FontAwesomeIcon icon={faCar} className="me-2 text-primary" />
+                      Dispose d'une voiture
                     </label>
                   </div>
                   <div className="form-check">
                     <input
                         type="checkbox"
                         className="form-check-input"
-                        id="scooterOption"
+                        id="hasScooter"
                         checked={hasScooter}
                         onChange={() => setHasScooter(!hasScooter)}
                     />
-                    <label className="form-check-label" htmlFor="scooterOption">
-                      <FontAwesomeIcon icon={faMotorcycle} className="me-2" />
-                      Scooter disponible
+                    <label className="form-check-label d-flex align-items-center" htmlFor="hasScooter">
+                      <FontAwesomeIcon icon={faMotorcycle} className="me-2 text-primary" />
+                      Dispose d'un scooter
                     </label>
                   </div>
                 </div>
               </div>
 
+              {/* Bouton d'application des filtres */}
               <div className="filter-actions mt-4">
                 <button className="apply-filters-btn" onClick={applyFilters}>
                   <FontAwesomeIcon icon={faSearch} className="me-2" />
@@ -673,131 +873,149 @@ function Gigs() {
               </div>
             </div>
 
-            {/* Main Content */}
-            <div className="main-content">
-              <div className="content-header">
-                <div className="header-left">
-                  <button
-                      className="sidebar-toggle-btn d-md-none"
-                      onClick={() => setSidebarOpen(!sidebarOpen)}
-                  >
-                    <FontAwesomeIcon icon={faSliders} />
-                  </button>
-                  <h1>Ambassadeurs disponibles</h1>
-                  <p className="breadcrumbs">Résultats de recherche</p>
-                </div>
+            {/* Section principale de contenu */}
+            <div className="gigs-content">
+              {/* Bouton de filtrage mobile */}
+              <div className="filter-toggle-mobile d-md-none mb-3">
+                <button className="filter-btn" onClick={() => setSidebarOpen(true)}>
+                  <FontAwesomeIcon icon={faFilter} className="me-2" />
+                  Filtres
+                  {activeFilters > 0 && <span className="filter-badge">{activeFilters}</span>}
+                </button>
+              </div>
 
-                {/* Active filters display */}
-                {activeFilters > 0 && (
-                    <div className="active-filters-display">
-                      {country && (
-                          <div className="active-filter">
-                            <span>Pays: {country}</span>
-                            <button onClick={() => removeFilter('country')}>
-                              <FontAwesomeIcon icon={faXmark} />
-                            </button>
-                          </div>
-                      )}
-
-                      {city && (
-                          <div className="active-filter">
-                            <span>Ville: {city}</span>
-                            <button onClick={() => removeFilter('city')}>
-                              <FontAwesomeIcon icon={faXmark} />
-                            </button>
-                          </div>
-                      )}
-
-                      {startDate && endDate && (
-                          <div className="active-filter">
-                            <span>Dates: {format(startDate, 'dd/MM/yyyy')} - {format(endDate, 'dd/MM/yyyy')}</span>
-                            <button onClick={() => removeFilter('dates')}>
-                              <FontAwesomeIcon icon={faXmark} />
-                            </button>
-                          </div>
-                      )}
-
-                      {hasCar && (
-                          <div className="active-filter">
-                            <span><FontAwesomeIcon icon={faCar} className="me-1" /> Voiture</span>
-                            <button onClick={() => removeFilter('hasCar')}>
-                              <FontAwesomeIcon icon={faXmark} />
-                            </button>
-                          </div>
-                      )}
-
-                      {hasScooter && (
-                          <div className="active-filter">
-                            <span><FontAwesomeIcon icon={faMotorcycle} className="me-1" /> Scooter</span>
-                            <button onClick={() => removeFilter('hasScooter')}>
-                              <FontAwesomeIcon icon={faXmark} />
-                            </button>
-                          </div>
-                      )}
+              {/* Affichage des filtres actifs */}
+              {activeFilters > 0 && (
+                  <div className="active-filters mb-3">
+                    <div className="d-flex flex-wrap align-items-center">
+                      <span className="active-filters-label me-2">Filtres actifs:</span>
+                      <div className="active-filters-tags">
+                        {country && (
+                            <span className="filter-tag">
+                        <FontAwesomeIcon icon={faGlobe} className="me-1" />
+                              {country}
+                              <button
+                                  type="button"
+                                  className="btn-close ms-2"
+                                  onClick={() => removeFilter('country')}
+                              ></button>
+                      </span>
+                        )}
+                        {city && (
+                            <span className="filter-tag">
+                        <FontAwesomeIcon icon={faCity} className="me-1" />
+                              {city}
+                              <button
+                                  type="button"
+                                  className="btn-close ms-2"
+                                  onClick={() => removeFilter('city')}
+                              ></button>
+                      </span>
+                        )}
+                        {startDate && endDate && (
+                            <span className="filter-tag">
+                        <FontAwesomeIcon icon={faCalendarAlt} className="me-1" />
+                              {formatDate(startDate.toISOString())} - {formatDate(endDate.toISOString())}
+                              <button
+                                  type="button"
+                                  className="btn-close ms-2"
+                                  onClick={() => removeFilter('dates')}
+                              ></button>
+                      </span>
+                        )}
+                        {hasCar && (
+                            <span className="filter-tag">
+                        <FontAwesomeIcon icon={faCar} className="me-1" />
+                        Voiture
+                        <button
+                            type="button"
+                            className="btn-close ms-2"
+                            onClick={() => removeFilter('hasCar')}
+                        ></button>
+                      </span>
+                        )}
+                        {hasScooter && (
+                            <span className="filter-tag">
+                        <FontAwesomeIcon icon={faMotorcycle} className="me-1" />
+                        Scooter
+                        <button
+                            type="button"
+                            className="btn-close ms-2"
+                            onClick={() => removeFilter('hasScooter')}
+                        ></button>
+                      </span>
+                        )}
+                      </div>
                     </div>
-                )}
-
-                <div className="sort-container">
-                  <span className="sortBy">Trier par</span>
-                  <div className="sort-dropdown">
-                    <button className="sort-btn" onClick={() => setOpen(!open)}>
-                    <span>
-                      {sort === "sales" ? "Meilleur ambassadeur" :
-                          sort === "popularity" ? "Populaire" : "Plus récent"}
-                    </span>
-                      <FontAwesomeIcon icon={faArrowsUpDown} />
-                    </button>
-
-                    {open && (
-                        <div className="sort-menu">
-                          <div className="sort-option" onClick={() => reSort("createdAt")}>
-                            <FontAwesomeIcon icon={faClock} className="me-2" />
-                            <span>Plus récent</span>
-                          </div>
-                          <div className="sort-option" onClick={() => reSort("sales")}>
-                            <FontAwesomeIcon icon={faStar} className="me-2" />
-                            <span>Meilleur</span>
-                          </div>
-                          <div className="sort-option" onClick={() => reSort("popularity")}>
-                            <FontAwesomeIcon icon={faStar} className="me-2" />
-                            <span>Populaire</span>
-                          </div>
-                        </div>
-                    )}
                   </div>
+              )}
+
+              {/* Options de tri */}
+              <div className="sort-options">
+                <span className="sort-by">Trier par:</span>
+                <div className="sort-buttons">
+                  <button
+                      className={sort === "sales" ? "active" : ""}
+                      onClick={() => reSort("sales")}
+                  >
+                    <FontAwesomeIcon icon={faStar} className="me-1" />
+                    Popularité
+                  </button>
+                  <button
+                      className={sort === "createdAt" ? "active" : ""}
+                      onClick={() => reSort("createdAt")}
+                  >
+                    <FontAwesomeIcon icon={faClock} className="me-1" />
+                    Nouveautés
+                  </button>
+                </div>
+                <div className="dropdown sort-dropdown">
+                  <button
+                      className="dropdown-toggle"
+                      onClick={() => setOpen(!open)}
+                  >
+                    <FontAwesomeIcon icon={faArrowsUpDown} className="me-2" />
+                    {sort === "sales" ? "Popularité" : "Nouveautés"}
+                  </button>
+                  {open && (
+                      <div className="dropdown-menu">
+                        <span onClick={() => reSort("sales")}>Popularité</span>
+                        <span onClick={() => reSort("createdAt")}>Nouveautés</span>
+                      </div>
+                  )}
                 </div>
               </div>
 
-              <div className="cards-container">
+              {/* Affichage des résultats */}
+              <div className="cards">
                 {queryLoading ? (
-                    <div className="loading-spinner">Chargement des ambassadeurs...</div>
-                ) : error ? (
-                    <div className="error-message">
-                      <p>Une erreur s'est produite !</p>
-                      <p>Erreur: {error.message}</p>
+                    <div className="loading-container">
+                      <LoadingSpinner />
                     </div>
-                ) : data && data.length > 0 ? (
-                    <div className="cards">
-                      {data.map((gig) => <GigCard key={gig._id} item={gig} />)}
+                ) : queryError ? (
+                    <div className="error-message">
+                      Une erreur s'est produite lors du chargement des données.
+                    </div>
+                ) : data && data.length === 0 ? (
+                    <div className="no-results">
+                      <div className="no-results-icon">
+                        <FontAwesomeIcon icon={faSearch} />
+                      </div>
+                      <h3>{noResultsMessage}</h3>
+                      <p>Essayez de modifier vos filtres ou d'élargir votre recherche.</p>
                     </div>
                 ) : (
-                    <div className="no-results">
-                      <img src="/img/img_no_result.png" alt="Pas de résultats" className="no-results-img" />
-                      <p>{noResultsMessage}</p>
-                    </div>
+                    data.map((gig) => <GigCard key={gig._id} item={gig} />)
                 )}
               </div>
             </div>
           </div>
         </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
         <Footer />
       </div>
-
   );
 }
 
 export default Gigs;
+
+
