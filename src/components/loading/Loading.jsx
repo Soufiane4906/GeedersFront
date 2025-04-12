@@ -1,23 +1,58 @@
-// src/components/Loading.jsx
+// src/components/loading/Loading.jsx
 import React from 'react';
-import { FaPlane, FaHotel, FaCar, FaGlobe } from 'react-icons/fa'; // Example travel icons
-import './Loading.scss'; // Import the SCSS file for styling
-import { FaSpinner } from 'react-icons/fa';
+import './Loading.scss';
+import { FaPlane, FaHotel, FaCar, FaGlobe, FaMapMarkerAlt, FaCompass, FaSuitcase } from 'react-icons/fa';
 
 const Loading = () => {
-  return (
-    <div className="loading-container">
-      <div className="loading-icons">
-        <FaPlane className="icon" />
-        <FaHotel className="icon" />
-        <FaCar className="icon" />
-        <FaGlobe className="icon" />
-      </div>
-      <FaSpinner className="spinner" />
+    return (
+        <div className="loading-container">
+            <div className="loading-logo">
+                <img src="/img/img_3.png" alt="BlaBlaTripLogo" />
+            </div>
 
-      <p>Loading...</p>
-    </div>
-  );
+            <div className="loading-world">
+                <div className="globe">
+                    <FaGlobe className="globe-icon" />
+                    <div className="orbit">
+                        <div className="plane-container">
+                            <FaPlane className="plane" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="loading-icons">
+                <div className="icon-wrapper">
+                    <FaHotel className="icon hotel" />
+                </div>
+                <div className="icon-wrapper">
+                    <FaCar className="icon car" />
+                </div>
+                <div className="icon-wrapper">
+                    <FaMapMarkerAlt className="icon marker" />
+                </div>
+                <div className="icon-wrapper">
+                    <FaCompass className="icon compass" />
+                </div>
+                <div className="icon-wrapper">
+                    <FaSuitcase className="icon suitcase" />
+                </div>
+            </div>
+
+            <div className="loading-text">
+                <h3>Préparation de votre voyage</h3>
+                <div className="dots">
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                </div>
+            </div>
+
+            <div className="loading-progress">
+                <div className="progress-bar"></div>
+            </div>
+        </div>
+    );
 };
 
 export default Loading;

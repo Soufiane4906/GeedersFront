@@ -49,6 +49,9 @@ import DiscoverMoreStories from "./pages/Stories/DiscoverMoreStories.jsx";
 import ShareStoryPage from "./pages/Stories/ShareStoryPage.jsx";
 import AdminLanguages from "./pages/Admin/languages/AdminLanguages.jsx";
 
+// Page 404 (Not Found)
+import NotFound from "./pages/notFound/NotFound";
+
 function App() {
   const queryClient = new QueryClient();
 
@@ -128,12 +131,12 @@ function App() {
           element: <Privacy />,
         },
         {
-          path : "/stories",
-          element: <DiscoverMoreStories/>
+          path: "/stories",
+          element: <DiscoverMoreStories />
         },
         {
-          path : "/share-story",
-          element: <ShareStoryPage/>
+          path: "/share-story",
+          element: <ShareStoryPage />
         }
       ],
     },
@@ -174,7 +177,6 @@ function App() {
               path: "add",
               element: <Add />,
             },
-
             {
               path: "pay/:id",
               element: <Pay />,
@@ -238,14 +240,34 @@ function App() {
             },
             {
               path: "pois",
-              element: <AdminPOIs/>
+              element: <AdminPOIs />
             },
             {
               path: "languages",
               element: <AdminLanguages />
+            },
+            // Ajout des routes utilisateur pour les admins
+            {
+              path: "profile",
+              element: <Profile />,
+            },
+            {
+              path: "messages",
+              element: <Messages />,
+            },
+            {
+              path: "message/:id",
+              element: <Message />,
+            },
+            {
+              path: "add",
+              element: <Add />,
+            },
+            {
+              path: "myGigs",
+              element: <MyGigs />,
             }
           ],
-
         },
       ],
     },
@@ -286,6 +308,17 @@ function App() {
       path: "/success",
       element: <Navigate to="/user/success" replace />,
     },
+    // Page 404 - doit être la dernière route
+    {
+      path: "*",
+      element: <Layout />,
+      children: [
+        {
+          path: "*",
+          element: <NotFound />
+        }
+      ]
+    }
   ]);
 
   return <RouterProvider router={router} />;

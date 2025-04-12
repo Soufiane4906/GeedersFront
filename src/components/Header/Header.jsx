@@ -46,7 +46,7 @@ const Header = () => {
                 <ul className="header-contact">
                   <li>
                     <i className="fas fa-envelope"></i>
-                    <a href="mailto:info@BlaBlaTrip.com">info@BlaBlaTrip.com</a>
+                    <a href="mailto:contact@blablatrip.com">contact@blablatrip.com</a>
                   </li>
                   <li>
                     <i className="fas fa-phone-alt"></i>

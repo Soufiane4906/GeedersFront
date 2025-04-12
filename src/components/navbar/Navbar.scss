@@ -622,7 +622,7 @@
         color: white;
 
         &:hover {
-          background: darken(#ff681a, 5%);
+          background: color.adjust(#ff681a, $lightness: 5%);
         }
       }
     }

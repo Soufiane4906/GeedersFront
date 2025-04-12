@@ -100,7 +100,7 @@ const Contact = () => {
         {
             icon: <FaEnvelope />,
             title: 'Email Us',
-            details: ['info@blablatrip.com', 'support@blablatrip.com']
+            details: ['contact@blablatrip.com', 'support@blablatrip.com']
         },
         {
             icon: <FaPhoneAlt />,

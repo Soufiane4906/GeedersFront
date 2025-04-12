@@ -1,32 +1,371 @@
+// src/components/loading/Loading.scss
 @use "sass:color";
-// src/components/Loading.scss
+
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f4f4f4;
+  width: 100%;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+  position: relative;
+  overflow: hidden;
 
-  .loading-icons {
-    display: flex;
-    gap: 1rem;
-    font-size: 2rem;
-    color: #007bff; // Example color
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.vexels.com/media/users/3/131770/isolated/svg/9d615c923d10e51af4424ffdb17181dd.svg') center no-repeat;
+    background-size: contain;
+    opacity: 0.05;
+    z-index: 0;
+  }
 
-    .icon {
-      animation: spin 2s linear infinite;
+  .loading-logo {
+    margin-bottom: 40px;
+    z-index: 1;
+    animation: pulse 2s infinite alternate;
+
+    img {
+      height: 70px;
+      object-fit: contain;
     }
   }
 
-  p {
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    color: #333;
+  .loading-world {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 30px;
+    z-index: 1;
+
+    .globe {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .globe-icon {
+        font-size: 80px;
+        color: #1e2a78;
+        animation: glow 3s infinite alternate;
+      }
+
+      .orbit {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px dashed rgba(255, 104, 26, 0.3);
+        border-radius: 50%;
+        animation: rotate 10s linear infinite;
+
+        .plane-container {
+          position: absolute;
+          top: -15px;
+          left: 50%;
+          transform: translateX(-50%);
+
+          .plane {
+            font-size: 24px;
+            color: #ff681a;
+            animation: planeTilt 10s linear infinite;
+          }
+        }
+      }
+    }
   }
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  .loading-icons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    z-index: 1;
+
+    .icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        background: rgba(255, 104, 26, 0.2);
+        transition: height 0.5s ease;
+      }
+
+      &:hover::after {
+        height: 100%;
+      }
+
+      .icon {
+        font-size: 22px;
+        z-index: 1;
+      }
+
+      .hotel {
+        color: #5e35b1;
+      }
+
+      .car {
+        color: #43a047;
+      }
+
+      .marker {
+        color: #e53935;
+      }
+
+      .compass {
+        color: #1e88e5;
+      }
+
+      .suitcase {
+        color: #fb8c00;
+      }
+    }
+
+    .icon-wrapper:nth-child(1) {
+      animation: bounce 2s infinite 0.1s;
+    }
+
+    .icon-wrapper:nth-child(2) {
+      animation: bounce 2s infinite 0.3s;
+    }
+
+    .icon-wrapper:nth-child(3) {
+      animation: bounce 2s infinite 0.5s;
+    }
+
+    .icon-wrapper:nth-child(4) {
+      animation: bounce 2s infinite 0.7s;
+    }
+
+    .icon-wrapper:nth-child(5) {
+      animation: bounce 2s infinite 0.9s;
+    }
+  }
+
+  .loading-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    z-index: 1;
+
+    h3 {
+      font-size: 20px;
+      color: #1e2a78;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        background-color: #ff681a;
+        border-radius: 50%;
+        opacity: 0;
+
+        &:nth-child(1) {
+          animation: fadeInOut 1.5s infinite 0s;
+        }
+
+        &:nth-child(2) {
+          animation: fadeInOut 1.5s infinite 0.3s;
+        }
+
+        &:nth-child(3) {
+          animation: fadeInOut 1.5s infinite 0.6s;
+        }
+      }
+    }
+  }
+
+  .loading-progress {
+    width: 300px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    z-index: 1;
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #ff681a, #ff8f4d);
+      border-radius: 3px;
+      animation: progress 3s ease-in-out infinite;
+    }
+  }
+
+  // Animations
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes planeTilt {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(5deg);
+    }
+    50% {
+      transform: rotate(0deg);
+    }
+    75% {
+      transform: rotate(-5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow {
+    0% {
+      filter: drop-shadow(0 0 2px rgba(30, 42, 120, 0.3));
+    }
+    100% {
+      filter: drop-shadow(0 0 10px rgba(30, 42, 120, 0.6));
+    }
+  }
+
+  @keyframes progress {
+    0% {
+      width: 0;
+    }
+    50% {
+      width: 70%;
+    }
+    70% {
+      width: 80%;
+    }
+    90% {
+      width: 90%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  // Responsive styles
+  @media (max-width: 768px) {
+    .loading-world {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 20px;
+
+      .globe .globe-icon {
+        font-size: 60px;
+      }
+    }
+
+    .loading-icons {
+      gap: 15px;
+
+      .icon-wrapper {
+        width: 40px;
+        height: 40px;
+
+        .icon {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .loading-progress {
+      width: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .loading-logo img {
+      height: 50px;
+    }
+
+    .loading-world {
+      width: 120px;
+      height: 120px;
+
+      .globe .globe-icon {
+        font-size: 50px;
+      }
+    }
+
+    .loading-icons {
+      gap: 10px;
+
+      .icon-wrapper {
+        width: 35px;
+        height: 35px;
+
+        .icon {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .loading-text h3 {
+      font-size: 16px;
+    }
+
+    .loading-progress {
+      width: 200px;
+    }
   }
 }
