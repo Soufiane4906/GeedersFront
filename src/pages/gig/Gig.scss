@@ -1,6 +1,6 @@
 @use "sass:color";
 // Variables
-$primary-color: #FFC107;
+
 $secondary-color: #FF6B6B;
 $text-color: #333;
 $light-grey: #f9f9f9;
@@ -33,7 +33,7 @@ $transition: all 0.3s ease;
       margin-bottom: 10px;
 
       svg {
-        color: $primary-color;
+        color: #37D4D9FF;;
       }
 
       span {
@@ -211,7 +211,7 @@ $transition: all 0.3s ease;
             transition: $transition;
             &.active {
               opacity: 1;
-              box-shadow: 0 0 0 2px $primary-color;
+              box-shadow: 0 0 0 2px #37D4D9FF;;
               transform: scale(1.05);
             }
 
@@ -274,7 +274,7 @@ $transition: all 0.3s ease;
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid $primary-color;
+            border: 3px solid #37D4D9FF;;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: $transition;
 
@@ -294,7 +294,7 @@ $transition: all 0.3s ease;
               color: #666;
               font-size: 14px;
               margin-bottom: 10px;
-              background-color: rgba($primary-color, 0.1);
+              background-color: rgba(#37D4D9FF, 0.1);
               display: inline-block;
               padding: 3px 10px;
               border-radius: 12px;
@@ -309,7 +309,7 @@ $transition: all 0.3s ease;
                 font-size: 16px;
 
                 &.active {
-                  color: $primary-color;
+                  color: #37D4D9FF;;
                 }
 
                 &.inactive {
@@ -352,7 +352,7 @@ $transition: all 0.3s ease;
           gap: 10px;
 
           svg {
-            color: $primary-color;
+            color: #37D4D9FF;;
           }
         }
 
@@ -365,7 +365,7 @@ $transition: all 0.3s ease;
           color: $text-color;
 
           svg {
-            color: $primary-color;
+            color: #37D4D9FF;;
           }
         }
 
@@ -400,7 +400,7 @@ $transition: all 0.3s ease;
 
               svg {
                 font-size: 24px;
-                color: $primary-color;
+                color: #37D4D9FF;;
                 margin-top: 5px;
               }
 
@@ -429,7 +429,7 @@ $transition: all 0.3s ease;
               margin-bottom: 15px;
 
               svg {
-                color: $primary-color;
+                color: #37D4D9FF;;
               }
             }
 
@@ -488,7 +488,7 @@ $transition: all 0.3s ease;
                 padding: 8px 0;
 
                 svg {
-                  color: $primary-color;
+                  color: #37D4D9FF;;
                   font-size: 14px;
                 }
               }
@@ -607,7 +607,7 @@ $transition: all 0.3s ease;
             color: $text-color;
 
             svg {
-              color: $primary-color;
+              color: #37D4D9FF;;
             }
           }
 
@@ -626,11 +626,11 @@ $transition: all 0.3s ease;
                 transition: $transition;
 
                 &:hover {
-                  border-color: $primary-color;
+                  border-color: #37D4D9FF;;
                 }
 
                 svg {
-                  color: $primary-color;
+                  color: #37D4D9FF;;
                 }
               }
 
@@ -668,14 +668,14 @@ $transition: all 0.3s ease;
                 transition: $transition;
 
                 &:hover {
-                  border-color: $primary-color;
-                  background-color: rgba($primary-color, 0.05);
+                  border-color: #37D4D9FF;;
+                  background-color: rgba(#37D4D9FF, 0.05);
                 }
 
                 &.active {
-                  background-color: $primary-color;
+                  background-color: #37D4D9FF;;
                   color: white;
-                  border-color: $primary-color;
+                  border-color: #37D4D9FF;;
                 }
               }
             }
@@ -695,14 +695,14 @@ $transition: all 0.3s ease;
               transition: $transition;
 
               &:hover {
-                border-color: $primary-color;
-                background-color: rgba($primary-color, 0.05);
+                border-color: #37D4D9FF;;
+                background-color: rgba(#37D4D9FF, 0.05);
               }
 
               &.active {
-                background-color: $primary-color;
+                background-color: #37D4D9FF;;
                 color: white;
-                border-color: $primary-color;
+                border-color: #37D4D9FF;;
               }
             }
           }
@@ -728,9 +728,9 @@ $transition: all 0.3s ease;
               }
 
               &.active {
-                border-color: $primary-color;
-                background-color: rgba($primary-color, 0.1);
-                box-shadow: 0 4px 8px rgba($primary-color, 0.2);
+                border-color: #37D4D9FF;
+                background-color: rgba(#37D4D9FF, 0.1);
+                box-shadow: 0 4px 8px rgba(#37D4D9FF, 0.2);
               }
 
               .transport-icon {
@@ -779,7 +779,7 @@ $transition: all 0.3s ease;
             border-top: 1px dashed $border-color;
 
             .total-amount {
-              color: $primary-color;
+              color: #37D4D9FF;;
             }
           }
         }
@@ -822,8 +822,8 @@ $transition: all 0.3s ease;
             }
 
             input:checked ~ .checkmark {
-              background-color: $primary-color;
-              border-color: $primary-color;
+              background-color: #37D4D9FF;;
+              border-color: #37D4D9FF;;
             }
 
             .checkmark:after {
@@ -848,7 +848,7 @@ $transition: all 0.3s ease;
         .book-button {
           width: 100%;
           padding: 15px;
-          background-color: $primary-color;
+          background-color: #37D4D9FF;;
           color: white;
           border: none;
           border-radius: 8px;
@@ -863,9 +863,9 @@ $transition: all 0.3s ease;
           gap: 10px;
 
           &:hover:not(:disabled) {
-            background-color: color.adjust($primary-color, $lightness: -10%);;
+            background-color: color.adjust(#37D4D9FF, $lightness: -10%);
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba($primary-color, 0.3);
+            box-shadow: 0 5px 15px rgba(#37D4D9FF, 0.3);
           }
 
           &:disabled {
@@ -886,7 +886,7 @@ $transition: all 0.3s ease;
           justify-content: center;
 
           svg {
-            color: $primary-color;
+            color: #37D4D9FF;;
           }
         }
       }
@@ -905,9 +905,9 @@ $transition: all 0.3s ease;
   .loading-spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid rgba($primary-color, 0.2);
+    border: 5px solid rgba(#37D4D9FF, 0.2);
     border-radius: 50%;
-    border-top-color: $primary-color;
+    border-top-color: #37D4D9FF;;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
   }
@@ -952,7 +952,7 @@ $transition: all 0.3s ease;
 
   button {
     padding: 10px 20px;
-    background-color: $primary-color;
+    background-color: #37D4D9FF;
     color: white;
     border: none;
     border-radius: 8px;
@@ -960,8 +960,147 @@ $transition: all 0.3s ease;
     transition: $transition;
 
     &:hover {
-      background-color: color.adjust($primary-color, $lightness: -10%);;
+      background-color: color.adjust(#37D4D9FF, $lightness: -10%);
     }
   }
 }
 
+// Styles pour le contenu WYSIWYG
+.wysiwyg-content {
+  font-family: var(--body-font);
+  line-height: 1.6;
+  color: #555;
+
+  // Styles pour les titres
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--title-font);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: $text-color;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  // Styles pour paragraphes
+  p {
+    margin-bottom: 1rem;
+  }
+
+  // Styles pour listes
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // Styles pour liens
+  a {
+    color: #37D4D9FF;
+    text-decoration: underline;
+
+    &:hover {
+      color: darken(#37D4D9FF, 10%);
+    }
+  }
+
+  // Styles pour images
+  img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+    border-radius: 8px;
+  }
+
+  // Styles pour blocs de citation
+  blockquote {
+    border-left: 4px solid #37D4D9FF;
+    padding-left: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+    font-style: italic;
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+  }
+
+  // Styles pour code
+  pre, code {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    font-family: monospace;
+  }
+
+  pre {
+    padding: 1rem;
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+      background-color: transparent;
+    }
+  }
+
+  // Styles pour tableaux
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+
+    th, td {
+      border: 1px solid $border-color;
+      padding: 0.5rem;
+    }
+
+    th {
+      background-color: $light-grey;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+  }
+}
+
+// Style pour le conteneur des détails de l'expérience
+.experience-description-container {
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  padding: 25px;
+  margin-bottom: 30px;
+
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: $text-color;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    svg {
+      color: #37D4D9FF;
+    }
+  }
+}

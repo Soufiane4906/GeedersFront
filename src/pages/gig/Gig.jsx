@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Gig.scss';
+import DOMPurify from 'dompurify';
 
 function Gig() {
   const { id } = useParams();
@@ -388,118 +389,22 @@ function Gig() {
               </div>
 
               {/* Experience details */}
-              <div className="experience-details">
-                <h2><FaInfoCircle /> Détails de l'expérience</h2>
-                <div className="detail-content">
-                  <p className="experience-description">{gigData?.desc}</p>
-
-                  <div className="key-details">
-                    <div className="detail-item">
-                      <FaMapMarkerAlt />
-                      <div>
-                        <h4>Lieu</h4>
-                        <p>{gigData?.city}, {gigData?.country}</p>
-                      </div>
-                    </div>
-
-                    <div className="detail-item">
-                      <FaRegClock />
-                      <div>
-                        <h4>Durée</h4>
-                        <p>Jusqu'à {gigData?.deliveryTime || 3} heures</p>
-                      </div>
-                    </div>
-
-                    <div className="detail-item">
-                      <FontAwesomeIcon icon={faUsers} />
-                      <div>
-                        <h4>Taille du groupe</h4>
-                        <p>Jusqu'à {gigData?.revisionNumber || 4} personnes</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Points of interest */}
-                  {gigData?.poi && gigData.poi.length > 0 && (
-                      <div className="points-of-interest">
-                        <h3><FontAwesomeIcon icon={faMapMarkedAlt} /> Points d'intérêt</h3>
-                        <div className="poi-tags">
-                          {gigData.poi.map((point, index) => {
-                            // Si point est un objet avec des propriétés name et image
-                            if (typeof point === 'object' && point !== null && point.name) {
-                              return (
-                                  <div key={index} className="poi-tag-with-image">
-                                    {point.image && (
-                                        <img
-                                            src={point.image}
-                                            alt={point.name}
-                                            className="poi-thumbnail"
-                                        />
-                                    )}
-                                    <span>{point.name}</span>
-                                  </div>
-                              );
-                            }
-                            // Si c'est juste une chaîne de caractères ou autre chose
-                            return (
-                                <span key={index} className="poi-tag">{String(point)}</span>
-                            );
-                          })}
-                        </div>
-                      </div>
-                  )}
-
-
-
-                  {/* Features */}
-                  {gigData?.features && gigData.features.length > 0 && (
-                      <div className="features-section">
-                        <h3><FaCheck /> Ce qui est inclus</h3>
-                        <ul className="features-list">
-                          {gigData.features.map((feature, index) => (
-                              <li key={index}><FaCheck /> {feature}</li>
-                          ))}
-                        </ul>
-                      </div>
-                  )}
-
-                  {/* Languages */}
-                  <div className="languages-section">
-                    <h3><FaLanguage /> Langues</h3>
-                    <div className="language-badges">
-                      {userData?.languages && userData.languages.length > 0 ? (
-                          userData.languages.map((lang, index) => {
-                            const language = getLanguageDetails(lang);
-                            return (
-                                <div key={index} className="language-badge">
-                                  {language.flag && (
-                                      <img
-                                          src={getFlagUrl(language.flag)}
-                                          alt={language.langue}
-                                          className="language-flag"
-                                      />
-                                  )}
-                                  <span className="language-name">{language.langue}</span>
-                                </div>
-                            );
-                          })
-                      ) : (
-                          <span className="no-languages">Aucune langue spécifiée</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
+              <div className="experience-description-container">
+                <h3 className="section-title">Détails de l'expérience</h3>
+                <div
+                    className="wysiwyg-content"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(gigData?.desc) }}
+                />
               </div>
-
               {/* Reviews section */}
               <div className="reviews-section">
-                <Reviews gigId={id} />
+                <Reviews gigId={id}/>
               </div>
             </div>
 
             {/* Right column - Booking */}
             <div className="gig-right">
-              <div className="booking-card">
+            <div className="booking-card">
                 <h2>Réserver cette expérience</h2>
 
                 <div className="price-info">

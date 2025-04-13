@@ -11,18 +11,23 @@ import {
   FaRegStar,
   FaBan,
   FaLanguage,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  FaEuroSign,
+  FaClock,
+  FaChevronDown,
+  FaChevronUp
 } from "react-icons/fa";
 
 const GigCard = ({ item }) => {
   const [languagesData, setLanguagesData] = useState([]);
   const [poiData, setPoiData] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showAllPoi, setShowAllPoi] = useState(false);
 
   // Récupération des données utilisateur
   const { isLoading, error, data } = useQuery({
     queryKey: [item.userId],
-    queryFn: () =>
-        newRequest.get(`/users/${item.userId}`).then((res) => res.data),
+    queryFn: () => newRequest.get(`/users/${item.userId}`).then((res) => res.data),
   });
 
   // Récupération des données de langues
@@ -58,7 +63,6 @@ const GigCard = ({ item }) => {
     if (flagCode?.startsWith('http')) {
       return flagCode;
     }
-
     const code = flagCode?.toLowerCase();
     return code ? `https://flagcdn.com/w320/${code}.png` : '';
   };
@@ -79,7 +83,7 @@ const GigCard = ({ item }) => {
     return byName || { langue: language, flag: null };
   };
 
-  // Modification de la fonction getPoiDetails pour récupérer l'image également
+  // Fonction pour obtenir les détails d'un POI
   const getPoiDetails = (poiId) => {
     // Si c'est déjà un objet POI complet (après populate)
     if (poiId && typeof poiId === 'object' && poiId.name) {
@@ -88,7 +92,7 @@ const GigCard = ({ item }) => {
 
     // Si c'est un ID, chercher par ID
     const poi = poiData.find(p => p._id === poiId);
-    return poi || { name: poiId, image: null }; // Retourne l'objet POI complet si trouvé
+    return poi || { name: poiId, image: null };
   };
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -101,64 +105,59 @@ const GigCard = ({ item }) => {
       ? Math.round(item.totalStars / item.starNumber)
       : 0;
 
-  const [showMessage, setShowMessage] = useState(false);
-  const [showAllPoi, setShowAllPoi] = useState(false);
-
   // Limiter le nombre de POI affichés initialement
   const displayedPoi = showAllPoi ? (item.poi || []) : (item.poi || []).slice(0, 2);
 
   return (
       <div className="gigCard">
-        <div className="topSection">
-          <div className="userInfo">
-            <div className="user">
-              {isLoading ? (
-                  "loading"
-              ) : error ? (
-                  "Something went wrong!"
-              ) : (
-                  <>
-                    <img
-                        src={userData.img || "/img/noavatar.jpg"}
-                        alt=""
-                        className={`userAvatar ${
-                            userData.isVerified ? "verified-avatar" : ""
-                        }`}
-                    />
-                    <div className="userDetails">
-                      <span className="username">{userData.username}</span>
+        <div className="card-container">
+          {/* En-tête de la carte avec avatar et nom d'utilisateur */}
+          <div className="card-header">
+            {isLoading ? (
+                <div className="loading-placeholder">Chargement...</div>
+            ) : error ? (
+                <div className="error-message">Une erreur est survenue</div>
+            ) : (
+                <div className="user-profile">
+                  <img
+                      src={userData.img || "/img/noavatar.jpg"}
+                      alt={userData.username || "Utilisateur"}
+                      className="user-avatar"
+                  />
+                  <div className="user-info">
+                    <div className="username-container">
+                      <h3 className="username">{userData.username}</h3>
                       {userData.isVerified && (
-                          <div className="verified">
-                            <FaCheckCircle color="green" />
-                            <span>This Ambassador is verified</span>
-                          </div>
+                          <FaCheckCircle className="verified-icon" title="Ambassadeur vérifié" />
                       )}
                     </div>
-                  </>
-              )}
-            </div>
-            <div className="rating">
-              {[...Array(5)].map((_, index) => (
-                  <span key={index}>
-                {index < rating ? (
-                    <FaStar color="gold" />
-                ) : (
-                    <FaRegStar color="gold" />
-                )}
-              </span>
-              ))}
-              <span className="ratingValue">{rating}</span>
-            </div>
+                    <div className="rating-container">
+                      {[...Array(5)].map((_, index) => (
+                          <span key={index} className="star-icon">
+                      {index < rating ? <FaStar /> : <FaRegStar />}
+                    </span>
+                      ))}
+                      <span className="rating-value">({rating || 0})</span>
+                    </div>
+                  </div>
+                </div>
+            )}
+          </div>
 
-            {/* Section des langues avec drapeaux */}
-            <div className="languages-section">
-              <h4><FaLanguage /> Langues parlées:</h4>
-              <div className="language-flags-container">
+          {/* Contenu principal */}
+          <div className="card-body">
+            {/* Section des langues */}
+            <div className="info-section language-section">
+              <div className="section-header">
+                <FaLanguage className="section-icon" />
+                <h4 className="section-title">Langues parlées</h4>
+              </div>
+              <div className="language-list">
                 {languages.length > 0 ? (
                     languages.map((lang, index) => {
                       const language = getLanguageDetails(lang);
                       return (
-                          <div key={index} className="language-badge">
+                          <div key={index} className="language-item">
                             {language.flag && (
                                 <img
                                     src={getFlagUrl(language.flag)}
@@ -171,15 +170,18 @@ const GigCard = ({ item }) => {
                       );
                     })
                 ) : (
-                    <span className="no-languages">Aucune langue spécifiée</span>
+                    <span className="empty-message">Aucune langue spécifiée</span>
                 )}
               </div>
             </div>
 
-            {/* Section des points d'intérêt avec images */}
+            {/* Section des points d'intérêt */}
             {item.poi && item.poi.length > 0 && (
-                <div className="poi-section">
-                  <h4><FaMapMarkerAlt /> Points d'intérêt:</h4>
+                <div className="info-section poi-section">
+                  <div className="section-header">
+                    <FaMapMarkerAlt className="section-icon" />
+                    <h4 className="section-title">Points d'intérêt</h4>
+                  </div>
                   <div className="poi-list">
                     {displayedPoi.map((poi, index) => {
                       const poiDetails = getPoiDetails(poi);
@@ -189,10 +191,12 @@ const GigCard = ({ item }) => {
                                 <img
                                     src={poiDetails.image}
                                     alt={poiDetails.name}
-                                    className="poi-image"
+                                    className="poi-thumbnail"
                                 />
                             ) : (
-                                <FaMapMarkerAlt className="poi-icon" />
+                                <div className="poi-icon-container">
+                                  <FaMapMarkerAlt className="poi-icon" />
+                                </div>
                             )}
                             <span className="poi-name">{poiDetails.name}</span>
                           </div>
@@ -200,60 +204,80 @@ const GigCard = ({ item }) => {
                     })}
                     {item.poi.length > 2 && (
                         <button
-                            className="show-more-btn"
+                            className="toggle-button"
                             onClick={() => setShowAllPoi(!showAllPoi)}
                         >
-                          {showAllPoi ? "Voir moins" : `+${item.poi.length - 2} de plus`}
+                          {showAllPoi ? (
+                              <>Voir moins <FaChevronUp className="toggle-icon" /></>
+                          ) : (
+                              <>Voir +{item.poi.length - 2} <FaChevronDown className="toggle-icon" /></>
+                          )}
                         </button>
                     )}
                   </div>
                 </div>
             )}
-          </div>
 
-          <div className="detailsSection">
-            <hr />
-            <div className="detail">
-              <div className="price">
-                <span>À PARTIR DE</span>
-                <h2 style={{ color: "#e66224" }}>$ {item.price} / heure</h2>
+            {/* Section des prix et options */}
+            <div className="info-section price-section">
+              <div className="price-header">
+                <FaEuroSign className="section-icon" />
+                <div className="price-info">
+                  <span className="price-label">À PARTIR DE</span>
+                  <h2 className="price-value">{item.price}€<span className="price-unit">/heure</span></h2>
+                </div>
               </div>
-              <div className="features">
+
+              <div className="transport-options">
                 {item.hasCar ? (
-                    <div className="feature">
-                      <FaCar />
-                      <span>Voiture: ${item.carPrice} / heure</span>
+                    <div className="transport-option">
+                      <FaCar className="transport-icon" />
+                      <span className="transport-details">Voiture: {item.carPrice}€/heure</span>
                     </div>
                 ) : item.hasScooter ? (
-                    <div className="feature">
-                      <FaMotorcycle />
-                      <span>Scooter: ${item.scooterPrice} / heure</span>
+                    <div className="transport-option">
+                      <FaMotorcycle className="transport-icon" />
+                      <span className="transport-details">Scooter: {item.scooterPrice}€/heure</span>
                     </div>
                 ) : (
-                    <div className="noOptions">
-                      <FaBan />
-                      <span>Pas d'options disponibles</span>
+                    <div className="transport-option no-transport">
+                      <FaBan className="transport-icon" />
+                      <span className="transport-details">Pas d'options de transport</span>
+                    </div>
+                )}
+
+                {item.deliveryTime && (
+                    <div className="duration-info">
+                      <FaClock className="duration-icon" />
+                      <span className="duration-value">Durée: {item.deliveryTime} heure(s)</span>
                     </div>
                 )}
               </div>
             </div>
           </div>
 
-          <button
-              className={`detailsButton ${!isUserLoggedIn ? 'disabled' : ''} ${!isUserLoggedIn && showMessage ? 'showTooltip' : ''}`}
-              onMouseEnter={() => !isUserLoggedIn && setShowMessage(true)}
-              onMouseLeave={() => setShowMessage(false)}
-              disabled={!isUserLoggedIn}
-          >
-            {isUserLoggedIn ? (
-                <Link to={`/gig/${item._id}`}>Plus de détails / Réserver</Link>
-            ) : (
-                <span className="linkText">Plus de détails / Réserver</span>
-            )}
-            {!isUserLoggedIn && showMessage && (
-                <div className="tooltip">Vous devez vous connecter ou créer un compte.</div>
-            )}
-          </button>
+          {/* Bouton d'action */}
+          <div className="card-footer">
+            <button
+                className={`action-button ${!isUserLoggedIn ? 'disabled' : ''}`}
+                onMouseEnter={() => !isUserLoggedIn && setShowMessage(true)}
+                onMouseLeave={() => setShowMessage(false)}
+                disabled={!isUserLoggedIn}
+            >
+              {isUserLoggedIn ? (
+                  <Link to={`/gig/${item._id}`} className="button-link">
+                    Plus de détails / Réserver
+                  </Link>
+              ) : (
+                  <span className="button-text">Plus de détails / Réserver</span>
+              )}
+              {!isUserLoggedIn && showMessage && (
+                  <div className="login-tooltip">
+                    Vous devez vous connecter ou créer un compte
+                  </div>
+              )}
+            </button>
+          </div>
         </div>
       </div>
   );

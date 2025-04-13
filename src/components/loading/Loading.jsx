@@ -6,9 +6,7 @@ import { FaPlane, FaHotel, FaCar, FaGlobe, FaMapMarkerAlt, FaCompass, FaSuitcase
 const Loading = () => {
     return (
         <div className="loading-container">
-            <div className="loading-logo">
-                <img src="/img/img_3.png" alt="BlaBlaTripLogo" />
-            </div>
+
 
             <div className="loading-world">
                 <div className="globe">
@@ -40,7 +38,7 @@ const Loading = () => {
             </div>
 
             <div className="loading-text">
-                <h3>Préparation de votre voyage</h3>
+                <h3>Préparation de votre Aventure</h3>
                 <div className="dots">
                     <span className="dot"></span>
                     <span className="dot"></span>

@@ -165,6 +165,7 @@ function Navbar() {
                 >
                   <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
                   <div className="user-info">
+
                     <span>{currentUser?.username}</span>
                     {currentUser.isAmbassador && (
                         <span className="ambassador-badge">Ambassador</span>
@@ -189,7 +190,7 @@ function Navbar() {
                       {currentUser.isAmbassador && (
                           <>
                             <Link className="link" to="/mygigs" onClick={() => setOpen(false)}>
-                              <FaCalendarAlt /> Mes expériences
+                              <FaCalendarAlt /> Mes services
                             </Link>
                             <Link className="link" to="/add" onClick={() => setOpen(false)}>
                               <FaPlus /> Ajouter
@@ -278,6 +279,8 @@ function Navbar() {
                     <div className="mobile-user-info">
                       <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
                       <div>
+                        <br/>
+                        <hr/>
                         <span className="username">{currentUser?.username}</span>
                         {currentUser.isAmbassador && (
                             <span className="badge">Ambassador</span>
@@ -290,7 +293,7 @@ function Navbar() {
                     {currentUser.isAmbassador && (
                         <>
                           <Link to="/mygigs" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
-                            <FaCalendarAlt /> Mes expériences
+                            <FaCalendarAlt /> Mes Services
                           </Link>
                           <Link to="/add" className="mobile-user-link" onClick={() => setMobileMenu(false)}>
                             <FaPlus /> Ajouter

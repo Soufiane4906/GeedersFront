@@ -695,3 +695,455 @@ $transition-normal: 200ms ease;
 .spin {
   animation: spin 1s linear infinite;
 }
+
+@use "sass:color";
+
+// Variables principales
+$primary: #4f46e5;
+$primary-light: lighten($primary, 32%);
+$primary-dark: darken($primary, 10%);
+$cyan: #06b6d4;
+$green: #10b981;
+$amber: #f59e0b;
+$red: #ef4444;
+$purple: #8b5cf6;
+
+$text-dark: #1f2937;
+$text-muted: #6b7280;
+$text-light: #9ca3af;
+
+$bg-body: #f9fafb;
+$bg-white: #ffffff;
+$bg-card: $bg-white;
+$bg-hover: #f3f4f6;
+
+$border-color: #e5e7eb;
+$border-color-light: #f3f4f6;
+
+$border-radius-sm: 0.375rem;
+$border-radius: 0.5rem;
+$border-radius-lg: 0.75rem;
+$border-radius-xl: 1rem;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+$transition-fast: 150ms ease;
+$transition-normal: 200ms ease;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin card {
+  background-color: $bg-card;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-sm;
+  transition: box-shadow $transition-normal;
+
+  &:hover {
+    box-shadow: $shadow;
+  }
+}
+
+@mixin stat-card {
+  @include card;
+  padding: 1.25rem;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.ambassador-performance {
+  background-color: $bg-body;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: $text-dark;
+
+  &__header {
+    @include flex-between;
+    margin-bottom: 1.5rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      &-actions {
+        margin-top: 1rem;
+        width: 100%;
+        @include flex-between;
+      }
+    }
+
+    &-title {
+      h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        font-size: 0.875rem;
+        color: $text-muted;
+      }
+    }
+
+    &-actions {
+      display: flex;
+      gap: 0.75rem;
+
+      .filter-dropdown {
+        position: relative;
+
+        &-button {
+          display: flex;
+          align-items: center;
+          padding: 0.5rem 0.75rem;
+          background-color: $bg-white;
+          border: 1px solid $border-color;
+          border-radius: $border-radius;
+          box-shadow: $shadow-sm;
+          font-size: 0.875rem;
+          color: $text-dark;
+          cursor: pointer;
+          transition: background-color $transition-fast;
+
+          &:hover {
+            background-color: $bg-hover;
+          }
+
+          svg {
+            margin-right: 0.5rem;
+            color: $text-muted;
+          }
+        }
+
+        &-menu {
+          position: absolute;
+          right: 0;
+          top: calc(100% + 0.5rem);
+          width: 10rem;
+          background-color: $bg-white;
+          border: 1px solid $border-color;
+          border-radius: $border-radius;
+          box-shadow: $shadow-md;
+          z-index: 10;
+          overflow: hidden;
+
+          &-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: $text-dark;
+            cursor: pointer;
+            transition: background-color $transition-fast;
+
+            &:hover {
+              background-color: color.adjust($primary, $lightness: 45%);
+              color: $primary;
+            }
+          }
+        }
+      }
+
+      .export-button {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        background-color: $primary;
+        color: white;
+        border-radius: $border-radius;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color $transition-fast;
+
+        &:hover {
+          background-color: $primary-dark;
+        }
+
+        svg {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    &-card {
+      @include stat-card;
+      border-left: 4px solid;
+      cursor: pointer;
+
+      &--ambassadors {
+        border-color: $primary;
+      }
+
+      &--bookings {
+        border-color: $cyan;
+      }
+
+      &--rating {
+        border-color: $green;
+      }
+
+      &--revenue {
+        border-color: $amber;
+      }
+
+      &-content {
+        @include flex-between;
+
+        &-info {
+          &-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: $text-muted;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+          }
+
+          &-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $text-dark;
+            margin-top: 0.25rem;
+          }
+
+          &-comparison {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+
+            &--positive {
+              color: $green;
+            }
+
+            &--negative {
+              color: $red;
+            }
+
+            &-text {
+              color: $text-light;
+              margin-left: 0.25rem;
+            }
+          }
+        }
+
+        &-icon {
+          padding: 0.75rem;
+          border-radius: $border-radius;
+
+          &--ambassadors {
+            background-color: color.adjust($primary, $lightness: 45%);
+            color: $primary;
+          }
+
+          &--bookings {
+            background-color: color.adjust($cyan, $lightness: 45%);
+            color: $cyan;
+          }
+
+          &--rating {
+            background-color: color.adjust($green, $lightness: 45%);
+            color: $green;
+          }
+
+          &--revenue {
+            background-color: color.adjust($amber, $lightness: 45%);
+            color: $amber;
+          }
+        }
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &-card {
+      @include card;
+
+      &-header {
+        padding: 1rem;
+        border-bottom: 1px solid $border-color-light;
+        @include flex-between;
+
+        &-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: $text-dark;
+        }
+
+        &-actions {
+          // Styles pour les actions d'en-tête si nécessaire
+        }
+      }
+
+      &-body {
+        padding: 1rem;
+      }
+
+      &-footer {
+        padding: 1rem;
+        border-top: 1px solid $border-color-light;
+        text-align: center;
+
+        &-link {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: $primary;
+          cursor: pointer;
+
+          &:hover {
+            color: $primary-dark;
+          }
+        }
+      }
+    }
+  }
+
+  // Styles spécifiques pour les tableaux
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    th {
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: $text-muted;
+      text-align: left;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: $text-dark;
+      border-top: 1px solid $border-color-light;
+
+      &:first-child {
+        font-weight: 500;
+      }
+    }
+
+    tr {
+      &:hover {
+        background-color: $bg-hover;
+      }
+    }
+  }
+
+  // Styles pour les graphiques
+  .recharts-wrapper {
+    font-family: inherit;
+
+    .recharts-cartesian-axis-tick-value {
+      font-size: 0.75rem;
+      fill: $text-muted;
+    }
+
+    .recharts-tooltip-wrapper {
+      .recharts-default-tooltip {
+        background-color: $bg-white !important;
+        border: none !important;
+        border-radius: $border-radius !important;
+        box-shadow: $shadow-md !important;
+        padding: 0.75rem !important;
+
+        .recharts-tooltip-label {
+          color: $text-dark !important;
+          font-weight: 500 !important;
+          margin-bottom: 0.5rem !important;
+        }
+
+        .recharts-tooltip-item {
+          color: $text-muted !important;
+
+          .recharts-tooltip-item-name {
+            color: $text-dark !important;
+          }
+
+          .recharts-tooltip-item-separator {
+            margin: 0 0.25rem !important;
+          }
+
+          .recharts-tooltip-item-value {
+            color: $text-dark !important;
+            font-weight: 500 !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Styles pour les barres de progression
+  .progress-bar {
+    width: 100%;
+    height: 1rem;
+    background-color: $bg-hover;
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+
+    &-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width $transition-normal;
+
+      &--primary {
+        background-color: $primary;
+      }
+
+      &--secondary {
+        background-color: color.adjust($primary, $lightness: 10%);
+      }
+
+      &--tertiary {
+        background-color: color.adjust($primary, $lightness: 20%);
+      }
+
+      &--quaternary {
+        background-color: color.adjust($primary, $lightness: 30%);
+      }
+
+      &--quinary {
+        background-color: color.adjust($primary, $lightness: 40%);
+      }
+    }
+  }
+}
